@@ -1,3 +1,6 @@
+const { sendEmail } = require('../utils/mailer');
+const { buildPasswordResetEmail } = require('../utils/emailTemplates');
+const crypto = require('crypto');
 ﻿const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -12,9 +15,25 @@ async function signup(req, res) {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, passwordHash });
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    res.status(201).json({ message: 'Account created', userId: user._id });
+    const user = await User.create({
+      name,
+      email,
+      passwordHash,
+      verificationToken,
+      verificationTokenExpires
+    });
+
+    const verifyUrl = `http://localhost:5000/api/auth/verify/${verificationToken}`;
+    await sendEmail(
+      email,
+      'Verify your Safra account',
+      `<p>Hi ${name},</p><p>Welcome to Safra! Click below to verify your account:</p><p><a href="${verifyUrl}">${verifyUrl}</a></p><p>This link expires in 24 hours.</p>`
+    );
+
+    res.status(201).json({ message: 'Account created, check your email to verify', userId: user._id }); // ADMIN_MARKER_verifyemail
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
@@ -30,8 +49,12 @@ async function login(req, res) {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
+    if (user.isBlocked) { // ADMIN_MARKER_blockcheck
+      return res.status(403).json({ message: 'This account has been blocked' });
+    }
+
     const token = jwt.sign(
-      { userId: user._id, role: 'customer' },
+      { userId: user._id, role: user.role }, // ADMIN_MARKER_loginfix
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -50,4 +73,89 @@ async function login(req, res) {
   }
 }
 
-module.exports = { signup, login };
+
+async function verifyEmail(req, res) {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({
+      verificationToken: token,
+      verificationTokenExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired verification link' });
+    }
+
+    user.verified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Email verified successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function forgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    // Always return the same message, whether or not the email exists —
+    // this prevents attackers from using this endpoint to check which emails are registered.
+    const genericMessage = { message: 'If that email is registered, a reset link has been sent.' };
+
+    if (!user) {
+      return res.json(genericMessage);
+    }
+
+    const resetPasswordToken = crypto.randomBytes(32).toString('hex');
+    const resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    user.resetPasswordToken = resetPasswordToken;
+    user.resetPasswordExpires = resetPasswordExpires;
+    await user.save();
+
+    const resetUrl = `http://localhost:5000/api/auth/reset-password/${resetPasswordToken}`;
+    await sendEmail(
+      user.email,
+      'Reset your Safra password',
+      buildPasswordResetEmail({ name: user.name, resetUrl })
+    );
+
+    res.json(genericMessage);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function resetPassword(req, res) {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset link' });
+    }
+
+    user.passwordHash = await bcrypt.hash(password, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Password reset successfully' }); // ADMIN_MARKER_resetpassword
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+module.exports = { signup, login, verifyEmail, forgotPassword, resetPassword };

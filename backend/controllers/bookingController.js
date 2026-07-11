@@ -1,6 +1,9 @@
 ﻿const Booking = require('../models/Booking');
 const House = require('../models/House');
 const Car = require('../models/Car');
+const User = require('../models/User');
+const { sendEmail } = require('../utils/mailer');
+const { buildCustomerBookingEmail, buildAdminBookingEmail } = require('../utils/emailTemplates');
 
 async function create(req, res) {
   try {
@@ -38,6 +41,47 @@ async function create(req, res) {
       endDate: end,
       totalPrice
     });
+
+    // ADMIN_MARKER_bookingemails
+    const customerUser = await User.findById(req.user.userId);
+    const unit = listingType === 'house' ? 'night' : 'day';
+    const formattedStart = start.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const formattedEnd = end.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    if (customerUser) {
+      await sendEmail(
+        customerUser.email,
+        `Booking Confirmed - ${listing.title}`,
+        buildCustomerBookingEmail({
+          customerName: customerUser.name,
+          listingTitle: listing.title,
+          listingLocation: listing.location,
+          listingType,
+          startDate: formattedStart,
+          endDate: formattedEnd,
+          days,
+          unit,
+          totalPrice,
+          adminEmail: process.env.ADMIN_NOTIFICATION_EMAIL
+        })
+      );
+    }
+
+    await sendEmail(
+      process.env.ADMIN_NOTIFICATION_EMAIL,
+      `New Booking Received - ${listing.title}`,
+      buildAdminBookingEmail({
+        customerName: customerUser ? customerUser.name : 'Unknown',
+        customerEmail: customerUser ? customerUser.email : 'Unknown',
+        listingTitle: listing.title,
+        listingLocation: listing.location,
+        listingType,
+        startDate: formattedStart,
+        endDate: formattedEnd,
+        days,
+        totalPrice
+      })
+    );
 
     res.status(201).json(booking);
   } catch (err) {
