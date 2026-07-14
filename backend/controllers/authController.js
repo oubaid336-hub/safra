@@ -26,7 +26,7 @@ async function signup(req, res) {
       verificationTokenExpires
     });
 
-    const verifyUrl = `http://localhost:5000/api/auth/verify/${verificationToken}`;
+    const verifyUrl = `${process.env.BACKEND_URL}/api/auth/verify/${verificationToken}`;
     await sendEmail(
       email,
       'Verify your Safra account',
@@ -118,7 +118,7 @@ async function forgotPassword(req, res) {
     user.resetPasswordExpires = resetPasswordExpires;
     await user.save();
 
-    const resetUrl = `http://localhost:5000/api/auth/reset-password/${resetPasswordToken}`;
+    const resetUrl = `${process.env.BACKEND_URL}/api/auth/reset-password/${resetPasswordToken}`;
     await sendEmail(
       user.email,
       'Reset your Safra password',
