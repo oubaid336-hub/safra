@@ -1,0 +1,13 @@
+﻿const express = require('express');
+const router = express.Router();
+const houseController = require('../controllers/houseController');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
+const upload = require('../middleware/upload');
+
+router.get('/', houseController.getAll);
+router.get('/:id', houseController.getOne);
+router.post('/', requireAuth, upload.array('photos', 10), houseController.create);
+router.put('/:id', requireAuth, houseController.update);
+router.delete('/:id', requireAuth, requireAdmin, houseController.delete);
+
+module.exports = router;
