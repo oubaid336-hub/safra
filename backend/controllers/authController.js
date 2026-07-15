@@ -1,7 +1,7 @@
-const { sendEmail } = require('../utils/mailer');
+﻿const { sendEmail } = require('../utils/mailer');
 const { buildPasswordResetEmail } = require('../utils/emailTemplates');
 const crypto = require('crypto');
-﻿const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -16,7 +16,7 @@ async function signup(req, res) {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const user = await User.create({
       name,
@@ -73,7 +73,6 @@ async function login(req, res) {
   }
 }
 
-
 async function verifyEmail(req, res) {
   try {
     const { token } = req.params;
@@ -103,8 +102,6 @@ async function forgotPassword(req, res) {
     const { email } = req.body;
     const user = await User.findOne({ email });
 
-    // Always return the same message, whether or not the email exists —
-    // this prevents attackers from using this endpoint to check which emails are registered.
     const genericMessage = { message: 'If that email is registered, a reset link has been sent.' };
 
     if (!user) {
@@ -112,7 +109,7 @@ async function forgotPassword(req, res) {
     }
 
     const resetPasswordToken = crypto.randomBytes(32).toString('hex');
-    const resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    const resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
 
     user.resetPasswordToken = resetPasswordToken;
     user.resetPasswordExpires = resetPasswordExpires;
@@ -158,8 +155,6 @@ async function resetPassword(req, res) {
   }
 }
 
-module.exports = { signup, login, verifyEmail, forgotPassword, resetPassword };
-
 async function me(req, res) {
   try {
     const user = await User.findById(req.user.userId).select(
@@ -182,5 +177,4 @@ async function logout(req, res) {
   res.json({ message: 'Logged out' });
 }
 
-module.exports.me = me;
-module.exports.logout = logout;
+module.exports = { signup, login, verifyEmail, forgotPassword, resetPassword, me, logout };
