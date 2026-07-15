@@ -9,6 +9,15 @@ async function create(req, res) {
   try {
     const { listingId, listingType, startDate, endDate } = req.body;
 
+    // ADMIN_MARKER_bookingverify
+    const customerUser = await User.findById(req.user.userId);
+    if (!customerUser) {
+      return res.status(401).json({ message: 'Please log in again.' });
+    }
+    if (!customerUser.verified) {
+      return res.status(403).json({ message: 'Please verify your email before booking.' });
+    }
+
     let listing;
     if (listingType === 'house') {
       listing = await House.findById(listingId);
@@ -43,7 +52,6 @@ async function create(req, res) {
     });
 
     // ADMIN_MARKER_bookingemails
-    const customerUser = await User.findById(req.user.userId);
     const unit = listingType === 'house' ? 'night' : 'day';
     const formattedStart = start.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const formattedEnd = end.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
