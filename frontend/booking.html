@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Your Stay — Safra</title>
+
+  <!-- Shared design-system stylesheet (colors, fonts, .btn/.nav/.card-style) -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* Page-specific styles only — everything reusable should already
+       live in style.css. Keeping these scoped and minimal on purpose. */
+
+    .booking-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 800px) {
+      .booking-layout {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+      }
+    }
+
+    .house-summary img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 12px;
+      background: var(--safra-navy, #1f2a3c);
+    }
+
+    .house-summary h2 {
+      margin-top: 1rem;
+    }
+
+    .house-summary .location {
+      opacity: 0.75;
+      margin-top: 0.25rem;
+    }
+
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .price-line.total {
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+    }
+
+    .form-message {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .form-message.error {
+      display: block;
+      background: #fdeceb;
+      color: #9c2b21;
+      border: 1px solid #f3c2bd;
+    }
+
+    .form-message.success {
+      display: block;
+      background: #eaf6ee;
+      color: #1f6b3a;
+      border: 1px solid #bfe3c9;
+    }
+
+    .form-message.warning {
+      display: block;
+      background: #fff6e5;
+      color: #8a5b00;
+      border: 1px solid #f2d998;
+    }
+
+    #loading-state,
+    #not-found-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      font-family: 'Inter', sans-serif;
+      opacity: 0.75;
+    }
+
+    #not-found-state {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav: kept minimal here — swap for the exact shared markup from
+       index.html if it differs, this is a best-effort match against
+       the documented .nav / .btn classes. -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Safra</a>
+    <a href="houses.html">Back to houses</a>
+  </nav>
+
+  <main class="booking-page">
+    <h1>Complete Your Booking</h1>
+
+    <div id="loading-state">Loading house details…</div>
+
+    <div id="not-found-state">
+      <p>We couldn't find that listing. It may have been removed or the link is incorrect.</p>
+      <a href="houses.html" class="btn">Browse Houses</a>
+    </div>
+
+    <div class="booking-layout" id="booking-layout" style="display: none;">
+
+      <!-- Left: house summary -->
+      <section class="house-summary card-style">
+        <img id="house-photo" src="" alt="" />
+        <h2 id="house-title">—</h2>
+        <p class="location" id="house-location">—</p>
+        <p id="house-description">—</p>
+      </section>
+
+      <!-- Right: booking form -->
+      <section class="card-style">
+        <form id="booking-form">
+          <div class="form-group">
+            <label for="start-date">Check-in</label>
+            <input type="date" id="start-date" name="startDate" required />
+          </div>
+
+          <div class="form-group">
+            <label for="end-date">Check-out</label>
+            <input type="date" id="end-date" name="endDate" required />
+          </div>
+
+          <div id="price-breakdown" style="display:none;">
+            <div class="price-line">
+              <span id="price-per-night-label">Price per night</span>
+              <span id="price-per-night-value">—</span>
+            </div>
+            <div class="price-line">
+              <span id="nights-label">Nights</span>
+              <span id="nights-value">—</span>
+            </div>
+            <div class="price-line total">
+              <span>Estimated total</span>
+              <span id="total-value">—</span>
+            </div>
+            <p style="font-size:0.8rem; opacity:0.65; font-family:'Inter',sans-serif;">
+              Final total is calculated by the server when you submit — this is an estimate.
+            </p>
+          </div>
+
+          <button type="submit" class="btn" id="submit-btn">Request Booking</button>
+
+          <div id="form-message" class="form-message"></div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>

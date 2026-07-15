@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — Safra</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    .faq-page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .faq-list {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .faq-item {
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: inherit;
+    }
+
+    .faq-question .chevron {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      opacity: 0.5;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-question .chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      opacity: 0.85;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease, margin-top 0.25s ease;
+      margin-top: 0;
+    }
+
+    .faq-item.open .faq-answer {
+      margin-top: 0.75rem;
+    }
+
+    #loading-state,
+    #empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      font-family: 'Inter', sans-serif;
+      opacity: 0.75;
+    }
+
+    #empty-state {
+      display: none;
+    }
+
+    .contact-cta {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .contact-cta a {
+      color: var(--safra-terracotta, #c96f4a);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Safra</a>
+    <a href="houses.html">Houses</a>
+    <a href="cars.html">Cars</a>
+  </nav>
+
+  <main class="faq-page">
+    <h1>Frequently Asked Questions</h1>
+
+    <div id="loading-state">Loading…</div>
+    <div id="empty-state">No FAQs published yet — check back soon.</div>
+    <div id="faq-list" class="faq-list"></div>
+
+    <p class="contact-cta">
+      Still have questions? <a href="contact.html">Get in touch</a>.
+    </p>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/faq.js"></script>
+</body>
+</html>
