@@ -18,3 +18,9 @@ router.post('/forgot-password', loginLimiter, forgotPassword); // ADMIN_MARKER_r
 router.post('/reset-password/:token', resetPassword);
 
 module.exports = router;
+
+const { me, logout } = require('../controllers/authController');
+const { requireAuth } = require('../middleware/auth');
+
+router.get('/me', requireAuth, me);
+router.post('/logout', logout);

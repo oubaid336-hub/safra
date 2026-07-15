@@ -159,3 +159,28 @@ async function resetPassword(req, res) {
 }
 
 module.exports = { signup, login, verifyEmail, forgotPassword, resetPassword };
+
+async function me(req, res) {
+  try {
+    const user = await User.findById(req.user.userId).select(
+      '-passwordHash -verificationToken -verificationTokenExpires -resetPasswordToken -resetPasswordExpires'
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function logout(req, res) {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  });
+  res.json({ message: 'Logged out' });
+}
+
+module.exports.me = me;
+module.exports.logout = logout;
