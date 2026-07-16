@@ -1,5 +1,6 @@
 // Central place for your backend's URL.
-// During local development it points at localhost.
-// Once you deploy to Render (Part 11), change ONLY this line --
-// every page that includes this file picks up the change automatically.
-const API_BASE_URL = 'https://safra-claude.onrender.com';
+// Auto-detects: localhost during local dev, live Render URL everywhere else.
+// No manual toggling needed before deploys.
+const API_BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "http://localhost:5000"
+  : "https://safra-claude.onrender.com";
