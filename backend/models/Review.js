@@ -6,7 +6,7 @@ const reviewSchema = new mongoose.Schema({
   listingType: { type: String, enum: ['house', 'car'] },
   rating: { type: Number, min: 1, max: 5 },
   comment: String,
-  approved: { type: Boolean, default: false },
+  approved: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
 

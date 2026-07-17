@@ -10,10 +10,10 @@ async function createReview(req, res) {
       listingType,
       rating,
       comment,
-      approved: false
+      approved: true
     });
 
-    res.status(201).json({ message: 'Review submitted, pending approval', review });
+    res.status(201).json({ message: 'Review submitted', review });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });

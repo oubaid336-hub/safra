@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Users - Safra Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body.admin-shell {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #F4F2ED;
+    min-height: 100vh;
+  }
+  .admin-topbar {
+    background: var(--safra-navy, #1B2A41);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+  }
+  .admin-topbar .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .admin-topbar .brand span {
+    opacity: 0.65;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+  #logoutBtn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #logoutBtn:hover { background: rgba(255,255,255,0.1); }
+
+  .admin-nav {
+    background: #fff;
+    border-bottom: 1px solid #E5DFD2;
+    padding: 0 24px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .admin-nav a {
+    display: inline-block;
+    padding: 14px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B6558;
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+  .admin-nav a.active {
+    color: var(--safra-navy, #1B2A41);
+    border-bottom-color: var(--safra-terracotta, #D97757);
+  }
+
+  .admin-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+  .admin-main h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--safra-navy, #1B2A41);
+    margin: 0 0 6px;
+  }
+  .admin-main p.sub {
+    color: #8A8377;
+    font-size: 14px;
+    margin: 0 0 20px;
+  }
+
+  .scope-note {
+    background: #FDF6E9;
+    border: 1px solid #EFE0B8;
+    color: #6B5A22;
+    font-size: 13px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 28px;
+  }
+  .scope-note strong { display: block; margin-bottom: 4px; }
+
+  #statusBanner {
+    display: none;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #FBEAE9;
+    color: #8C2E27;
+    border: 1px solid #F0C4C0;
+  }
+  #statusBanner.show { display: block; }
+
+  .user-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(27,42,65,0.05);
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+  .user-info .name-line {
+    font-weight: 700;
+    color: var(--safra-navy, #1B2A41);
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  .user-info .meta {
+    font-size: 13px;
+    color: #8A8377;
+  }
+
+  .tag-row { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+  .tag.role-admin { background: #E4E8F0; color: var(--safra-navy, #1B2A41); }
+  .tag.role-customer { background: #F1EEE4; color: #6B6558; }
+  .tag.status-active { background: #E8F3E8; color: #1E5E20; }
+  .tag.status-blocked { background: #FBEAE9; color: #8C2E27; }
+  .tag.unverified { background: #FDF1DC; color: #92620C; }
+  .tag.self-tag { background: #EDE7D9; color: #6B6558; }
+
+  .user-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .user-actions button {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #DDD5C8;
+    background: #fff;
+    cursor: pointer;
+  }
+  .user-actions button.block-btn:hover { background: #FBEAE9; border-color: #F0C4C0; }
+  .user-actions button.unblock-btn:hover { background: #E8F3E8; border-color: #B7DDB8; }
+  .user-actions button.delete-btn { color: #8C2E27; border-color: #F0C4C0; }
+  .user-actions button.delete-btn:hover { background: #FBEAE9; }
+  .user-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #loadingMsg, #emptyMsg {
+    color: #8A8377;
+    font-size: 14px;
+  }
+  #emptyMsg { display: none; }
+
+  @media (max-width: 700px) {
+    .user-card { flex-wrap: wrap; }
+    .tag-row { width: 100%; justify-content: flex-start; order: 3; }
+    .user-actions { width: 100%; justify-content: flex-end; order: 4; }
+  }
+</style>
+</head>
+<body class="admin-shell">
+
+<div class="admin-topbar">
+  <div class="brand">Safra <span>Admin</span></div>
+  <button id="logoutBtn">Log Out</button>
+</div>
+
+<nav class="admin-nav">
+  <a href="dashboard.html">Dashboard</a>
+  <a href="houses.html">Houses &amp; Cars</a>
+  <a href="bookings.html">Bookings</a>
+  <a href="users.html" class="active">Users</a>
+  <a href="reviews.html">Reviews</a>
+  <a href="faq.html">FAQ</a>
+  <a href="contact-messages.html">Contact Messages</a>
+  <a href="support-settings.html">Support Settings</a>
+  <a href="site-settings.html">Site Settings</a>
+  <a href="../index.html">Back to Site</a>
+</nav>
+
+<main class="admin-main">
+  <h1>Manage Users</h1>
+  <p class="sub">Block, unblock, or remove accounts.</p>
+
+  <div class="scope-note">
+    <strong>A blocked/deleted user who is already logged in keeps
+    working until they log out or their session cookie expires.</strong>
+    middleware/auth.js trusts the JWT and never re-checks the database
+    per request (Known Issue #16) — this isn't fixed yet, so treat
+    these buttons as "for their next login," not instant. The exact
+    field name for blocked status also isn't confirmed, so that badge
+    uses a best-effort guess — the block/unblock actions themselves
+    don't depend on knowing it.
+  </div>
+
+  <div id="statusBanner" role="alert" aria-live="polite"></div>
+  <p id="loadingMsg">Loading users...</p>
+  <p id="emptyMsg">No users found.</p>
+
+  <div id="usersList"></div>
+</main>
+
+<script src="../js/config.js"></script>
+<script src="js/users.js"></script>
+</body>
+</html>
