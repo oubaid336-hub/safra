@@ -5,6 +5,7 @@ const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 router.get('/dashboard', requireAuth, requireAdmin, adminController.getDashboardStats);
 
+
 router.get('/houses', requireAuth, requireAdmin, adminController.getAllHousesAdmin);
 router.put('/houses/:id/approve', requireAuth, requireAdmin, adminController.approveHouse);
 router.put('/houses/:id/reject', requireAuth, requireAdmin, adminController.rejectHouse);
@@ -30,12 +31,22 @@ router.put('/reviews/:id/approve', requireAuth, requireAdmin, adminController.ap
 router.delete('/reviews/:id', requireAuth, requireAdmin, adminController.deleteReview);
 
 // ADMIN_MARKER_reviewsroutes
+router.get('/faq', requireAuth, requireAdmin, adminController.getAllFaqAdmin);
 router.post('/faq', requireAuth, requireAdmin, adminController.createFaqAdmin);
 router.put('/faq/:id', requireAuth, requireAdmin, adminController.updateFaqAdmin);
 router.delete('/faq/:id', requireAuth, requireAdmin, adminController.deleteFaqAdmin);
 
 router.get('/contact-messages', requireAuth, requireAdmin, adminController.getAllContactMessagesAdmin);
 router.delete('/contact-messages/:id', requireAuth, requireAdmin, adminController.deleteContactMessageAdmin);
+router.put('/contact-messages/:id/handled', requireAuth, requireAdmin, adminController.markContactMessageHandled);
 
+router.get('/support-settings', requireAuth, requireAdmin, adminController.getSupportSettings);
+router.put('/support-settings', requireAuth, requireAdmin, adminController.updateSupportSettings);
+router.get('/site-settings', requireAuth, requireAdmin, adminController.getSiteSettings);
+router.put('/site-settings', requireAuth, requireAdmin, adminController.updateSiteSettings);
 // ADMIN_MARKER_part8routes
 module.exports = router;
+
+
+
+

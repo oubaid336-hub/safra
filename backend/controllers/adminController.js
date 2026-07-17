@@ -226,6 +226,15 @@ async function deleteReview(req, res) {
 }
 
 // ADMIN_MARKER_reviews
+async function getAllFaqAdmin(req, res) {
+  try {
+    const faqs = await Faq.find().sort({ order: 1 });
+    res.json(faqs);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
 async function createFaqAdmin(req, res) {
   try {
     const { question, answer, order } = req.body;
@@ -280,6 +289,93 @@ async function deleteContactMessageAdmin(req, res) {
   }
 }
 
+async function markContactMessageHandled(req, res) {
+  try {
+    const { handled } = req.body;
+    const msg = await ContactMessage.findByIdAndUpdate(
+      req.params.id,
+      { handled: handled === true },
+      { new: true }
+    );
+    if (!msg) return res.status(404).json({ message: 'Message not found' });
+    res.json(msg);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+const SupportSettings = require('../models/SupportSettings');
+
+async function getSupportSettings(req, res) {
+  try {
+    let settings = await SupportSettings.findOne();
+    if (!settings) {
+      settings = await SupportSettings.create({});
+    }
+    res.json(settings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function updateSupportSettings(req, res) {
+  try {
+    const { supportEmail, supportPhone, supportHours, whatsappNumber } = req.body;
+    let settings = await SupportSettings.findOne();
+    if (!settings) {
+      settings = new SupportSettings();
+    }
+    settings.supportEmail = supportEmail ?? settings.supportEmail;
+    settings.supportPhone = supportPhone ?? settings.supportPhone;
+    settings.supportHours = supportHours ?? settings.supportHours;
+    settings.whatsappNumber = whatsappNumber ?? settings.whatsappNumber;
+    settings.updatedAt = new Date();
+    await settings.save();
+    res.json(settings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+const SiteSettings = require('../models/SiteSettings');
+
+async function getSiteSettings(req, res) {
+  try {
+    let settings = await SiteSettings.findOne();
+    if (!settings) {
+      settings = await SiteSettings.create({});
+    }
+    res.json(settings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function updateSiteSettings(req, res) {
+  try {
+    const { siteName, logoText, currency, maintenanceMode } = req.body;
+    let settings = await SiteSettings.findOne();
+    if (!settings) {
+      settings = new SiteSettings();
+    }
+    settings.siteName = siteName ?? settings.siteName;
+    settings.logoText = logoText ?? settings.logoText;
+    if (currency && ['USD', 'EUR', 'TND'].includes(currency)) {
+      settings.currency = currency;
+    }
+    if (typeof maintenanceMode === 'boolean') {
+      settings.maintenanceMode = maintenanceMode;
+    }
+    settings.updatedAt = new Date();
+    await settings.save();
+    res.json(settings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
 // ADMIN_MARKER_part8
 module.exports = {
   getDashboardStats,
@@ -299,9 +395,23 @@ module.exports = {
   getAllReviewsAdmin,
   approveReview,
   deleteReview,
+  getAllFaqAdmin,
   createFaqAdmin,
   updateFaqAdmin,
   deleteFaqAdmin,
   getAllContactMessagesAdmin,
-  deleteContactMessageAdmin
+  deleteContactMessageAdmin,
+  markContactMessageHandled,
+  getSupportSettings,
+  updateSupportSettings,
+  getSiteSettings,
+  updateSiteSettings
 };
+
+
+
+
+
+
+
+
