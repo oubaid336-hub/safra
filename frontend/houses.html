@@ -15,7 +15,16 @@
   .listing-header h1 { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 2rem; color: var(--safra-navy); margin-bottom: 8px; }
   .listing-header p { color: var(--safra-gray); }
 
-  .listing-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 32px 0 80px; }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 0 24px; }
+  .filter-bar input {
+    font-family: 'Inter', sans-serif; font-size: 14px; padding: 12px 16px;
+    border: 1px solid var(--safra-sanddark); border-radius: 10px; color: var(--safra-navy);
+    background: #fff; flex: 1 1 160px; min-width: 0;
+  }
+  .filter-bar input:focus { outline: none; border-color: var(--safra-terracotta); }
+  .filter-bar input::placeholder { color: var(--safra-graylight); }
+
+  .listing-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 8px 0 80px; }
   @media (min-width: 640px) { .listing-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1024px) { .listing-grid { grid-template-columns: repeat(3, 1fr); } }
 
@@ -88,6 +97,11 @@
 </div>
 
 <div class="container">
+  <div class="filter-bar">
+    <input type="text" id="filterLocation" placeholder="Search location...">
+    <input type="number" id="filterMinPrice" placeholder="Min $/night">
+    <input type="number" id="filterMaxPrice" placeholder="Max $/night">
+  </div>
   <div class="listing-grid" id="houseGrid">
     <div class="skeleton-card"><div class="skeleton" style="aspect-ratio:4/3;"></div><div style="padding:18px 20px;"><div class="skeleton" style="height:16px;width:70%;margin-bottom:8px;border-radius:6px;"></div><div class="skeleton" style="height:12px;width:40%;border-radius:6px;"></div></div></div>
     <div class="skeleton-card"><div class="skeleton" style="aspect-ratio:4/3;"></div><div style="padding:18px 20px;"><div class="skeleton" style="height:16px;width:70%;margin-bottom:8px;border-radius:6px;"></div><div class="skeleton" style="height:12px;width:40%;border-radius:6px;"></div></div></div>
