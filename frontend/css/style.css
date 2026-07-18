@@ -249,3 +249,10 @@ button { font-family: inherit; }
 @media (min-width: 640px) { .featured-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1024px) { .featured-grid { grid-template-columns: repeat(6, 1fr); } }
 
+
+/* ---------- Featured Listings groups (H2 fix: split houses/cars) ---------- */
+.featured-group { margin-bottom: 36px; }
+.featured-group:last-child { margin-bottom: 0; }
+.featured-group-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; color: var(--safra-navy); margin-bottom: 16px; }
+.featured-grid-cars { grid-template-columns: repeat(2, 1fr); max-width: 640px; margin: 0 auto; }
+@media (min-width: 640px) { .featured-grid-cars { grid-template-columns: repeat(2, 1fr); } }
