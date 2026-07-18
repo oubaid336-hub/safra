@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -15,11 +15,24 @@ const app = express();
 connectDB();
 
 app.use(helmet());
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5500'; // ADMIN_MARKER_corsenv
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5500',
+  'http://localhost:5500'
+];
+const lanOriginRegex = /^http:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)\d+\.\d+(:\d+)?$/;
+
 app.use(cors({
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || lanOriginRegex.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -50,4 +63,3 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-

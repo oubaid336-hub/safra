@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage FAQ — Admin</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .faq-card { border:1px solid #ddd; border-radius:8px; padding:16px; margin-bottom:12px; }
+  .faq-card input[type=text], .faq-card textarea { width:100%; margin-bottom:8px; padding:6px; box-sizing:border-box; }
+  .faq-actions button { margin-right:8px; }
+  #add-form { border:2px dashed #aaa; border-radius:8px; padding:16px; margin-bottom:20px; }
+</style>
+</head>
+<body>
+<div id="admin-nav"></div>
+<main style="max-width:800px;margin:0 auto;padding:20px;">
+  <h1>Manage FAQ</h1>
+  <div id="status"></div>
+
+  <div id="add-form">
+    <h3>Add new FAQ</h3>
+    <input type="text" id="new-question" placeholder="Question">
+    <textarea id="new-answer" placeholder="Answer" rows="3"></textarea>
+    <input type="number" id="new-order" placeholder="Order (e.g. 1)" value="0">
+    <button id="add-btn">Add FAQ</button>
+  </div>
+
+  <div id="faq-list"></div>
+</main>
+<script src="js/faq-manager.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Settings — Admin</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  #settings-form { max-width:500px; }
+  #settings-form label { display:block; margin-top:12px; font-weight:600; }
+  #settings-form input, #settings-form select { width:100%; padding:8px; box-sizing:border-box; margin-top:4px; }
+  .checkbox-row { display:flex; align-items:center; gap:8px; margin-top:16px; }
+  .checkbox-row input { width:auto; margin:0; }
+  #save-btn { margin-top:20px; }
+  #badge-preview {
+    width:40px; height:40px; border-radius:12px; background:var(--safra-terracotta,#C45C3E);
+    display:flex; align-items:center; justify-content:center; margin-top:8px;
+  }
+  #badge-preview span { color:#fff; font-weight:700; font-size:18px; font-family:'Playfair Display', serif; }
+</style>
+</head>
+<body>
+<div id="admin-nav"></div>
+<main style="max-width:600px;margin:0 auto;padding:20px;">
+  <h1>Site Settings</h1>
+  <div id="status"></div>
+  <form id="settings-form">
+    <label>Site Name</label>
+    <input type="text" id="siteName">
+
+    <label>Logo Badge Letter</label>
+    <input type="text" id="logoText" maxlength="2">
+    <div id="badge-preview"><span id="badge-letter">S</span></div>
+
+    <label>Currency</label>
+    <select id="currency">
+      <option value="USD">USD ($)</option>
+      <option value="EUR">EUR (€)</option>
+      <option value="TND">Dinar Tunisien (TND)</option>
+    </select>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="maintenanceMode">
+      <label style="margin:0;">Maintenance Mode</label>
+    </div>
+
+    <button type="submit" id="save-btn">Save</button>
+  </form>
+</main>
+<script src="js/site-settings.js"></script>
+</body>
+</html>
