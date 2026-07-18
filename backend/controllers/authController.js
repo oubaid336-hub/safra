@@ -1,5 +1,5 @@
 ﻿const { sendEmail } = require('../utils/mailer');
-const { buildPasswordResetEmail } = require('../utils/emailTemplates');
+const { buildPasswordResetEmail, buildWelcomeEmail } = require('../utils/emailTemplates');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -89,6 +89,12 @@ async function verifyEmail(req, res) {
     user.verificationToken = undefined;
     user.verificationTokenExpires = undefined;
     await user.save();
+
+    await sendEmail(
+      user.email,
+      'Welcome to Safra!',
+      buildWelcomeEmail({ name: user.name, frontendUrl: process.env.FRONTEND_URL })
+    );
 
     res.json({ message: 'Email verified successfully' });
   } catch (err) {

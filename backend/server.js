@@ -58,6 +58,9 @@ app.use('/api/faq', faqRoutes);
 const contactRoutes = require('./routes/contactRoutes');
 app.use('/api/contact', contactRoutes); // ADMIN_MARKER_part8wire
 
+const subscriberRoutes = require('./routes/subscriberRoutes');
+app.use('/api/subscribers', subscriberRoutes);
+
 const errorHandler = require('./middleware/errorHandler');
 app.use(errorHandler);
 

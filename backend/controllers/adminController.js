@@ -4,7 +4,37 @@ const Review = require('../models/Review');
 const User = require('../models/User');
 const House = require('../models/House');
 const Car = require('../models/Car');
+const Subscriber = require('../models/Subscriber');
+const { sendEmail } = require('../utils/mailer');
+const { buildListingBroadcastEmail } = require('../utils/emailTemplates');
 const Booking = require('../models/Booking');
+
+async function broadcastNewListing(listing, type) {
+  try {
+    const subscribers = await Subscriber.find();
+    if (!subscribers.length) return;
+    const price = type === 'house' ? listing.pricePerNight : listing.pricePerDay;
+    const priceUnit = type === 'house' ? 'night' : 'day';
+    for (const sub of subscribers) {
+      const unsubscribeUrl = `${process.env.BACKEND_URL}/api/subscribers/unsubscribe/${sub.unsubscribeToken}`;
+      await sendEmail(
+        sub.email,
+        `New ${type === 'house' ? 'House' : 'Car'} on Safra: ${listing.title}`,
+        buildListingBroadcastEmail({
+          listingTitle: listing.title,
+          listingLocation: listing.location,
+          listingType: type,
+          price,
+          priceUnit,
+          frontendUrl: process.env.FRONTEND_URL,
+          unsubscribeUrl
+        })
+      );
+    }
+  } catch (err) {
+    console.error('Broadcast failed:', err.message);
+  }
+}
 
 async function getDashboardStats(req, res) {
   try {
@@ -47,6 +77,7 @@ async function approveHouse(req, res) {
       { new: true }
     );
     if (!house) return res.status(404).json({ message: 'House not found' });
+    broadcastNewListing(house, 'house');
     res.json(house);
   } catch (err) {
     console.error(err);
@@ -83,6 +114,7 @@ async function approveCar(req, res) {
   try {
     const car = await Car.findByIdAndUpdate(req.params.id, { status: 'approved' }, { new: true });
     if (!car) return res.status(404).json({ message: 'Car not found' });
+    broadcastNewListing(car, 'car');
     res.json(car);
   } catch (err) {
     console.error(err);
