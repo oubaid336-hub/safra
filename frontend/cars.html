@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cars - Safra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body { padding-top: 0; }
+
+  .listing-header { margin-top: 76px; padding: 48px 0 8px; text-align: center; }
+  .listing-header h1 { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 2rem; color: var(--safra-navy); margin-bottom: 8px; }
+  .listing-header p { color: var(--safra-gray); }
+
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 0 24px; }
+  .filter-bar input {
+    font-family: 'Inter', sans-serif; font-size: 14px; padding: 12px 16px;
+    border: 1px solid var(--safra-sanddark); border-radius: 10px; color: var(--safra-navy);
+    background: #fff; flex: 1 1 160px; min-width: 0;
+  }
+  .filter-bar input:focus { outline: none; border-color: var(--safra-terracotta); }
+  .filter-bar input::placeholder { color: var(--safra-graylight); }
+
+  .listing-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 8px 0 80px; }
+  @media (min-width: 640px) { .listing-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .listing-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .listing-card {
+    display: block; border-radius: 18px; overflow: hidden; background: #fff;
+    box-shadow: 0 6px 18px rgba(15,23,42,.08); transition: all .3s ease;
+  }
+  .listing-card:hover { box-shadow: 0 14px 28px rgba(15,23,42,.14); transform: translateY(-4px); }
+  .listing-thumb {
+    aspect-ratio: 4 / 3; background: linear-gradient(135deg, var(--safra-sand), var(--safra-sanddark));
+    display: flex; align-items: center; justify-content: center; color: var(--safra-blue); opacity: .6;
+  }
+  .listing-thumb svg { width: 40px; height: 40px; }
+  .listing-body { padding: 18px 20px 20px; }
+  .listing-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; color: var(--safra-navy); margin-bottom: 4px; }
+  .listing-location { display: flex; align-items: center; gap: 6px; color: var(--safra-gray); font-size: 13px; margin-bottom: 14px; }
+  .listing-location svg { width: 14px; height: 14px; color: var(--safra-terracotta); flex-shrink: 0; }
+  .listing-footer-row { display: flex; align-items: center; justify-content: space-between; }
+  .listing-price { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--safra-navy); font-size: 1rem; }
+  .listing-price span { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; color: var(--safra-gray); }
+  .listing-cta { font-size: 13px; font-weight: 600; color: var(--safra-terracotta); }
+
+  .listing-empty, .listing-error { text-align: center; padding: 60px 20px; color: var(--safra-gray); grid-column: 1 / -1; }
+
+  .skeleton-card { border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 6px 18px rgba(15,23,42,.08); }
+  .skeleton { background: linear-gradient(90deg, var(--safra-sandlight) 25%, var(--safra-sand) 37%, var(--safra-sandlight) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; }
+  @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-badge"><span>S</span></div>
+      <span class="nav-logo-text">Safra</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="houses.html" class="nav-link">Houses</a>
+      <a href="cars.html" class="nav-link active">Cars</a>
+      <a href="faq.html" class="nav-link">FAQ</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-auth">
+      <a href="login.html" class="nav-auth-login">Log in</a>
+      <a href="signup.html" class="nav-auth-signup">Sign up</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="container">
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">Home</a>
+      <a href="houses.html">Houses</a>
+      <a href="cars.html">Cars</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <div class="divider"></div>
+      <a href="login.html">Log in</a>
+      <a href="signup.html">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container listing-header">
+  <h1>Available Cars</h1>
+  <p>Reliable rentals across Tunisia, city runabouts to desert-ready 4x4s.</p>
+</div>
+
+<div class="container">
+  <div class="filter-bar">
+    <input type="text" id="filterLocation" placeholder="Search location...">
+    <input type="number" id="filterMinSeats" placeholder="Min seats">
+    <input type="number" id="filterMaxPrice" placeholder="Max $/day">
+  </div>
+  <div class="listing-grid" id="carGrid">
+    <div class="skeleton-card"><div class="skeleton" style="aspect-ratio:4/3;"></div><div style="padding:18px 20px;"><div class="skeleton" style="height:16px;width:70%;margin-bottom:8px;border-radius:6px;"></div><div class="skeleton" style="height:12px;width:40%;border-radius:6px;"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton" style="aspect-ratio:4/3;"></div><div style="padding:18px 20px;"><div class="skeleton" style="height:16px;width:70%;margin-bottom:8px;border-radius:6px;"></div><div class="skeleton" style="height:12px;width:40%;border-radius:6px;"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton" style="aspect-ratio:4/3;"></div><div style="padding:18px 20px;"><div class="skeleton" style="height:16px;width:70%;margin-bottom:8px;border-radius:6px;"></div><div class="skeleton" style="height:12px;width:40%;border-radius:6px;"></div></div></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-badge"><span>S</span></div>
+          <span class="footer-brand-name">Safra</span>
+        </div>
+        <p class="desc">Handpicked houses and cars across Tunisia - from Sidi Bou Said's blue-and-white streets to the dunes of the Sahara.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <div class="footer-links">
+          <a href="houses.html">Houses</a>
+          <a href="cars.html">Cars</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <h3>Support</h3>
+        <div class="footer-links">
+          <a href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">(c) 2026 Safra. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/cars.js"></script>
+</body>
+</html>
