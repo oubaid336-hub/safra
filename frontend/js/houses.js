@@ -30,14 +30,14 @@ function renderHouses(list) {
 
 function applyFilters() {
   const loc = document.getElementById('filterLocation').value.trim().toLowerCase();
-  const min = parseFloat(document.getElementById('filterMinPrice').value);
-  const max = parseFloat(document.getElementById('filterMaxPrice').value);
+  const minGuests = parseFloat(document.getElementById('filterMinGuests').value);
+  const maxPrice = parseFloat(document.getElementById('filterMaxPrice').value);
 
   const filtered = allHouses.filter(h => {
     const matchesLocation = !loc || (h.location || '').toLowerCase().includes(loc);
-    const matchesMin = isNaN(min) || h.pricePerNight >= min;
-    const matchesMax = isNaN(max) || h.pricePerNight <= max;
-    return matchesLocation && matchesMin && matchesMax;
+    const matchesMinGuests = isNaN(minGuests) || (h.capacity || 0) >= minGuests;
+    const matchesMaxPrice = isNaN(maxPrice) || h.pricePerNight <= maxPrice;
+    return matchesLocation && matchesMinGuests && matchesMaxPrice;
   });
 
   renderHouses(filtered);
@@ -58,7 +58,7 @@ async function loadHouses() {
     renderHouses(allHouses);
 
     document.getElementById('filterLocation').addEventListener('input', applyFilters);
-    document.getElementById('filterMinPrice').addEventListener('input', applyFilters);
+    document.getElementById('filterMinGuests').addEventListener('input', applyFilters);
     document.getElementById('filterMaxPrice').addEventListener('input', applyFilters);
   } catch (err) {
     console.error('Failed to load houses:', err);
