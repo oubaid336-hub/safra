@@ -128,7 +128,7 @@ button { font-family: inherit; }
 }
 
 /* ---------- Hero ---------- */
-.hero { position: relative; min-height: 480px; height: 88vh; display: flex; align-items: center; justify-content: center; }
+.hero { position: relative; min-height: 420px; height: 76vh; display: flex; align-items: center; justify-content: center; }
 .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.35); }
 .hero-content { position: relative; z-index: 1; text-align: center; padding: 0 24px; max-width: 760px; margin: 0 auto; }
@@ -256,3 +256,4 @@ button { font-family: inherit; }
 .featured-group-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; color: var(--safra-navy); margin-bottom: 16px; }
 .featured-grid-cars { grid-template-columns: repeat(2, 1fr); max-width: 640px; margin: 0 auto; }
 @media (min-width: 640px) { .featured-grid-cars { grid-template-columns: repeat(2, 1fr); } }
+
