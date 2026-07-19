@@ -11,7 +11,9 @@ function renderCars(list) {
   grid.innerHTML = list.map(car => `
     <a class="listing-card" href="car-detail.html?carId=${car._id}">
       <div class="listing-thumb">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17V9l2-5h14l2 5v8"/></svg>
+        ${car.photos && car.photos[0]
+          ? `<img src="${car.photos[0]}" alt="${car.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
+          : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17V9l2-5h14l2 5v8"/></svg>`}
       </div>
       <div class="listing-body">
         <div class="listing-title">${car.title}</div>
