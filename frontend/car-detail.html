@@ -1,154 +1,212 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Car Details — Safra</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Details - Safra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body { padding-top: 0; }
 
-  <!-- Shared design-system stylesheet (colors, fonts, .btn/.nav/.card-style) -->
-  <link rel="stylesheet" href="css/style.css" />
+  .car-detail-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    margin-top: 76px;
+  }
 
-  <style>
-    /* Page-specific styles only — mirrors the pattern used in
-       booking.html. Move anything reusable into style.css later if
-       it turns out to be shared across more pages. */
+  .car-photo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+    background: var(--safra-navy, #1f2a3c);
+  }
 
-    .car-detail-page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 2rem 1.25rem 4rem;
-    }
+  .car-header {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
 
-    .car-photo {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      border-radius: 12px;
-      background: var(--safra-navy, #1f2a3c);
-    }
+  .car-header h1 {
+    margin: 0;
+  }
 
-    .car-header {
-      margin-top: 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-    }
+  .car-price {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
 
-    .car-header h1 {
-      margin: 0;
-    }
+  .car-location {
+    opacity: 0.75;
+    margin-top: 0.25rem;
+    font-family: 'Inter', sans-serif;
+  }
 
-    .car-price {
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 1.25rem;
-    }
+  .car-specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
 
-    .car-location {
-      opacity: 0.75;
-      margin-top: 0.25rem;
-      font-family: 'Inter', sans-serif;
-    }
+  .spec-item {
+    font-family: 'Inter', sans-serif;
+  }
 
-    .car-specs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
+  .spec-item .label {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
 
-    .spec-item {
-      font-family: 'Inter', sans-serif;
-    }
+  .spec-item .value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 0.15rem;
+  }
 
-    .spec-item .label {
-      font-size: 0.8rem;
-      opacity: 0.6;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
+  .car-description {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    margin: 1.5rem 0;
+  }
 
-    .spec-item .value {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-top: 0.15rem;
-    }
+  #loading-state,
+  #not-found-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    font-family: 'Inter', sans-serif;
+    opacity: 0.75;
+  }
 
-    .car-description {
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      margin: 1.5rem 0;
-    }
+  #not-found-state {
+    display: none;
+  }
 
-    #loading-state,
-    #not-found-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      font-family: 'Inter', sans-serif;
-      opacity: 0.75;
-    }
-
-    #not-found-state {
-      display: none;
-    }
-
-    #car-content {
-      display: none;
-    }
-  </style>
+  #car-content {
+    display: none;
+  }
+</style>
 </head>
 <body>
 
-  <nav class="nav">
-    <a href="index.html" class="nav-logo">Safra</a>
-    <a href="houses.html">Houses</a>
-    <a href="cars.html">Cars</a>
-  </nav>
+<nav class="navbar scrolled">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-badge"><span>S</span></div>
+      <span class="nav-logo-text">Safra</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="houses.html" class="nav-link">Houses</a>
+      <a href="cars.html" class="nav-link active">Cars</a>
+      <a href="faq.html" class="nav-link">FAQ</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-auth">
+      <a href="login.html" class="nav-auth-login">Log in</a>
+      <a href="signup.html" class="nav-auth-signup">Sign up</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="container">
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">Home</a>
+      <a href="houses.html">Houses</a>
+      <a href="cars.html">Cars</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <div class="divider"></div>
+      <a href="login.html">Log in</a>
+      <a href="signup.html">Sign up</a>
+    </div>
+  </div>
+</nav>
 
-  <main class="car-detail-page">
+<main class="car-detail-page">
 
-    <div id="loading-state">Loading car details…</div>
+  <div id="loading-state">Loading car details...</div>
 
-    <div id="not-found-state">
-      <p>We couldn't find that car. It may have been removed or the link is incorrect.</p>
-      <a href="cars.html" class="btn">Browse Cars</a>
+  <div id="not-found-state">
+    <p>We couldn't find that car. It may have been removed or the link is incorrect.</p>
+    <a href="cars.html" class="btn">Browse Cars</a>
+  </div>
+
+  <div id="car-content" class="card-style">
+    <img id="car-photo" class="car-photo" src="" alt="" />
+
+    <div class="car-header">
+      <h1 id="car-title">-</h1>
+      <span class="car-price" id="car-price">-</span>
     </div>
 
-    <div id="car-content" class="card-style">
-      <img id="car-photo" class="car-photo" src="" alt="" />
+    <p class="car-location" id="car-location">-</p>
 
-      <div class="car-header">
-        <h1 id="car-title">—</h1>
-        <span class="car-price" id="car-price">—</span>
+    <div class="car-specs">
+      <div class="spec-item">
+        <div class="label">Seats</div>
+        <div class="value" id="car-seats">-</div>
       </div>
-
-      <p class="car-location" id="car-location">—</p>
-
-      <div class="car-specs">
-        <div class="spec-item">
-          <div class="label">Seats</div>
-          <div class="value" id="car-seats">—</div>
-        </div>
-        <div class="spec-item">
-          <div class="label">Transmission</div>
-          <div class="value" id="car-transmission">—</div>
-        </div>
-        <div class="spec-item">
-          <div class="label">Year</div>
-          <div class="value" id="car-year">—</div>
-        </div>
+      <div class="spec-item">
+        <div class="label">Transmission</div>
+        <div class="value" id="car-transmission">-</div>
       </div>
-
-      <p class="car-description" id="car-description">—</p>
-
-      <a href="#" id="book-car-btn" class="btn">Book This Car</a>
+      <div class="spec-item">
+        <div class="label">Year</div>
+        <div class="value" id="car-year">-</div>
+      </div>
     </div>
 
-  </main>
+    <p class="car-description" id="car-description">-</p>
 
-  <script src="js/config.js"></script>
-  <script src="js/car-detail.js"></script>
+    <a href="#" id="book-car-btn" class="btn">Book This Car</a>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-badge"><span>S</span></div>
+          <span class="footer-brand-name">Safra</span>
+        </div>
+        <p class="desc">Handpicked houses and cars across Tunisia - from Sidi Bou Said's blue-and-white streets to the dunes of the Sahara.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <div class="footer-links">
+          <a href="houses.html">Houses</a>
+          <a href="cars.html">Cars</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <h3>Support</h3>
+        <div class="footer-links">
+          <a href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">(c) 2026 Safra. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/car-detail.js"></script>
 </body>
 </html>
