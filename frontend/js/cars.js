@@ -32,14 +32,14 @@ function renderCars(list) {
 
 function applyFilters() {
   const loc = document.getElementById('filterLocation').value.trim().toLowerCase();
-  const minSeats = parseFloat(document.getElementById('filterMinSeats').value);
+  const transmission = document.getElementById('filterTransmission').value;
   const maxPrice = parseFloat(document.getElementById('filterMaxPrice').value);
 
   const filtered = allCars.filter(c => {
     const matchesLocation = !loc || (c.location || '').toLowerCase().includes(loc);
-    const matchesMinSeats = isNaN(minSeats) || (c.seats || 0) >= minSeats;
+    const matchesTransmission = !transmission || c.transmission === transmission;
     const matchesMaxPrice = isNaN(maxPrice) || c.pricePerDay <= maxPrice;
-    return matchesLocation && matchesMinSeats && matchesMaxPrice;
+    return matchesLocation && matchesTransmission && matchesMaxPrice;
   });
 
   renderCars(filtered);
@@ -60,7 +60,7 @@ async function loadCars() {
     renderCars(allCars);
 
     document.getElementById('filterLocation').addEventListener('input', applyFilters);
-    document.getElementById('filterMinSeats').addEventListener('input', applyFilters);
+    document.getElementById('filterTransmission').addEventListener('change', applyFilters);
     document.getElementById('filterMaxPrice').addEventListener('input', applyFilters);
   } catch (err) {
     console.error('Failed to load cars:', err);
