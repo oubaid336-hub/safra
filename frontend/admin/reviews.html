@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews — Admin</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .review-card { border:1px solid #ddd; border-radius:8px; padding:16px; margin-bottom:12px; }
+  .review-card.unapproved { border-color:#f59e0b; }
+  .review-header { display:flex; justify-content:space-between; align-items:center; }
+  .badge { padding:2px 10px; border-radius:12px; font-size:0.8rem; }
+  .badge.approved { background:#bbf7d0; color:#166534; }
+  .badge.unapproved { background:#fde68a; color:#92400e; }
+  .stars { color:#f59e0b; letter-spacing:1px; }
+  .review-actions button { margin-left:8px; }
+</style>
+</head>
+<body>
+<div id="admin-nav"></div>
+<main style="max-width:800px;margin:0 auto;padding:20px;">
+  <h1>Reviews</h1>
+  <div id="status"></div>
+  <div id="reviews-list"></div>
+</main>
+<script src="js/reviews.js"></script>
+</body>
+</html>
