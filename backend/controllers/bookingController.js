@@ -9,10 +9,12 @@ async function create(req, res) {
   try {
     const { listingId, listingType, startDate, endDate } = req.body;
 
-    // ADMIN_MARKER_bookingverify
     const customerUser = await User.findById(req.user.userId);
     if (!customerUser) {
       return res.status(401).json({ message: 'Please log in again.' });
+    }
+    if (customerUser.isBlocked) {
+      return res.status(403).json({ message: 'This account has been blocked.' });
     }
     if (!customerUser.verified) {
       return res.status(403).json({ message: 'Please verify your email before booking.' });
@@ -39,6 +41,20 @@ async function create(req, res) {
       return res.status(400).json({ message: 'Invalid date range' });
     }
 
+    // #15 fix: reject if an existing pending/confirmed booking for this
+    // exact listing overlaps the requested range.
+    const overlapping = await Booking.findOne({
+      listingId,
+      listingType,
+      status: { $in: ['pending', 'confirmed'] },
+      startDate: { $lt: end },
+      endDate: { $gt: start }
+    });
+
+    if (overlapping) {
+      return res.status(409).json({ message: 'This listing is already booked for part of that date range.' });
+    }
+
     const pricePerUnit = listingType === 'house' ? listing.pricePerNight : listing.pricePerDay;
     const totalPrice = days * pricePerUnit;
 
@@ -51,7 +67,6 @@ async function create(req, res) {
       totalPrice
     });
 
-    // ADMIN_MARKER_bookingemails
     const unit = listingType === 'house' ? 'night' : 'day';
     const formattedStart = start.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const formattedEnd = end.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
