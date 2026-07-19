@@ -164,6 +164,42 @@
   }
 
   #not-found-state { display: none; }
+  @media (min-width: 900px) {
+    .car-body {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      column-gap: 40px;
+      row-gap: 16px;
+      align-items: start;
+    }
+    .car-header {
+      grid-column: 2;
+      grid-row: 1;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      background: var(--safra-sandlight, #faf6f0);
+      border: 1px solid var(--safra-sanddark, #e8ddcd);
+      border-radius: 14px 14px 0 0;
+      padding: 20px 22px;
+      margin: 0;
+      gap: 6px;
+    }
+    .car-location { grid-column: 1; grid-row: 1; margin-top: 0; }
+    .car-specs { grid-column: 1; grid-row: 2; margin: 0; }
+    .car-description { grid-column: 1; grid-row: 3; margin: 0; padding-top: 20px; }
+    #book-car-btn {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: start;
+      display: block;
+      width: 100%;
+      text-align: center;
+      box-sizing: border-box;
+      border-radius: 0 0 14px 14px;
+      margin-top: -16px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -285,4 +321,5 @@
 <script src="js/car-detail.js"></script>
 </body>
 </html>
+
 
