@@ -1,5 +1,8 @@
 ﻿const Car = require('../models/Car');
 
+const OWNER_EDITABLE_FIELDS = ['title', 'description', 'location', 'pricePerDay', 'seats', 'transmission', 'fuelType'];
+const ADMIN_ONLY_FIELDS = ['status'];
+
 async function getAll(req, res) {
   try {
     const { location, minPrice, maxPrice, seats } = req.query;
@@ -61,11 +64,22 @@ async function update(req, res) {
     const car = await Car.findById(req.params.id);
     if (!car) return res.status(404).json({ message: 'Car not found' });
 
-    if (car.ownerId.toString() !== req.user.userId && req.user.role !== 'admin') {
+    const isOwner = car.ownerId.toString() === req.user.userId;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({ message: 'Not allowed to edit this listing' });
     }
 
-    Object.assign(car, req.body);
+    const allowedFields = isAdmin
+      ? OWNER_EDITABLE_FIELDS.concat(ADMIN_ONLY_FIELDS)
+      : OWNER_EDITABLE_FIELDS;
+
+    for (const field of allowedFields) {
+      if (req.body[field] === undefined) continue;
+      car[field] = req.body[field];
+    }
+
     await car.save();
     res.json(car);
   } catch (err) {

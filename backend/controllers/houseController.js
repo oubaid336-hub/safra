@@ -1,5 +1,8 @@
 ﻿const House = require('../models/House');
 
+const OWNER_EDITABLE_FIELDS = ['title', 'description', 'location', 'pricePerNight', 'rooms', 'bathrooms', 'capacity', 'amenities'];
+const ADMIN_ONLY_FIELDS = ['status'];
+
 async function getAll(req, res) {
   try {
     const { location, minPrice, maxPrice, capacity } = req.query;
@@ -62,11 +65,26 @@ async function update(req, res) {
     const house = await House.findById(req.params.id);
     if (!house) return res.status(404).json({ message: 'House not found' });
 
-    if (house.ownerId.toString() !== req.user.userId && req.user.role !== 'admin') {
+    const isOwner = house.ownerId.toString() === req.user.userId;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({ message: 'Not allowed to edit this listing' });
     }
 
-    Object.assign(house, req.body);
+    const allowedFields = isAdmin
+      ? OWNER_EDITABLE_FIELDS.concat(ADMIN_ONLY_FIELDS)
+      : OWNER_EDITABLE_FIELDS;
+
+    for (const field of allowedFields) {
+      if (req.body[field] === undefined) continue;
+      if (field === 'amenities' && typeof req.body.amenities === 'string') {
+        house.amenities = req.body.amenities.split(',').map(a => a.trim());
+      } else {
+        house[field] = req.body[field];
+      }
+    }
+
     await house.save();
     res.json(house);
   } catch (err) {
