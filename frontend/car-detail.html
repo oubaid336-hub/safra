@@ -9,93 +9,171 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <style>
-  body { padding-top: 0; }
+  body { padding-top: 0; background: var(--safra-sandlight, #faf6f0); }
 
   .car-detail-page {
-    max-width: 960px;
+    max-width: 880px;
     margin: 0 auto;
-    padding: 2rem 1.25rem 4rem;
+    padding: 24px 20px 80px;
     margin-top: 76px;
   }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--safra-gray);
+    text-decoration: none;
+    margin-bottom: 16px;
+  }
+  .back-link:hover { color: var(--safra-terracotta); }
+  .back-link svg { width: 14px; height: 14px; }
 
   .car-photo {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    border-radius: 12px;
-    background: var(--safra-navy, #1f2a3c);
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--safra-sand), var(--safra-sanddark));
+    box-shadow: 0 10px 30px rgba(15,23,42,.12);
+    display: block;
+  }
+
+  #car-content {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(15,23,42,.08);
+    padding: 28px 28px 32px;
+    margin-top: -40px;
+    position: relative;
+    z-index: 1;
+    margin-left: 8px;
+    margin-right: 8px;
   }
 
   .car-header {
-    margin-top: 1.25rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: baseline;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .car-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 1.9rem;
+    color: var(--safra-navy);
     margin: 0;
   }
 
   .car-price {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--safra-terracotta);
+    white-space: nowrap;
+  }
+  .car-price::after {
+    content: " / day";
     font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 1.25rem;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--safra-gray);
   }
 
   .car-location {
-    opacity: 0.75;
-    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--safra-gray);
+    font-size: 14px;
     font-family: 'Inter', sans-serif;
+    margin-top: 8px;
+  }
+  .car-location::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    background-color: var(--safra-terracotta);
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>') no-repeat center / contain;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>') no-repeat center / contain;
   }
 
   .car-specs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin: 24px 0;
   }
 
   .spec-item {
+    background: var(--safra-sandlight, #faf6f0);
+    border: 1px solid var(--safra-sanddark, #e8ddcd);
+    border-radius: 12px;
+    padding: 12px 14px;
     font-family: 'Inter', sans-serif;
   }
 
   .spec-item .label {
-    font-size: 0.8rem;
-    opacity: 0.6;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--safra-gray);
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
   }
 
   .spec-item .value {
     font-size: 1.05rem;
-    font-weight: 600;
-    margin-top: 0.15rem;
+    font-weight: 700;
+    color: var(--safra-navy);
+    margin-top: 3px;
+    text-transform: capitalize;
   }
 
   .car-description {
     font-family: 'Inter', sans-serif;
-    line-height: 1.6;
-    margin: 1.5rem 0;
+    line-height: 1.7;
+    color: var(--safra-gray);
+    font-size: 15px;
+    margin: 20px 0 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--safra-sanddark, #e8ddcd);
+  }
+
+  #book-car-btn {
+    display: inline-block;
+    background: var(--safra-terracotta);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(196,90,50,.25);
+    transition: all .25s ease;
+  }
+  #book-car-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(196,90,50,.32);
   }
 
   #loading-state,
   #not-found-state {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 4rem 1rem;
     font-family: 'Inter', sans-serif;
-    opacity: 0.75;
+    color: var(--safra-gray);
   }
 
-  #not-found-state {
-    display: none;
-  }
-
-  #car-content {
-    display: none;
-  }
+  #not-found-state { display: none; }
+  #car-content { display: none; }
 </style>
 </head>
 <body>
@@ -137,6 +215,11 @@
 
 <main class="car-detail-page">
 
+  <a href="cars.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to Cars
+  </a>
+
   <div id="loading-state">Loading car details...</div>
 
   <div id="not-found-state">
@@ -144,9 +227,9 @@
     <a href="cars.html" class="btn">Browse Cars</a>
   </div>
 
-  <div id="car-content" class="card-style">
-    <img id="car-photo" class="car-photo" src="" alt="" />
+  <img id="car-photo" class="car-photo" src="" alt="" />
 
+  <div id="car-content">
     <div class="car-header">
       <h1 id="car-title">-</h1>
       <span class="car-price" id="car-price">-</span>
@@ -171,7 +254,7 @@
 
     <p class="car-description" id="car-description">-</p>
 
-    <a href="#" id="book-car-btn" class="btn">Book This Car</a>
+    <a href="#" id="book-car-btn">Book This Car</a>
   </div>
 
 </main>
