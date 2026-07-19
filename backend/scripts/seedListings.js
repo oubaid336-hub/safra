@@ -1,4 +1,5 @@
-﻿require("dotenv").config();
+﻿const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const mongoose = require("mongoose");
 const House = require("../models/House");
 const Car = require("../models/Car");
@@ -80,6 +81,9 @@ const cars = [
 ];
 
 async function seed() {
+  if (!process.env.MONGO_URI) {
+    throw new Error("MONGO_URI is not set. Check backend/.env has a MONGO_URI= line.");
+  }
   await mongoose.connect(process.env.MONGO_URI);
   await House.deleteMany({});
   await Car.deleteMany({});
