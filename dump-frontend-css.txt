@@ -1,0 +1,236 @@
+===== FILE: frontend\css\style.css =====
+/* ==========================================================================
+   SAFRA — Shared Design System
+   Ported from the React/Tailwind reference (tailwind.config.js + index.css)
+   Mobile-first: base styles = phone, then min-width media queries scale up.
+   Every future page (login, signup, houses, cars...) should link this file.
+   ========================================================================== */
+
+:root {
+  --safra-sand: #F5E6D3;
+  --safra-sandlight: #FAF3EB;
+  --safra-sanddark: #E8D4BC;
+  --safra-blue: #1B3A5C;
+  --safra-bluelight: #2A5A8C;
+  --safra-terracotta: #C45C3E;
+  --safra-terracottalight: #D97B5D;
+  --safra-cream: #FFF9F2;
+  --safra-navy: #0F172A;
+  --safra-yellow: #FBBF24;
+  --safra-gray: #6B7280;
+  --safra-graylight: #9CA3AF;
+  --safra-offwhite: #F8FAFC;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--safra-gray);
+  background: #fff;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
+
+.serif { font-family: 'Playfair Display', serif; }
+.container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 12px;
+  border: none; cursor: pointer;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,.15);
+  transition: all .3s ease;
+}
+.btn-white { background: #fff; color: var(--safra-navy); }
+.btn-white:hover { background: rgba(255,255,255,.9); transform: translateY(-2px); }
+.btn-terracotta { background: var(--safra-terracotta); color: #fff; }
+.btn-terracotta:hover { background: var(--safra-terracottalight); transform: translateY(-2px); }
+
+/* ---------- Navbar ---------- */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  padding: 16px 0; transition: all .3s ease;
+}
+.navbar.scrolled {
+  background: rgba(255,255,255,.97); backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,.06); padding: 10px 0;
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.nav-logo { display: flex; align-items: center; gap: 8px; }
+.nav-logo-badge {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.2); transition: background .3s;
+}
+.navbar.scrolled .nav-logo-badge { background: var(--safra-terracotta); }
+.nav-logo-badge span { color: #fff; font-weight: 700; font-size: 18px; }
+.nav-logo-text {
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px;
+  color: #fff; transition: color .3s;
+}
+.navbar.scrolled .nav-logo-text { color: var(--safra-navy); }
+
+.nav-links { display: none; align-items: center; gap: 4px; }
+.nav-link {
+  display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 999px;
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
+  color: rgba(255,255,255,.85); transition: all .3s;
+}
+.navbar.scrolled .nav-link { color: var(--safra-gray); }
+.nav-link:hover { background: rgba(255,255,255,.1); color: #fff; }
+.navbar.scrolled .nav-link:hover { background: var(--safra-sandlight); color: var(--safra-terracotta); }
+.nav-link.active { background: var(--safra-terracotta); color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+
+.nav-auth { display: none; align-items: center; gap: 8px; }
+.nav-auth-login {
+  padding: 8px 16px; border-radius: 999px;
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
+  color: rgba(255,255,255,.85); transition: all .3s;
+}
+.navbar.scrolled .nav-auth-login { color: var(--safra-navy); }
+.nav-auth-login:hover { background: rgba(255,255,255,.1); }
+.navbar.scrolled .nav-auth-login:hover { background: var(--safra-sandlight); }
+.nav-auth-signup {
+  padding: 8px 20px; border-radius: 999px;
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
+  background: var(--safra-terracotta); color: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15); transition: all .3s;
+}
+.nav-auth-signup:hover { background: var(--safra-terracottalight); }
+
+.nav-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; background: none; border: none; cursor: pointer;
+  color: #fff; transition: color .3s;
+}
+.navbar.scrolled .nav-toggle { color: var(--safra-navy); }
+
+.mobile-menu {
+  display: none; flex-direction: column; gap: 4px; background: #fff;
+  margin-top: 12px; border-radius: 16px; padding: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  padding: 12px 16px; border-radius: 10px;
+  font-family: 'Playfair Display', serif; font-weight: 700; color: var(--safra-navy);
+}
+.mobile-menu a:hover { background: var(--safra-sandlight); color: var(--safra-terracotta); }
+.mobile-menu .divider { height: 1px; background: var(--safra-sandlight); margin: 6px 4px; }
+
+@media (min-width: 768px) {
+  .nav-links, .nav-auth { display: flex; }
+  .nav-toggle { display: none; }
+}
+
+/* ---------- Hero ---------- */
+.hero { position: relative; min-height: 560px; height: 100vh; display: flex; align-items: center; justify-content: center; }
+.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.35); }
+.hero-content { position: relative; z-index: 1; text-align: center; padding: 0 24px; max-width: 760px; margin: 0 auto; }
+.hero-content h1 {
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 2.4rem;
+  color: #fff; letter-spacing: .02em; margin-bottom: 18px;
+}
+.hero-content p { color: rgba(255,255,255,.9); font-size: 1.02rem; line-height: 1.7; margin-bottom: 32px; }
+.hero-buttons { display: flex; flex-direction: column; gap: 14px; }
+.hero-buttons .btn { width: 100%; }
+
+@media (min-width: 640px) {
+  .hero-buttons { flex-direction: row; justify-content: center; }
+  .hero-buttons .btn { width: auto; }
+}
+@media (min-width: 768px) {
+  .hero-content h1 { font-size: 4rem; }
+  .hero-content p { font-size: 1.15rem; }
+}
+
+/* ---------- Sections shared ---------- */
+.section { padding: 56px 0; }
+.section-head { text-align: center; margin-bottom: 40px; }
+.section-title {
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.8rem;
+  color: var(--safra-blue); margin-bottom: 12px;
+}
+.section-sub { color: var(--safra-gray); max-width: 480px; margin: 0 auto; }
+
+@media (min-width: 768px) {
+  .section { padding: 88px 0; }
+  .section-title { font-size: 2.3rem; }
+}
+
+/* ---------- Feature cards ---------- */
+.features-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+.feature { text-align: center; }
+.feature-icon {
+  width: 64px; height: 64px; border-radius: 20px; background: var(--safra-sandlight);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+  transition: background .3s; color: var(--safra-terracotta);
+}
+.feature:hover .feature-icon { background: var(--safra-sand); }
+.feature h3 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; color: var(--safra-navy); margin-bottom: 8px; }
+
+@media (min-width: 768px) {
+  .features-grid { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+}
+
+/* ---------- Destinations ---------- */
+.destinations-section { background: var(--safra-offwhite); }
+.destinations-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.destination-card {
+  position: relative; display: block; border-radius: 18px; overflow: hidden;
+  aspect-ratio: 4 / 5; box-shadow: 0 4px 12px rgba(0,0,0,.1); transition: all .3s;
+}
+.destination-card:hover { box-shadow: 0 14px 28px rgba(0,0,0,.16); transform: translateY(-4px); }
+.destination-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.destination-card:hover img { transform: scale(1.06); }
+.destination-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), transparent 60%); }
+.destination-name { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; font-family: 'Playfair Display', serif; font-weight: 700; color: #fff; font-size: 1rem; }
+
+@media (min-width: 768px) { .destinations-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .destinations-grid { grid-template-columns: repeat(5, 1fr); } }
+
+/* ---------- CTA banner ---------- */
+.cta-banner { background: var(--safra-navy); position: relative; overflow: hidden; text-align: center; }
+.cta-circle-1 { position: absolute; top: 0; right: 0; width: 260px; height: 260px; background: rgba(196,92,62,.12); border-radius: 50%; transform: translate(35%, -45%); }
+.cta-circle-2 { position: absolute; bottom: 0; left: 0; width: 190px; height: 190px; background: rgba(27,58,92,.35); border-radius: 50%; transform: translate(-35%, 45%); }
+.cta-banner .container { position: relative; z-index: 1; max-width: 620px; }
+.cta-banner h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.8rem; color: #fff; margin-bottom: 12px; }
+.cta-banner p { color: rgba(255,255,255,.7); margin-bottom: 30px; font-size: 1.02rem; }
+
+@media (min-width: 768px) { .cta-banner h2 { font-size: 2.3rem; } }
+
+/* ---------- Footer ---------- */
+.footer { background: var(--safra-navy); color: #fff; padding: 52px 0 26px; position: relative; }
+.footer::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(to right, var(--safra-terracotta), var(--safra-yellow), var(--safra-blue));
+}
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 36px; }
+.footer-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.footer-brand-badge {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(to bottom right, var(--safra-terracotta), var(--safra-terracottalight));
+  display: flex; align-items: center; justify-content: center;
+}
+.footer-brand-badge span { color: #fff; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; }
+.footer-brand-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; }
+.footer p.desc { color: var(--safra-graylight); font-size: 14px; line-height: 1.7; }
+.footer h3 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: #fff; }
+.footer h3 svg { color: var(--safra-yellow); }
+.footer-links { display: flex; flex-direction: column; gap: 8px; color: var(--safra-graylight); font-size: 14px; }
+.footer-links a:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.1); margin-top: 36px; padding-top: 26px;
+  text-align: center; font-size: 12px; font-family: 'Playfair Display', serif; color: rgba(156,163,175,.5);
+}
+
+@media (min-width: 768px) { .footer-grid { grid-template-columns: repeat(3, 1fr); } }
+
+
+
