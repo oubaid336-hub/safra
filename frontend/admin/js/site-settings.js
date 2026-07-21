@@ -46,3 +46,16 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
 });
 
 loadSettings();
+
+document.getElementById('logoutBtn').addEventListener('click', async function () {
+  try {
+    await fetch(`${API_BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch (err) {
+    console.error('Logout request failed:', err);
+  } finally {
+    window.location.href = 'login.html';
+  }
+});
