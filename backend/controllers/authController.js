@@ -121,7 +121,7 @@ async function forgotPassword(req, res) {
     user.resetPasswordExpires = resetPasswordExpires;
     await user.save();
 
-    const resetUrl = `${process.env.BACKEND_URL}/api/auth/reset-password/${resetPasswordToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/forgot-password.html?token=${resetPasswordToken}`;
     await sendEmail(
       user.email,
       'Reset your Safra password',
