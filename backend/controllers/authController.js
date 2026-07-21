@@ -1,4 +1,4 @@
-﻿const { sendEmail } = require('../utils/mailer');
+const { sendEmail } = require('../utils/mailer');
 const { buildPasswordResetEmail, buildWelcomeEmail } = require('../utils/emailTemplates');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -33,7 +33,7 @@ async function signup(req, res) {
       `<p>Hi ${name},</p><p>Welcome to Safra! Click below to verify your account:</p><p><a href="${verifyUrl}">${verifyUrl}</a></p><p>This link expires in 24 hours.</p>`
     );
 
-    res.status(201).json({ message: 'Account created, check your email to verify', userId: user._id }); // ADMIN_MARKER_verifyemail
+    res.status(201).json({ message: 'Account created, check your email to verify', userId: user._id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
@@ -49,12 +49,12 @@ async function login(req, res) {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-    if (user.isBlocked) { // ADMIN_MARKER_blockcheck
+    if (user.isBlocked) {
       return res.status(403).json({ message: 'This account has been blocked' });
     }
 
     const token = jwt.sign(
-      { userId: user._id, role: user.role }, // ADMIN_MARKER_loginfix
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -154,7 +154,7 @@ async function resetPassword(req, res) {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    res.json({ message: 'Password reset successfully' }); // ADMIN_MARKER_resetpassword
+    res.json({ message: 'Password reset successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
