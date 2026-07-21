@@ -1,4 +1,4 @@
-// wishlist.js — C7: Wishlist page logic
+﻿// wishlist.js — C7: Wishlist page logic
 //
 // ASSUMPTIONS (wishlistRoutes.js / wishlistController.js content has
 // never been read — see SAFRA-PROJECT-REFERENCE.txt Section 4, which
@@ -103,7 +103,7 @@
     const detailUrl =
       listingType === 'car'
         ? `car-detail.html?carId=${encodeURIComponent(listingId)}`
-        : `house-detail.html?houseId=${encodeURIComponent(listingId)}`;
+        : `house-detail.html?id=${encodeURIComponent(listingId)}`;
 
     const price = Number(item.pricePerNight ?? item.pricePerDay) || 0;
     const priceLabel = listingType === 'car' ? `$${price.toFixed(2)} / day` : `$${price.toFixed(2)} / night`;
