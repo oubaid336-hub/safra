@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -202,16 +202,7 @@
   <h1>Manage Users</h1>
   <p class="sub">Block, unblock, or remove accounts.</p>
 
-  <div class="scope-note">
-    <strong>A blocked/deleted user who is already logged in keeps
-    working until they log out or their session cookie expires.</strong>
-    middleware/auth.js trusts the JWT and never re-checks the database
-    per request (Known Issue #16) â€” this isn't fixed yet, so treat
-    these buttons as "for their next login," not instant. The exact
-    field name for blocked status also isn't confirmed, so that badge
-    uses a best-effort guess â€” the block/unblock actions themselves
-    don't depend on knowing it.
-  </div>
+  <div class="scope-note"><strong>Blocking or deleting a user takes effect on their next login, not instantly.</strong> Existing sessions stay active until they log out or the cookie expires.</div>
 
   <div id="statusBanner" role="alert" aria-live="polite"></div>
   <p id="loadingMsg">Loading users...</p>
@@ -224,3 +215,4 @@
 <script src="js/users.js"></script>
 </body>
 </html>
+
