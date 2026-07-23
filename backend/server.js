@@ -38,7 +38,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.send('Safra API is running');
+  res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta name="google-site-verification" content="IYX25PhS34ObQuO7mGTY-yPniHM7mGSktwXTZzKYWco" />
+</head>
+<body>Safra API is running</body>
+</html>`);
 });
 
 app.use('/api/auth', authRoutes);
