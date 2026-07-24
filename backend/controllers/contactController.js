@@ -9,9 +9,10 @@ async function submitContactMessage(req, res) {
     const contactMessage = await ContactMessage.create({ name, email, message });
 
     const settings = await SupportSettings.findOne();
-    const notifyEmail = (settings && settings.supportEmail) || process.env.ADMIN_EMAIL;
+    const notifyEmail = (settings && settings.supportEmail) || process.env.ADMIN_NOTIFICATION_EMAIL;
 
     if (notifyEmail) {
+      // sending contact notification to configured admin address
       await sendEmail(
         notifyEmail,
         'New contact message on Safra',
