@@ -1,5 +1,5 @@
-﻿/* ==========================================================================
-   SAFRA — Shared Design System
+/* ==========================================================================
+   SAFRA � Shared Design System
    Ported from the React/Tailwind reference (tailwind.config.js + index.css)
    Mobile-first: base styles = phone, then min-width media queries scale up.
    Every future page (login, signup, houses, cars...) should link this file.
@@ -88,7 +88,7 @@ button { font-family: inherit; }
   font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
   color: rgba(255,255,255,.85); transition: all .3s;
 }
-.navbar.scrolled .nav-link { color: var(--safra-gray); }
+.navbar.scrolled .nav-link { color: var(--safra-navy); }
 .nav-link:hover { background: rgba(255,255,255,.1); color: #fff; }
 .navbar.scrolled .nav-link:hover { background: var(--safra-sandlight); color: var(--safra-terracotta); }
 .nav-link.active { background: var(--safra-terracotta); color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
