@@ -230,3 +230,12 @@ button { font-family: inherit; }
 }
 
 @media (min-width: 768px) { .footer-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.nav-icon-links { display: flex; align-items: center; gap: 6px; margin-right: 12px; }
+.nav-icon-link {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  color: var(--safra-navy); transition: all .2s ease;
+}
+.nav-icon-link:hover { color: var(--safra-terracotta); background: var(--safra-sandlight); }
+@media (max-width: 900px) { .nav-icon-links { display: none; } }
