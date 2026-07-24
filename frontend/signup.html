@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign Up — Safra</title>
+  <title>Sign Up â€” Safra</title>
 
   <!-- Shared design system (nav, buttons, colors, fonts) -->
   <link rel="stylesheet" href="css/style.css" />
@@ -160,7 +160,7 @@
 
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="••••••••" minlength="8" />
+              <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" minlength="8" />
               <div class="hint">At least 8 characters</div>
             </div>
 
@@ -174,7 +174,7 @@
 
         <!-- Success state, shown after a successful signup -->
         <div class="auth-success" id="signupSuccess">
-          <div class="check">✓</div>
+          <div class="check">âœ“</div>
           <h2>Check your email</h2>
           <p>We sent a verification link to <strong id="successEmail"></strong>. Click it to activate your account, then come back to log in.</p>
           <a href="login.html" class="btn btn-terracotta auth-submit">Go to Login</a>
@@ -215,7 +215,7 @@
             </div>
           </div>
         </div>
-        <div class="footer-bottom">© 2026 Safra. All rights reserved.</div>
+        <div class="footer-bottom">Â© 2026 Safra. All rights reserved.</div>
       </div>
     </footer>
 
@@ -223,6 +223,7 @@
 
   <!-- Shared API base URL. Defines API_BASE_URL (e.g. "https://safra-claude.onrender.com") -->
   <script src="js/config.js"></script>
+<script src="js/nav-auth.js"></script>
 
   <script>
     // Mobile menu toggle (same as index.html)
@@ -266,7 +267,7 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Creating account…';
+      btn.textContent = 'Creating accountâ€¦';
 
       try {
         const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
@@ -294,7 +295,7 @@
           return;
         }
 
-        // Success — swap the form for the "check your email" panel
+        // Success â€” swap the form for the "check your email" panel
         successEmail.textContent = email;
         signupForm.style.display = 'none';
         signupSuccess.classList.add('show');

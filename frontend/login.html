@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login — Safra</title>
+  <title>Login â€” Safra</title>
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,7 +48,7 @@
     }
     .form-group .hint { font-size: 12px; color: var(--safra-graylight); margin-top: 4px; }
 
-    /* Forgot password link — top-right of the form, above the password field */
+    /* Forgot password link â€” top-right of the form, above the password field */
     .form-group.with-link { position: relative; }
     .forgot-link {
       position: absolute; right: 0; top: 0; font-size: 12px; font-weight: 600;
@@ -143,7 +143,7 @@
           <div class="form-group with-link">
             <label for="password">Password</label>
             <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
-            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" />
           </div>
 
           <button type="submit" class="btn btn-terracotta auth-submit" id="loginBtn">Log In</button>
@@ -187,13 +187,14 @@
             </div>
           </div>
         </div>
-        <div class="footer-bottom">© 2026 Safra. All rights reserved.</div>
+        <div class="footer-bottom">Â© 2026 Safra. All rights reserved.</div>
       </div>
     </footer>
 
   </div>
 
   <script src="js/config.js"></script>
+<script src="js/nav-auth.js"></script>
 
   <script>
     // Mobile menu toggle
@@ -231,7 +232,7 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Logging in…';
+      btn.textContent = 'Logging inâ€¦';
 
       try {
         const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -246,7 +247,7 @@
         if (!res.ok) {
           // Map common backend error messages to friendly text.
           // The backend's authController distinguishes between "user not found",
-          // "wrong password", "not verified", and "account blocked" — we
+          // "wrong password", "not verified", and "account blocked" â€” we
           // surface each with its own message so the user knows what to do.
           const msg = (data.message || data.error || '').toLowerCase();
           if (res.status === 403 && /blocked/i.test(msg)) {
@@ -265,7 +266,7 @@
           return;
         }
 
-        // Success — JWT cookie was set by the backend (HttpOnly, Secure, SameSite=Strict).
+        // Success â€” JWT cookie was set by the backend (HttpOnly, Secure, SameSite=Strict).
         // Redirect to homepage. We use location.replace so the login page
         // doesn't stay in browser history (back button won't return to a logged-in
         // session view of the login form).
