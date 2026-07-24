@@ -80,7 +80,9 @@
       }
 
       const data = await res.json();
-      const items = data.wishlist || data.items || data || [];
+      const houses = (data.houses || []).map(h => ({ ...h, listingType: 'house', listingId: h._id }));
+      const cars = (data.cars || []).map(c => ({ ...c, listingType: 'car', listingId: c._id }));
+      const items = [...houses, ...cars];
 
       loadingState.style.display = 'none';
 
@@ -135,11 +137,9 @@
     removeBtn.textContent = 'Removing…';
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/wishlist/toggle`, {
+      const res = await fetch(`${API_BASE_URL}/api/wishlist/${encodeURIComponent(listingId)}`, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ listingId, listingType }),
       });
 
       if (!res.ok) {

@@ -1,25 +1,25 @@
-// admin/js/users.js — D5: Manage users (block/unblock/delete UI)
+﻿// admin/js/users.js â€” D5: Manage users (block/unblock/delete UI)
 //
 // FIELDS: "role" ("customer"/"admin") and "verified" are CONFIRMED
-// real User fields — role is discussed directly in Known Issue #10,
+// real User fields â€” role is discussed directly in Known Issue #10,
 // and verified is the exact field D1/booking's 403 flow already
 // depends on. "name" and blocked-status are NOT confirmed the same
-// way — no User.js field list like House.js/Car.js ever got pasted
+// way â€” no User.js field list like House.js/Car.js ever got pasted
 // into a chat. Handled the same defensive way as D4:
 //   - Display name tries user.name first, falls back to user.email
-//     alone (guaranteed to exist — every login/signup flow in this
+//     alone (guaranteed to exist â€” every login/signup flow in this
 //     project is email-based).
 //   - Blocked-status badge tries common candidate fields (isBlocked,
 //     blocked, or status === 'blocked') and falls back to treating
 //     the user as active if none of those are present, rather than
 //     guessing wrong in the alarming direction.
-// This guessing only affects the BADGE — the Block/Unblock buttons
+// This guessing only affects the BADGE â€” the Block/Unblock buttons
 // call the same routes either way and don't depend on knowing which
 // field the backend actually uses.
 //
 // ROUTES (assumed by the same /api/admin/<resource>/:id/<action>
 // pattern used for D3/D4, not confirmed directly against
-// adminController.js/userRoutes.js content — A7-A9 confirmed
+// adminController.js/userRoutes.js content â€” A7-A9 confirmed
 // block/unblock/delete WORK live, just not necessarily these exact
 // strings):
 //   GET /api/admin/users
@@ -27,7 +27,7 @@
 //   PUT /api/admin/users/:id/unblock
 //   DELETE /api/admin/users/:id
 // NOTE: unlike D3's delete (confirmed on the public /api/houses/:id
-// path), there's no evidence users have an equivalent public route —
+// path), there's no evidence users have an equivalent public route â€”
 // so DELETE here is assumed under /api/admin/, not following D3's
 // exception.
 //
@@ -63,14 +63,14 @@
     if (typeof user.isBlocked === 'boolean') return user.isBlocked;
     if (typeof user.blocked === 'boolean') return user.blocked;
     if (typeof user.status === 'string') return user.status === 'blocked';
-    return false; // unknown shape — default to "active" rather than alarm
+    return false; // unknown shape â€” default to "active" rather than alarm
   }
 
   function getDisplayName(user) {
     return user.name || user.email || 'Unknown user';
   }
 
-  // Admins first, then customers, alphabetically within each group —
+  // Admins first, then customers, alphabetically within each group â€”
   // easier to scan than server order when the list grows.
   function sortUsers(users) {
     const roleOrder = { admin: 0, customer: 1 };
@@ -94,7 +94,7 @@
 
     const meta = document.createElement('div');
     meta.className = 'meta';
-    // Only show email separately if a real name was available above —
+    // Only show email separately if a real name was available above â€”
     // otherwise the name line already IS the email.
     meta.textContent = user.name && user.email ? user.email : '';
 
@@ -229,7 +229,7 @@
   }
 
   // Confirmed route (added to authController.js/authRoutes.js during
-  // Phase D prep) — used only to identify "this is me" for the
+  // Phase D prep) â€” used only to identify "this is me" for the
   // self-protection guard, not as an auth gate (loadAll's own fetch
   // already handles 401/403).
   async function loadCurrentAdminId() {
@@ -240,7 +240,8 @@
       });
       if (!res.ok) return null;
       const data = await res.json();
-      return data._id || data.id || null;
+      const user = data.user || data;
+      return user._id || user.id || null;
     } catch (err) {
       console.error('Failed to load current admin identity:', err);
       return null;

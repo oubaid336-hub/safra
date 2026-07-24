@@ -1,37 +1,37 @@
-// admin/js/bookings.js — D4: Manage bookings (confirm/cancel UI)
+﻿// admin/js/bookings.js â€” D4: Manage bookings (confirm/cancel UI)
 //
 // UNLIKE D2 (dashboard.js) and D3 (houses.js), Booking.js's exact
 // field names were never confirmed against real model/controller
-// content in any chat — there's no equivalent to the House.js/Car.js
+// content in any chat â€” there's no equivalent to the House.js/Car.js
 // field lists this project already has. Everything below that touches
 // a Booking field is either a REUSED assumption (already made and not
 // contradicted by an earlier, already-built C-phase page) or a NEW
-// assumption made here — both kinds are flagged inline. Nothing is
+// assumption made here â€” both kinds are flagged inline. Nothing is
 // silently guessed without a comment saying so.
 //
 // ROUTES (all assumed by following the exact URL pattern CONFIRMED for
-// houses/cars — /api/admin/<resource>/:id/<action> — not yet confirmed
+// houses/cars â€” /api/admin/<resource>/:id/<action> â€” not yet confirmed
 // directly against bookingRoutes.js/adminController.js content):
 //   GET /api/admin/bookings
 //   PUT /api/admin/bookings/:id/confirm
 //   PUT /api/admin/bookings/:id/cancel
 // A13 (Phase A) confirmed admin confirm/cancel WORKS live against some
-// route — just not necessarily this exact string. Test this page's
+// route â€” just not necessarily this exact string. Test this page's
 // buttons for real before trusting the guess.
 //
 // FIELDS:
-//   status ("pending" | "confirmed" | "cancelled") and totalPrice —
+//   status ("pending" | "confirmed" | "cancelled") and totalPrice â€”
 //   CONFIRMED, bookingController.js content was already read for these
 //   (see Known Issue #11 and the C5 build note in the master plan).
-//   listingId + listingType ("house" | "car") — REUSED assumption,
+//   listingId + listingType ("house" | "car") â€” REUSED assumption,
 //   same one C7 (wishlist.js), C8 (my-bookings.js), and C9 (reviews.js)
 //   already made. Used here to fetch the listing's title the same way
 //   C8 does: GET /api/houses/:id or /api/cars/:id per booking.
-//   Guest identity — NEW assumption: tries a populated `user` object
+//   Guest identity â€” NEW assumption: tries a populated `user` object
 //   (name/email) first, then falls back to a raw id field (userId,
 //   customerId, or user-as-string), labeled explicitly as an ID rather
 //   than left blank or invented.
-//   Stay dates — NEW assumption: tries common field-name pairs in
+//   Stay dates â€” NEW assumption: tries common field-name pairs in
 //   order (checkIn/checkOut, startDate/endDate, dateFrom/dateTo). If
 //   none of those exist on the record, the card just omits the dates
 //   line instead of fabricating one.
@@ -67,13 +67,14 @@
 
   // Guest identity: populated object first, raw id fallback second.
   function getGuestLabel(booking) {
-    const candidate = booking.user || booking.guest || booking.customer;
+    const candidate = booking.user || booking.guest || booking.customer || booking.userId;
     if (candidate && typeof candidate === 'object') {
       if (candidate.name && candidate.email) return `${candidate.name} (${candidate.email})`;
       if (candidate.name) return candidate.name;
       if (candidate.email) return candidate.email;
     }
-    const rawId = booking.userId || booking.customerId ||
+    const rawId = booking.customerId ||
+      (typeof booking.userId === 'string' ? booking.userId : null) ||
       (typeof booking.user === 'string' ? booking.user : null);
     if (rawId) return `Guest ID: ${rawId}`;
     return 'Guest info unavailable';
@@ -90,7 +91,7 @@
     for (const [fromKey, toKey] of pairs) {
       const from = formatDate(booking[fromKey]);
       const to = formatDate(booking[toKey]);
-      if (from && to) return `${from} → ${to}`;
+      if (from && to) return `${from} â†’ ${to}`;
     }
     return null;
   }
@@ -150,7 +151,7 @@
     guestMeta.className = 'meta';
     const price = booking.totalPrice != null ? `$${booking.totalPrice}` : 'price n/a';
     const dates = getDatesLabel(booking);
-    guestMeta.textContent = [getGuestLabel(booking), dates, price].filter(Boolean).join(' · ');
+    guestMeta.textContent = [getGuestLabel(booking), dates, price].filter(Boolean).join(' Â· ');
 
     info.appendChild(title);
     info.appendChild(guestMeta);
@@ -215,7 +216,7 @@
         return;
       }
 
-      // Reload fresh rather than patch local state — keeps this in
+      // Reload fresh rather than patch local state â€” keeps this in
       // sync with whatever the server actually did (same call D3 makes).
       await loadAll();
 

@@ -12,14 +12,14 @@ function renderCars(list) {
     <a class="listing-card" href="car-detail.html?carId=${car._id}">
       <div class="listing-thumb">
         ${car.photos && car.photos[0]
-          ? `<img src="${car.photos[0]}" alt="${car.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
+          ? `<img src="${car.photos[0]}" alt="${escapeHtml(car.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
           : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17V9l2-5h14l2 5v8"/></svg>`}
       </div>
       <div class="listing-body">
-        <div class="listing-title">${car.title}</div>
+        <div class="listing-title">${escapeHtml(car.title)}</div>
         <div class="listing-location">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>${car.location}</span>
+          <span>${escapeHtml(car.location)}</span>
         </div>
         <div class="listing-footer-row">
           <div class="listing-price">$${car.pricePerDay}<span> / day</span></div>
@@ -28,6 +28,12 @@ function renderCars(list) {
       </div>
     </a>
   `).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
 }
 
 function applyFilters() {

@@ -48,6 +48,7 @@
     document.getElementById('bookNowBtn').href = `booking.html?houseId=${house._id}`;
 
     loadReviews(id);
+    setupWishlistButton(id);
 
     loadingState.style.display = 'none';
     detailLayout.style.display = 'grid';
@@ -61,7 +62,7 @@
 async function loadReviews(houseId) {
   const list = document.getElementById('reviewsList');
   try {
-    const res = await fetch(`${API_BASE_URL}/api/houses/${houseId}/reviews`);
+    const res = await fetch(`${API_BASE_URL}/api/reviews/house/${houseId}`);
     if (!res.ok) throw new Error(`Server responded with ${res.status}`);
     const reviews = await res.json();
 
@@ -73,16 +74,55 @@ async function loadReviews(houseId) {
     list.innerHTML = reviews.map(r => `
       <div class="review-card">
         <div class="review-head">
-          <span class="review-name">${r.userName || 'Guest'}</span>
+          <span class="review-name">${escapeHtml(r.userId && r.userId.name ? r.userId.name : 'Guest')}</span>
           <span class="review-stars">Rating: ${r.rating || 0}/5</span>
         </div>
-        <p class="review-comment">${r.comment || ''}</p>
+        <p class="review-comment">${escapeHtml(r.comment || '')}</p>
       </div>
     `).join('');
   } catch (err) {
     console.error('Failed to load reviews:', err);
     list.innerHTML = '<p class="no-reviews">Could not load reviews.</p>';
   }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function setupWishlistButton(houseId) {
+  const btn = document.getElementById('wishlistBtn');
+  if (!btn) return;
+
+  try {
+    const meRes = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' });
+    if (!meRes.ok) {
+      btn.style.display = 'none';
+      return;
+    }
+  } catch (err) {
+    btn.style.display = 'none';
+    return;
+  }
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/wishlist/${encodeURIComponent(houseId)}`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+      btn.textContent = btn.textContent === 'Add to Wishlist' ? 'Remove from Wishlist' : 'Add to Wishlist';
+    } catch (err) {
+      console.error('Wishlist toggle failed:', err);
+      alert('Could not update wishlist. Please try again.');
+    } finally {
+      btn.disabled = false;
+    }
+  });
 }
 
 loadHouseDetail();

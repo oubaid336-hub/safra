@@ -1,7 +1,7 @@
-// car-detail.js — C6: Car detail page logic
+﻿// car-detail.js â€” C6: Car detail page logic
 //
-// ASSUMPTIONS (Car.js fields were never confirmed — see
-// SAFRA-PROJECT-REFERENCE.txt Section 5: "UNCONFIRMED exact fields —
+// ASSUMPTIONS (Car.js fields were never confirmed â€” see
+// SAFRA-PROJECT-REFERENCE.txt Section 5: "UNCONFIRMED exact fields â€”
 // known only that it has the same status: pending/approved/rejected
 // pattern as House.js, by symmetry"). This code guesses a schema that
 // mirrors House.js as closely as makes sense for a car:
@@ -11,12 +11,12 @@
 //
 // If the real Car.js has different field names (e.g. "make"/"model"
 // instead of a combined "title", or "pricePerNight" instead of
-// "pricePerDay"), update renderCar() below to match — everything else
+// "pricePerDay"), update renderCar() below to match â€” everything else
 // (fetch, routing, error handling) should still work unchanged.
 //
 // Also assumes GET ${API_BASE_URL}/api/cars/:id exists, matching the
 // GET /api/houses/:id assumption made in booking.js/booking.html for
-// C5 — neither has been confirmed against carController.js/
+// C5 â€” neither has been confirmed against carController.js/
 // carRoutes.js content (still unread).
 
 (function () {
@@ -75,9 +75,9 @@
     const pricePerDay = Number(car.pricePerDay ?? car.pricePerNight) || 0;
     priceEl.textContent = `$${pricePerDay.toFixed(2)} / day`;
 
-    seatsEl.textContent = car.seats ?? '—';
-    transmissionEl.textContent = car.transmission ?? '—';
-    yearEl.textContent = car.year ?? '—';
+    seatsEl.textContent = car.seats ?? 'â€”';
+    transmissionEl.textContent = car.transmission ?? 'â€”';
+    yearEl.textContent = car.year ?? 'â€”';
 
     if (car.photos && car.photos.length > 0) {
       photoEl.src = car.photos[0];
@@ -88,6 +88,41 @@
     }
 
     bookBtn.href = `car-booking.html?carId=${encodeURIComponent(car._id || carId)}`;
+
+    setupWishlistButton(car._id || carId);
+  }
+
+  async function setupWishlistButton(id) {
+    const btn = document.getElementById('wishlistBtn');
+    if (!btn) return;
+
+    try {
+      const meRes = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' });
+      if (!meRes.ok) {
+        btn.style.display = 'none';
+        return;
+      }
+    } catch (err) {
+      btn.style.display = 'none';
+      return;
+    }
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/wishlist/${encodeURIComponent(id)}`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+        btn.textContent = btn.textContent === 'Add to Wishlist' ? 'Remove from Wishlist' : 'Add to Wishlist';
+      } catch (err) {
+        console.error('Wishlist toggle failed:', err);
+        alert('Could not update wishlist. Please try again.');
+      } finally {
+        btn.disabled = false;
+      }
+    });
   }
 
   function showNotFound() {
