@@ -1,4 +1,4 @@
-// admin/js/houses.js - D3: Manage houses/cars (approve/reject only)
+﻿// admin/js/houses.js - D3: Manage houses/cars (approve/reject only)
 //
 // SCOPE NOTE: only approve/reject are wired up. Edit and delete are NOT
 // built - no admin route for either has ever been confirmed to exist.
@@ -15,7 +15,7 @@
 // House.js fields (confirmed): title, location, pricePerNight, photos,
 // rooms, bathrooms, capacity, status.
 // Car.js fields (confirmed): title, location, pricePerDay, photos,
-// seats, transmission, fuelType, status.
+// seats, transmission, fuelType, year, status.
 
 (function () {
   const statusBanner = document.getElementById('statusBanner');
@@ -75,9 +75,10 @@
       meta.textContent = [item.location, price, rooms, capacity].filter(Boolean).join(' - ');
     } else {
       const price = item.pricePerDay != null ? `$${item.pricePerDay}/day` : 'price n/a';
+      const year = item.year != null ? `${item.year}` : null;
       const seats = item.seats != null ? `${item.seats} seats` : null;
       const extras = [item.transmission, item.fuelType].filter(Boolean).join('/');
-      meta.textContent = [item.location, price, seats, extras || null].filter(Boolean).join(' - ');
+      meta.textContent = [item.location, year, price, seats, extras || null].filter(Boolean).join(' - ');
     }
 
     info.appendChild(title);
