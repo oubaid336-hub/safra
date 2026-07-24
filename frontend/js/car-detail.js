@@ -89,7 +89,47 @@
 
     bookBtn.href = `car-booking.html?carId=${encodeURIComponent(car._id || carId)}`;
 
+    const reviewLink = document.getElementById('writeReviewLink');
+    if (reviewLink) {
+      reviewLink.href = `reviews.html?listingId=${encodeURIComponent(car._id || carId)}&listingType=car`;
+    }
+
     setupWishlistButton(car._id || carId);
+    loadReviews(car._id || carId);
+  }
+
+  async function loadReviews(carId) {
+    const list = document.getElementById('reviewsList');
+    if (!list) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/reviews/car/${carId}`);
+      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+      const reviews = await res.json();
+
+      if (!reviews.length) {
+        list.innerHTML = '<p class="no-reviews">No reviews yet.</p>';
+        return;
+      }
+
+      list.innerHTML = reviews.map(r => `
+        <div class="review-card">
+          <div class="review-head">
+            <span class="review-name">${escapeHtml(r.userId && r.userId.name ? r.userId.name : 'Guest')}</span>
+            <span class="review-stars">Rating: ${r.rating || 0}/5</span>
+          </div>
+          <p class="review-comment">${escapeHtml(r.comment || '')}</p>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error('Failed to load reviews:', err);
+      list.innerHTML = '<p class="no-reviews">Could not load reviews.</p>';
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
   }
 
   async function setupWishlistButton(id) {
