@@ -20,6 +20,7 @@ const carCreateValidation = [
   body('seats').optional().isInt({ min: 1 }).withMessage('Seats must be at least 1'),
   body('transmission').optional().isIn(['automatic', 'manual']).withMessage('Invalid transmission type'),
   body('fuelType').optional().isIn(['petrol', 'diesel', 'electric', 'hybrid']).withMessage('Invalid fuel type'),
+  body('year').optional().isInt({ min: 1950, max: new Date().getFullYear() + 1 }).withMessage('Year must be a valid year'),
   handleValidationErrors
 ];
 
