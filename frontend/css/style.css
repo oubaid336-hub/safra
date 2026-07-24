@@ -40,7 +40,7 @@ button { font-family: inherit; }
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 12px;
+  font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 999px;
   border: none; cursor: pointer;
   box-shadow: 0 10px 25px -5px rgba(0,0,0,.15);
   transition: all .3s ease;
@@ -133,8 +133,8 @@ button { font-family: inherit; }
 .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.35); }
 .hero-content { position: relative; z-index: 1; text-align: center; padding: 0 24px; max-width: 760px; margin: 0 auto; }
 .hero-content h1 {
-  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 2.4rem;
-  color: #fff; letter-spacing: .02em; margin-bottom: 18px;
+  font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2.6rem;
+  color: #fff; letter-spacing: -.01em; margin-bottom: 18px;
 }
 .hero-content p { color: rgba(255,255,255,.9); font-size: 1.02rem; line-height: 1.7; margin-bottom: 32px; }
 .hero-buttons { display: flex; flex-direction: column; gap: 14px; }
