@@ -128,7 +128,7 @@
     <h3>Pay on arrival</h3>
     <p>Reserve now, pay in cash when you check in or pick up. No card needed, no online payment required.</p>
     <div class="price-note">100% due on arrival</div>
-    <button class="pay-btn primary" onclick="confirmBooking('arrival')">Confirm booking</button>
+    <button class="pay-btn primary" onclick="confirmBooking('arrival', this)">Confirm booking</button>
   </div>
 
   <div class="pay-card">
@@ -157,8 +157,8 @@
 
 <div class="container pay-confirm" id="payConfirm">
   <div class="check">✓</div>
-  <h2>Booking confirmed</h2>
-  <p>We've reserved your booking. Bring cash to pay the full amount when you arrive — see you soon!</p>
+  <h2 id="payConfirmTitle">Booking confirmed</h2>
+  <p id="payConfirmText">We've reserved your booking. Bring cash to pay the full amount when you arrive — see you soon!</p>
 </div>
 
 <footer class="footer">
@@ -194,11 +194,45 @@
 <script src="js/nav-auth.js"></script>
 <script src="js/nav.js"></script>
 <script>
-  function confirmBooking(method) {
+  const paymentParams = new URLSearchParams(window.location.search);
+  const bookingId = paymentParams.get('bookingId');
+
+  if (!bookingId) {
     document.querySelector('.pay-grid').style.display = 'none';
     document.querySelector('.trust-strip').style.display = 'none';
+    document.getElementById('payConfirmTitle').textContent = 'No booking found';
+    document.getElementById('payConfirmText').textContent = 'We could not find a booking to pay for. Please start a new booking from a listing page.';
     document.getElementById('payConfirm').classList.add('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function confirmBooking(method, btn) {
+    if (method !== 'arrival' || !bookingId) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Confirming…';
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/confirm-cash`, {
+        method: 'PATCH',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        btn.disabled = false;
+        btn.textContent = 'Confirm booking';
+        alert('Something went wrong confirming your booking. Please try again.');
+        return;
+      }
+
+      document.querySelector('.pay-grid').style.display = 'none';
+      document.querySelector('.trust-strip').style.display = 'none';
+      document.getElementById('payConfirm').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Confirm booking';
+      alert('Could not reach the server. Please check your connection and try again.');
+    }
   }
 </script>
 </body>

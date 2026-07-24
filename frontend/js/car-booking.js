@@ -1,21 +1,4 @@
-// car-booking.js — C6: Car booking form logic
-// Mirrors booking.js (houses, C5) — same structure, same assumptions
-// about auth (cookie-based, credentials: 'include') and about the
-// server calculating the real totalPrice on submit.
-//
-// ADDITIONAL ASSUMPTIONS ON TOP OF booking.js'S:
-//   1. Opened as car-booking.html?carId=<id> — car-detail.html (C6
-//      part 1) already builds this link correctly.
-//   2. GET  ${API_BASE_URL}/api/cars/:id returns a single car object
-//      with a "pricePerDay" field (Car.js fields are UNCONFIRMED —
-//      see car-detail.js's header comment. If the real field is
-//      "pricePerNight" instead, this code already falls back to that,
-//      same as car-detail.js does).
-//   3. POST ${API_BASE_URL}/api/bookings body uses
-//      listingType: "car" (vs "house" in booking.js) — matches
-//      Booking.js's confirmed listingType: "house" | "car" enum.
-
-(function () {
+﻿(function () {
   const params = new URLSearchParams(window.location.search);
   const carId = params.get('carId');
 
@@ -167,8 +150,6 @@
       }
 
       if (res.status === 403) {
-        // Same Known Issue #13 caveat as booking.js: this branch is
-        // ready but bookingController.js doesn't send this check yet.
         const data = await safeJson(res);
         showMessage(
           data.message || 'Please verify your email before booking. Check your inbox for the verification link.',
@@ -183,13 +164,12 @@
         return;
       }
 
-      await safeJson(res);
-      showMessage(
-        'Booking requested! A confirmation email is on its way — check your inbox.',
-        'success'
-      );
-      form.reset();
-      priceBreakdown.style.display = 'none';
+      const booking = await safeJson(res);
+      if (booking && booking._id) {
+        window.location.href = `payment.html?bookingId=${booking._id}`;
+        return;
+      }
+      showMessage('Booking created, but something went wrong loading payment options. Check My Bookings.', 'warning');
     } catch (err) {
       console.error('Booking submission failed:', err);
       showMessage('Could not reach the server. Please check your connection and try again.', 'error');
