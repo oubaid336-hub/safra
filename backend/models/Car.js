@@ -10,6 +10,7 @@ const carSchema = new mongoose.Schema({
   seats: Number,
   transmission: { type: String, enum: ['automatic', 'manual'] },
   fuelType: { type: String, enum: ['petrol', 'diesel', 'electric', 'hybrid'] },
+  year: Number,
   bookedRanges: [{ start: Date, end: Date }],
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   createdAt: { type: Date, default: Date.now }
