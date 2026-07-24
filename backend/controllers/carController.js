@@ -1,6 +1,6 @@
 ﻿const Car = require('../models/Car');
 
-const OWNER_EDITABLE_FIELDS = ['title', 'description', 'location', 'pricePerDay', 'seats', 'transmission', 'fuelType'];
+const OWNER_EDITABLE_FIELDS = ['title', 'description', 'location', 'pricePerDay', 'seats', 'transmission', 'fuelType', 'year'];
 const ADMIN_ONLY_FIELDS = ['status'];
 
 async function getAll(req, res) {
@@ -37,7 +37,7 @@ async function getOne(req, res) {
 
 async function create(req, res) {
   try {
-    const { title, description, location, pricePerDay, seats, transmission, fuelType } = req.body;
+    const { title, description, location, pricePerDay, seats, transmission, fuelType, year } = req.body;
     const photos = req.files ? req.files.map(file => file.path) : [];
 
     const car = await Car.create({
@@ -49,6 +49,7 @@ async function create(req, res) {
       seats,
       transmission,
       fuelType,
+      year,
       photos
     });
 
