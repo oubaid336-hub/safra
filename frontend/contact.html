@@ -196,5 +196,19 @@
 <script src="js/config.js"></script>
 <script src="js/nav-auth.js"></script>
 <script src="js/contact.js"></script>
+<script>
+  // Mobile nav toggle (this page uses its own navbar markup/classes, separate from the shared nav.js)
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+    navLinks.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  }
+</script>
 </body>
 </html>

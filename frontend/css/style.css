@@ -37,6 +37,14 @@ button { font-family: inherit; }
 .serif { font-family: 'Playfair Display', serif; }
 .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
 
+/* ---------- Card ---------- */
+.card-style {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, .08);
+}
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
