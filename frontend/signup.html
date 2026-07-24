@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign Up â€” Safra</title>
+  <title>Sign Up — Safra</title>
 
   <!-- Shared design system (nav, buttons, colors, fonts) -->
   <link rel="stylesheet" href="css/style.css" />
@@ -158,17 +158,17 @@
           <form id="signupFormEl" novalidate>
             <div class="form-group">
               <label for="name">Full Name</label>
-              <input type="text" id="name" name="name" required autocomplete="name" placeholder="Oubaid Doe" />
+              <input type="text" id="name" name="name" required autocomplete="name" />
             </div>
 
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+              <input type="email" id="email" name="email" required autocomplete="email" />
             </div>
 
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" minlength="8" />
+              <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" />
               <div class="hint">At least 8 characters</div>
             </div>
 
@@ -223,7 +223,7 @@
             </div>
           </div>
         </div>
-        <div class="footer-bottom">Â© 2026 Safra. All rights reserved.</div>
+        <div class="footer-bottom">© 2026 Safra. All rights reserved.</div>
       </div>
     </footer>
 
@@ -275,7 +275,7 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Creating accountâ€¦';
+      btn.textContent = 'Creating account…';
 
       try {
         const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
