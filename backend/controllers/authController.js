@@ -5,6 +5,20 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+function setAuthCookie(res, user) {
+  const token = jwt.sign(
+    { userId: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+}
+
 async function signup(req, res) {
   try {
     const { name, email, password } = req.body;
@@ -53,18 +67,7 @@ async function login(req, res) {
       return res.status(403).json({ message: 'This account has been blocked' });
     }
 
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    setAuthCookie(res, user);
 
     res.json({ message: 'Logged in', name: user.name });
   } catch (err) {
@@ -90,7 +93,37 @@ async function verifyEmail(req, res) {
     user.verificationTokenExpires = undefined;
     await user.save();
 
-    res.json({ message: 'Email verified successfully' });
+    setAuthCookie(res, user);
+
+    res.json({ message: 'Email verified successfully', name: user.name });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function resendVerification(req, res) {
+  try {
+    const { email } = req.body;
+    const genericMessage = { message: 'If that email needs verifying, a new link has been sent.' };
+
+    const user = await User.findOne({ email });
+    if (!user || user.verified) {
+      return res.json(genericMessage);
+    }
+
+    user.verificationToken = crypto.randomBytes(32).toString('hex');
+    user.verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await user.save();
+
+    const verifyUrl = `${process.env.FRONTEND_URL}/verify-email.html?token=${user.verificationToken}`;
+    await sendEmail(
+      user.email,
+      'Verify your Safra account',
+      buildVerificationEmail({ name: user.name, verifyUrl })
+    );
+
+    res.json(genericMessage);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
@@ -177,4 +210,4 @@ async function logout(req, res) {
   res.json({ message: 'Logged out' });
 }
 
-module.exports = { signup, login, verifyEmail, forgotPassword, resetPassword, me, logout };
+module.exports = { signup, login, verifyEmail, resendVerification, forgotPassword, resetPassword, me, logout };

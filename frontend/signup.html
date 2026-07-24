@@ -186,6 +186,8 @@
           <h2>Check your email</h2>
           <p>We sent a verification link to <strong id="successEmail"></strong>. Click it to activate your account, then come back to log in.</p>
           <a href="login.html" class="btn btn-terracotta auth-submit">Go to Login</a>
+          <div class="auth-switch" id="resendWrap">Didn't get it? <a href="#" id="resendLink">Resend verification email</a></div>
+          <div class="auth-switch" id="resendStatus" style="display:none;"></div>
         </div>
 
       </div>
@@ -314,6 +316,25 @@
         btn.disabled = false;
         btn.textContent = 'Sign Up';
       }
+    });
+    document.getElementById('resendLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const resendStatus = document.getElementById('resendStatus');
+      const email = successEmail.textContent;
+      e.target.textContent = 'Sending...';
+      try {
+        await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        resendStatus.textContent = 'If needed, a new link has been sent.';
+        resendStatus.style.display = 'block';
+      } catch (err) {
+        resendStatus.textContent = 'Network error, try again.';
+        resendStatus.style.display = 'block';
+      }
+      e.target.textContent = 'Resend verification email';
     });
   </script>
 </body>
