@@ -1,5 +1,5 @@
-const { sendEmail } = require('../utils/mailer');
-const { buildPasswordResetEmail, buildWelcomeEmail } = require('../utils/emailTemplates');
+﻿const { sendEmail } = require('../utils/mailer');
+const { buildPasswordResetEmail, buildVerificationEmail } = require('../utils/emailTemplates');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -26,11 +26,11 @@ async function signup(req, res) {
       verificationTokenExpires
     });
 
-    const verifyUrl = `${process.env.BACKEND_URL}/api/auth/verify/${verificationToken}`;
+    const verifyUrl = `${process.env.FRONTEND_URL}/verify-email.html?token=${verificationToken}`;
     await sendEmail(
       email,
       'Verify your Safra account',
-      `<p>Hi ${name},</p><p>Welcome to Safra! Click below to verify your account:</p><p><a href="${verifyUrl}">${verifyUrl}</a></p><p>This link expires in 24 hours.</p>`
+      buildVerificationEmail({ name, verifyUrl })
     );
 
     res.status(201).json({ message: 'Account created, check your email to verify', userId: user._id });
@@ -89,12 +89,6 @@ async function verifyEmail(req, res) {
     user.verificationToken = undefined;
     user.verificationTokenExpires = undefined;
     await user.save();
-
-    await sendEmail(
-      user.email,
-      'Welcome to Safra!',
-      buildWelcomeEmail({ name: user.name, frontendUrl: process.env.FRONTEND_URL })
-    );
 
     res.json({ message: 'Email verified successfully' });
   } catch (err) {

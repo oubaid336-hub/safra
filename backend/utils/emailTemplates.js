@@ -81,6 +81,27 @@ function buildAdminBookingEmail({ customerName, customerEmail, listingTitle, lis
   `;
 }
 
+function buildVerificationEmail({ name, verifyUrl }) {
+  return `
+  <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+    <div style="background-color: #0f766e; padding: 24px 32px;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 22px;">Safra</h1>
+    </div>
+    <div style="padding: 32px;">
+      <h2 style="color: #111827; font-size: 20px; margin-top: 0;">Verify your email</h2>
+      <p style="color: #374151; font-size: 15px; line-height: 1.5;">Hi ${name},</p>
+      <p style="color: #374151; font-size: 15px; line-height: 1.5;">Welcome to Safra! Click below to verify your account. This link expires in 24 hours.</p>
+      <p style="text-align: center; margin: 28px 0;">
+        <a href="${verifyUrl}" style="background-color: #0f766e; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-size: 15px; font-weight: bold; display: inline-block;">Verify Account</a>
+      </p>
+    </div>
+    <div style="background-color: #f9fafb; padding: 20px 32px; text-align: center;">
+      <p style="color: #9ca3af; font-size: 12px; margin: 0;">Safra - this is an automated verification email.</p>
+    </div>
+  </div>
+  `;
+}
+
 function buildPasswordResetEmail({ name, resetUrl }) {
   return `
   <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
@@ -145,7 +166,7 @@ function buildContactNotificationEmail({ name, email, message }) {
   `;
 }
 
-module.exports = { buildCustomerBookingEmail, buildAdminBookingEmail, buildPasswordResetEmail, buildWelcomeEmail, buildContactNotificationEmail, buildListingBroadcastEmail };
+module.exports = { buildCustomerBookingEmail, buildAdminBookingEmail, buildPasswordResetEmail, buildWelcomeEmail, buildVerificationEmail, buildContactNotificationEmail, buildListingBroadcastEmail };
 
 function buildListingBroadcastEmail({ listingTitle, listingLocation, listingType, price, priceUnit, frontendUrl, unsubscribeUrl }) {
   const typeLabel = listingType === 'house' ? 'House' : 'Car';
