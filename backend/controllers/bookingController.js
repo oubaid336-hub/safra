@@ -41,8 +41,6 @@ async function create(req, res) {
       return res.status(400).json({ message: 'Invalid date range' });
     }
 
-    // #15 fix: reject if an existing pending/confirmed booking for this
-    // exact listing overlaps the requested range.
     const overlapping = await Booking.findOne({
       listingId,
       listingType,
@@ -123,4 +121,25 @@ async function getMine(req, res) {
   }
 }
 
-module.exports = { create, getMine };
+async function confirmCash(req, res) {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+    if (booking.userId.toString() !== req.user.userId) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    if (booking.status !== 'pending') {
+      return res.status(409).json({ message: 'Booking already processed' });
+    }
+    booking.status = 'pending-cash-payment';
+    await booking.save();
+    res.json(booking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+module.exports = { create, getMine, confirmCash };
