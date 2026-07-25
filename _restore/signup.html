@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — Safra</title>
+
+  <!-- Shared design system (nav, buttons, colors, fonts) -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Google Fonts: Playfair Display (headings) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tiny form-specific styles. Page-local so we don't touch style.css yet.
+       Once login.html uses the same look, we can promote these to style.css. -->
+  <style>
+    .auth-page { min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-main {
+      flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
+      padding: 120px 20px 60px; /* 120px clears the fixed navbar */
+    }
+    .auth-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .auth-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 0; }
+
+    .auth-card {
+      position: relative; z-index: 1; width: 100%; max-width: 460px;
+      background: #fff; border-radius: 20px; padding: 36px 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    }
+    .auth-card h1 {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      color: var(--safra-navy); font-size: 1.75rem; text-align: center; margin-bottom: 6px;
+    }
+    .auth-card .subtitle { text-align: center; color: var(--safra-gray); font-size: 14px; margin-bottom: 28px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600; color: var(--safra-navy);
+      margin-bottom: 6px; font-family: 'Inter', sans-serif;
+    }
+    .form-group input {
+      width: 100%; padding: 12px 14px; font-size: 15px; font-family: 'Inter', sans-serif;
+      color: var(--safra-navy); background: var(--safra-offwhite);
+      border: 1.5px solid var(--safra-sanddark); border-radius: 10px;
+      transition: border-color .2s, background .2s;
+    }
+    .form-group input:focus {
+      outline: none; border-color: var(--safra-terracotta); background: #fff;
+    }
+    .form-group .hint { font-size: 12px; color: var(--safra-graylight); margin-top: 4px; }
+
+    .auth-submit { width: 100%; margin-top: 8px; }
+
+    .auth-error {
+      display: none; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px;
+      background: #FEE2E2; color: #991B1B; font-size: 13px; border: 1px solid #FECACA;
+    }
+    .auth-error.show { display: block; }
+
+    .auth-switch { text-align: center; margin-top: 18px; font-size: 14px; color: var(--safra-gray); }
+    .auth-switch a { color: var(--safra-terracotta); font-weight: 600; }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    /* Success state replaces the form once signup works */
+    .auth-success { display: none; text-align: center; }
+    .auth-success.show { display: block; }
+    .auth-success .check {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--safra-terracotta); color: #fff; font-size: 32px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+    }
+    .auth-success h2 {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      color: var(--safra-navy); font-size: 1.4rem; margin-bottom: 8px;
+    }
+    .auth-success p { color: var(--safra-gray); font-size: 14px; margin-bottom: 24px; }
+
+    @media (min-width: 768px) {
+      .auth-card { padding: 44px 40px; }
+      .auth-card h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+
+    <!-- ============= NAVBAR (same as index.html) ============= -->
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container nav-inner">
+
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-badge"><span>S</span></div>
+          <div class="nav-logo-text">Safra</div>
+        </a>
+
+    <div class="nav-links">
+          <a href="index.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Home
+          </a>
+          <a href="houses.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22V12l10-9 10 9v10"/><path d="M2 22h20"/><path d="M9 22V12h6v10"/></svg>
+            Houses
+          </a>
+          <a href="cars.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            Cars
+          </a>
+        </div>
+
+        <div class="nav-auth">
+          <a href="login.html" class="nav-auth-login">Login</a>
+          <a href="signup.html" class="nav-auth-signup active" style="pointer-events:none;">Sign Up</a>
+        </div>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="container">
+        <div class="mobile-menu" id="mobileMenu">
+          <a href="index.html">Home</a>
+          <a href="houses.html">Houses</a>
+          <a href="cars.html">Cars</a>
+          <div class="divider"></div>
+          <a href="login.html">Login</a>
+          <a href="signup.html" style="color:var(--safra-terracotta);">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============= MAIN AUTH AREA ============= -->
+    <main class="auth-main">
+      <!-- Same Sidi Bou Said image as the homepage, with a darker overlay so the form is readable -->
+      <img class="auth-bg" src="https://images.unsplash.com/photo-1565073185544-0fe2d7e7eb1d?w=1920&q=80" alt="Sidi Bou Said, Tunisia" />
+      <div class="auth-overlay"></div>
+
+      <div class="auth-card">
+
+        <!-- The form. Will be hidden once signup succeeds. -->
+        <div id="signupForm">
+          <h1>Create your account</h1>
+          <p class="subtitle">Start exploring Tunisia in minutes</p>
+
+          <div class="auth-error" id="signupError"></div>
+
+          <form id="signupFormEl" novalidate>
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required autocomplete="name" />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required autocomplete="email" />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" />
+              <div class="hint">At least 8 characters</div>
+            </div>
+
+            <button type="submit" class="btn btn-terracotta auth-submit" id="signupBtn">Sign Up</button>
+          </form>
+
+          <div class="auth-switch">
+            Already have an account? <a href="login.html">Login</a>
+          </div>
+        </div>
+
+        <!-- Success state, shown after a successful signup -->
+        <div class="auth-success" id="signupSuccess">
+          <div class="check">âœ“</div>
+          <h2>Check your email</h2>
+          <p>We sent a verification link to <strong id="successEmail"></strong>. Click it to activate your account, then come back to log in.</p>
+          <a href="login.html" class="btn btn-terracotta auth-submit">Go to Login</a>
+          <div class="auth-switch" id="resendWrap">Didn't get it? <a href="#" id="resendLink">Resend verification email</a></div>
+          <div class="auth-switch" id="resendStatus" style="display:none;"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ============= FOOTER (same as index.html) ============= -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">
+              <div class="footer-brand-badge"><span>S</span></div>
+              <div class="footer-brand-name">Safra</div>
+            </div>
+            <p class="desc">Your gateway to Tunisia's most beautiful stays and rides.</p>
+          </div>
+          <div>
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              Explore
+            </h3>
+            <div class="footer-links">
+              <a href="houses.html">Houses</a>
+              <a href="cars.html">Cars</a>
+            </div>
+          </div>
+          <div>
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Contact
+            </h3>
+            <div class="footer-links">
+              <a href="contact.html">Contact us</a>
+              <a href="faq.html">FAQ</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">© 2026 Safra. All rights reserved.</div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Shared API base URL. Defines API_BASE_URL (e.g. "https://safra-claude.onrender.com") -->
+  <script src="js/config.js"></script>
+<script src="js/nav-auth.js"></script>
+
+  <script>
+    // Mobile menu toggle (same as index.html)
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+    // Signup form logic
+    const form = document.getElementById('signupFormEl');
+    const errorBox = document.getElementById('signupError');
+    const btn = document.getElementById('signupBtn');
+    const signupForm = document.getElementById('signupForm');
+    const signupSuccess = document.getElementById('signupSuccess');
+    const successEmail = document.getElementById('successEmail');
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add('show');
+    }
+    function hideError() {
+      errorBox.classList.remove('show');
+      errorBox.textContent = '';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      // Basic client-side validation before hitting the backend
+      if (!name) return showError('Please enter your name.');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return showError('Please enter a valid email address.');
+      }
+      if (password.length < 8) {
+        return showError('Password must be at least 8 characters.');
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account…';
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, email, password })
+        });
+
+        // Try to parse JSON regardless of status, so we can show the server's error message if any
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          // Map common backend error messages to friendly text
+          const msg = data.message || data.error || '';
+          if (/email.*exists|already.*use|duplicate/i.test(msg)) {
+            showError('An account with that email already exists. Try logging in.');
+          } else if (msg) {
+            showError(msg);
+          } else {
+            showError(`Signup failed (${res.status}). Please try again.`);
+          }
+          btn.disabled = false;
+          btn.textContent = 'Sign Up';
+          return;
+        }
+
+        // Success — swap the form for the "check your email" panel
+        successEmail.textContent = email;
+        signupForm.style.display = 'none';
+        signupSuccess.classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      } catch (err) {
+        showError('Network error. Check your connection and try again.');
+        btn.disabled = false;
+        btn.textContent = 'Sign Up';
+      }
+    });
+    document.getElementById('resendLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const resendStatus = document.getElementById('resendStatus');
+      const email = successEmail.textContent;
+      e.target.textContent = 'Sending...';
+      try {
+        await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        resendStatus.textContent = 'If needed, a new link has been sent.';
+        resendStatus.style.display = 'block';
+      } catch (err) {
+        resendStatus.textContent = 'Network error, try again.';
+        resendStatus.style.display = 'block';
+      }
+      e.target.textContent = 'Resend verification email';
+    });
+  </script>
+</body>
+</html>

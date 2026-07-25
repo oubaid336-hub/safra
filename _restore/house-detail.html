@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House Details - Safra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* Page-specific styles only — everything reusable lives in style.css */
+  body { padding-top: 0; }
+
+  .detail-hero { position: relative; margin-top: 76px; }
+  .gallery-main {
+    aspect-ratio: 16 / 9; border-radius: 0; overflow: hidden;
+    background: linear-gradient(135deg, var(--safra-sand), var(--safra-sanddark));
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .gallery-placeholder { text-align: center; color: var(--safra-blue); opacity: .55; }
+  .gallery-placeholder svg { width: 56px; height: 56px; margin: 0 auto 10px; }
+  .gallery-placeholder p { font-family: 'Playfair Display', serif; font-weight: 700; font-size: .95rem; }
+
+  .detail-layout { display: grid; grid-template-columns: 1fr; gap: 40px; padding: 40px 0 80px; }
+  @media (min-width: 960px) { .detail-layout { grid-template-columns: 1.6fr 1fr; } }
+
+  .detail-eyebrow { display: flex; align-items: center; gap: 8px; color: var(--safra-terracotta); font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
+  .detail-title { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 2rem; color: var(--safra-navy); margin-bottom: 6px; }
+  .detail-location { color: var(--safra-gray); font-size: 15px; margin-bottom: 28px; display: flex; align-items: center; gap: 6px; }
+  .detail-location svg { width: 16px; height: 16px; color: var(--safra-terracotta); flex-shrink: 0; }
+
+  .stat-row { display: flex; flex-wrap: wrap; gap: 28px; padding: 22px 0; margin-bottom: 28px; border-top: 1px solid var(--safra-sandlight); border-bottom: 1px solid var(--safra-sandlight); }
+  .stat { display: flex; align-items: center; gap: 10px; }
+  .stat svg { width: 22px; height: 22px; color: var(--safra-terracotta); }
+  .stat-value { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--safra-navy); font-size: 1rem; line-height: 1.1; }
+  .stat-label { font-size: 12px; color: var(--safra-gray); }
+
+  .detail-desc { font-size: 15px; line-height: 1.8; color: var(--safra-gray); margin-bottom: 32px; white-space: pre-line; }
+
+  .amenities-title, .reviews-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; color: var(--safra-navy); margin-bottom: 16px; }
+  .reviews-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .reviews-header .reviews-title { margin-bottom: 0; }
+  .write-review-link { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: var(--safra-terracotta); text-decoration: none; }
+  .write-review-link:hover { text-decoration: underline; }
+  .amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .amenity { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--safra-navy); }
+  .amenity svg { width: 18px; height: 18px; color: var(--safra-terracotta); flex-shrink: 0; }
+
+  .review-card { padding: 18px 0; border-bottom: 1px solid var(--safra-sandlight); }
+  .review-card:last-child { border-bottom: none; }
+  .review-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .review-name { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--safra-navy); font-size: 14px; }
+  .review-stars { color: var(--safra-yellow); font-size: 13px; letter-spacing: 1px; }
+  .review-comment { font-size: 14px; color: var(--safra-gray); line-height: 1.6; }
+  .no-reviews { color: var(--safra-gray); font-size: 14px; }
+
+  .booking-card {
+    background: var(--safra-cream); border-radius: 20px; padding: 28px;
+    box-shadow: 0 10px 30px rgba(15,23,42,.08); height: fit-content;
+    position: sticky; top: 100px;
+  }
+  .booking-price { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 1.8rem; color: var(--safra-navy); margin-bottom: 2px; }
+  .booking-price span { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px; color: var(--safra-gray); }
+  .booking-status { display: inline-block; margin-top: 10px; margin-bottom: 20px; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .booking-status.approved { background: rgba(27,58,92,.08); color: var(--safra-blue); }
+  .booking-card .btn { width: 100%; }
+  .booking-note { font-size: 12px; color: var(--safra-gray); margin-top: 14px; text-align: center; }
+
+  .state-message { max-width: 480px; margin: 160px auto 100px; text-align: center; padding: 0 20px; }
+  .state-message h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem; color: var(--safra-navy); margin-bottom: 10px; }
+  .state-message p { color: var(--safra-gray); margin-bottom: 24px; }
+
+  .skeleton { background: linear-gradient(90deg, var(--safra-sandlight) 25%, var(--safra-sand) 37%, var(--safra-sandlight) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 8px; }
+  @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-badge"><span>S</span></div>
+      <span class="nav-logo-text">Safra</span>
+    </a>
+        
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="houses.html" class="nav-link">Houses</a>
+      <a href="cars.html" class="nav-link">Cars</a>
+      <a href="faq.html" class="nav-link">FAQ</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-auth">
+      <a href="login.html" class="nav-auth-login">Log in</a>
+      <a href="signup.html" class="nav-auth-signup">Sign up</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="container">
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">Home</a>
+      <a href="houses.html">Houses</a>
+      <a href="cars.html">Cars</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <div class="divider"></div>
+      <a href="login.html">Log in</a>
+      <a href="signup.html">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<div id="page-content">
+  <div class="detail-hero">
+    <div class="gallery-main" id="galleryMain">
+      <div class="gallery-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5-4 4-3-3-6 6"/></svg>
+        <p>Photos coming soon</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="detail-layout" id="detailLayout" style="display:none;">
+      <div>
+        <div class="detail-eyebrow" id="detailBadge">Available Now</div>
+        <h1 class="detail-title" id="detailTitle"></h1>
+        <div class="detail-location">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="detailLocation"></span>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+            <div><div class="stat-value" id="detailRooms">—</div><div class="stat-label">Rooms</div></div>
+          </div>
+          <div class="stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-2.4 1.8L6 8"/><path d="M4 12h16"/><path d="M4 12v4a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4v-4"/><path d="M8 20v2"/><path d="M16 20v2"/></svg>
+            <div><div class="stat-value" id="detailBaths">—</div><div class="stat-label">Bathrooms</div></div>
+          </div>
+          <div class="stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div><div class="stat-value" id="detailCapacity">—</div><div class="stat-label">Guests</div></div>
+          </div>
+        </div>
+
+        <p class="detail-desc" id="detailDesc"></p>
+
+        <div id="amenitiesSection">
+          <h3 class="amenities-title">Amenities</h3>
+          <div class="amenities-grid" id="amenitiesGrid"></div>
+        </div>
+
+        <div>
+          <div class="reviews-header">
+            <h3 class="reviews-title">Reviews</h3>
+            <a href="#" id="writeReviewLink" class="write-review-link">Write a Review</a>
+          </div>
+          <div id="reviewsList"><p class="no-reviews">Loading reviews…</p></div>
+        </div>
+      </div>
+
+      <aside class="booking-card">
+        <div class="booking-price"><span id="pricePrefix"></span></div>
+        <span class="booking-status approved">Approved listing</span>
+        <a class="btn btn-terracotta" id="bookNowBtn" href="#">Book This House</a>
+        <button type="button" class="btn" id="wishlistBtn">Add to Wishlist</button>
+        <p class="booking-note">You won't be charged yet — pick your dates on the next step.</p>
+      </aside>
+    </div>
+
+    <div id="loadingState" class="detail-layout">
+      <div>
+        <div class="skeleton" style="height:14px;width:120px;margin-bottom:12px;"></div>
+        <div class="skeleton" style="height:32px;width:70%;margin-bottom:10px;"></div>
+        <div class="skeleton" style="height:16px;width:40%;margin-bottom:28px;"></div>
+        <div class="skeleton" style="height:80px;width:100%;margin-bottom:28px;"></div>
+        <div class="skeleton" style="height:120px;width:100%;"></div>
+      </div>
+      <div class="skeleton" style="height:220px;width:100%;border-radius:20px;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="errorState" class="state-message" style="display:none;">
+  <h2 id="errorTitle">Listing not found</h2>
+  <p id="errorText">This house may have been removed or the link is incorrect.</p>
+  <a href="houses.html" class="btn btn-terracotta">Back to all houses</a>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-badge"><span>S</span></div>
+          <span class="footer-brand-name">Safra</span>
+        </div>
+        <p class="desc">Handpicked houses and cars across Tunisia — from Sidi Bou Said's blue-and-white streets to the dunes of the Sahara.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <div class="footer-links">
+          <a href="houses.html">Houses</a>
+          <a href="cars.html">Cars</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <h3>Support</h3>
+        <div class="footer-links">
+          <a href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">Â© 2026 Safra. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/nav-auth.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/house-detail.js"></script>
+</body>
+</html>

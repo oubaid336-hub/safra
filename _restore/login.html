@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Safra</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- Page-local styles. Identical to signup.html's. When we build a third auth
+       page, we'll promote these to style.css so all 3 share the same source. -->
+  <style>
+    .auth-page { min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-main {
+      flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
+      padding: 120px 20px 60px;
+    }
+    .auth-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .auth-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 0; }
+
+    .auth-card {
+      position: relative; z-index: 1; width: 100%; max-width: 460px;
+      background: #fff; border-radius: 20px; padding: 36px 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    }
+    .auth-card h1 {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      color: var(--safra-navy); font-size: 1.75rem; text-align: center; margin-bottom: 6px;
+    }
+    .auth-card .subtitle { text-align: center; color: var(--safra-gray); font-size: 14px; margin-bottom: 28px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600; color: var(--safra-navy);
+      margin-bottom: 6px; font-family: 'Inter', sans-serif;
+    }
+    .form-group input {
+      width: 100%; padding: 12px 14px; font-size: 15px; font-family: 'Inter', sans-serif;
+      color: var(--safra-navy); background: var(--safra-offwhite);
+      border: 1.5px solid var(--safra-sanddark); border-radius: 10px;
+      transition: border-color .2s, background .2s;
+    }
+    .form-group input:focus {
+      outline: none; border-color: var(--safra-terracotta); background: #fff;
+    }
+    .form-group .hint { font-size: 12px; color: var(--safra-graylight); margin-top: 4px; }
+
+    /* Forgot password link — top-right of the form, above the password field */
+    .form-group.with-link { position: relative; }
+    .forgot-link {
+      position: absolute; right: 0; top: 0; font-size: 12px; font-weight: 600;
+      color: var(--safra-terracotta);
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .auth-submit { width: 100%; margin-top: 8px; }
+
+    .auth-error {
+      display: none; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px;
+      background: #FEE2E2; color: #991B1B; font-size: 13px; border: 1px solid #FECACA;
+    }
+    .auth-error.show { display: block; }
+
+    .auth-switch { text-align: center; margin-top: 18px; font-size: 14px; color: var(--safra-gray); }
+    .auth-switch a { color: var(--safra-terracotta); font-weight: 600; }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    @media (min-width: 768px) {
+      .auth-card { padding: 44px 40px; }
+      .auth-card h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+
+    <!-- ============= NAVBAR ============= -->
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container nav-inner">
+
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-badge"><span>S</span></div>
+          <div class="nav-logo-text">Safra</div>
+        </a>
+
+    <div class="nav-links">
+          <a href="index.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Home
+          </a>
+          <a href="houses.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22V12l10-9 10 9v10"/><path d="M2 22h20"/><path d="M9 22V12h6v10"/></svg>
+            Houses
+          </a>
+          <a href="cars.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            Cars
+          </a>
+        </div>
+
+        <div class="nav-auth">
+          <a href="login.html" class="nav-auth-login active" style="pointer-events:none;">Login</a>
+          <a href="signup.html" class="nav-auth-signup">Sign Up</a>
+        </div>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="container">
+        <div class="mobile-menu" id="mobileMenu">
+          <a href="index.html">Home</a>
+          <a href="houses.html">Houses</a>
+          <a href="cars.html">Cars</a>
+          <div class="divider"></div>
+          <a href="login.html" style="color:var(--safra-terracotta);">Login</a>
+          <a href="signup.html">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============= MAIN ============= -->
+    <main class="auth-main">
+      <img class="auth-bg" src="https://images.unsplash.com/photo-1565073185544-0fe2d7e7eb1d?w=1920&q=80" alt="Sidi Bou Said, Tunisia" />
+      <div class="auth-overlay"></div>
+
+      <div class="auth-card">
+        <h1>Welcome back</h1>
+        <p class="subtitle">Log in to continue your Tunisia journey</p>
+
+        <div class="auth-error" id="loginError"></div>
+
+        <form id="loginFormEl" novalidate>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+          </div>
+
+          <div class="form-group with-link">
+            <label for="password">Password</label>
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+          </div>
+
+          <button type="submit" class="btn btn-terracotta auth-submit" id="loginBtn">Log In</button>
+        </form>
+
+        <div class="auth-switch">
+          Don't have an account? <a href="signup.html">Sign Up</a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============= FOOTER ============= -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">
+              <div class="footer-brand-badge"><span>S</span></div>
+              <div class="footer-brand-name">Safra</div>
+            </div>
+            <p class="desc">Your gateway to Tunisia's most beautiful stays and rides.</p>
+          </div>
+          <div>
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              Explore
+            </h3>
+            <div class="footer-links">
+              <a href="houses.html">Houses</a>
+              <a href="cars.html">Cars</a>
+            </div>
+          </div>
+          <div>
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Contact
+            </h3>
+            <div class="footer-links">
+              <a href="contact.html">Contact us</a>
+              <a href="faq.html">FAQ</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">Â© 2026 Safra. All rights reserved.</div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="js/config.js"></script>
+<script src="js/nav-auth.js"></script>
+
+  <script>
+    // Mobile menu toggle
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+    // Login form
+    const form = document.getElementById('loginFormEl');
+    const errorBox = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add('show');
+    }
+    function hideError() {
+      errorBox.classList.remove('show');
+      errorBox.textContent = '';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return showError('Please enter a valid email address.');
+      }
+      if (!password) {
+        return showError('Please enter your password.');
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Logging in…';
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // ESSENTIAL: tells the browser to accept and store the httpOnly JWT cookie
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          // Map common backend error messages to friendly text.
+          // The backend's authController distinguishes between "user not found",
+          // "wrong password", "not verified", and "account blocked" — we
+          // surface each with its own message so the user knows what to do.
+          const msg = (data.message || data.error || '').toLowerCase();
+          if (res.status === 403 && /blocked/i.test(msg)) {
+            showError('This account has been blocked. Please contact support.');
+          } else if (/verify/i.test(msg)) {
+            showError('Please verify your email first. Check your inbox for the verification link.');
+          } else if (/invalid|credentials|password|email/i.test(msg)) {
+            showError('Invalid email or password.');
+          } else if (msg) {
+            showError(data.message || data.error);
+          } else {
+            showError(`Login failed (${res.status}). Please try again.`);
+          }
+          btn.disabled = false;
+          btn.textContent = 'Log In';
+          return;
+        }
+
+        // Success — JWT cookie was set by the backend (HttpOnly, Secure, SameSite=Strict).
+        // Redirect to homepage. We use location.replace so the login page
+        // doesn't stay in browser history (back button won't return to a logged-in
+        // session view of the login form).
+        window.location.replace('index.html');
+
+      } catch (err) {
+        showError('Network error. Check your connection and try again.');
+        btn.disabled = false;
+        btn.textContent = 'Log In';
+      }
+    });
+  </script>
+</body>
+</html>

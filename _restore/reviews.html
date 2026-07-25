@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reviews — Safra</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    .reviews-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .listing-context {
+      font-family: 'Inter', sans-serif;
+      opacity: 0.7;
+      margin-top: -0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .review-card .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .review-card .reviewer-name {
+      font-weight: 600;
+    }
+
+    .review-card .review-date {
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .stars {
+      color: var(--safra-terracotta, #c96f4a);
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      margin: 0.35rem 0;
+    }
+
+    .review-comment {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+    }
+
+    #no-reviews-state {
+      font-family: 'Inter', sans-serif;
+      opacity: 0.7;
+      padding: 1rem 0 2rem;
+    }
+
+    .rating-select {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .rating-select button {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      color: rgba(0, 0, 0, 0.25);
+      line-height: 1;
+      padding: 0;
+    }
+
+    .rating-select button.selected {
+      color: var(--safra-terracotta, #c96f4a);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    .form-message {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .form-message.error {
+      display: block;
+      background: #fdeceb;
+      color: #9c2b21;
+      border: 1px solid #f3c2bd;
+    }
+
+    .form-message.success {
+      display: block;
+      background: #eaf6ee;
+      color: #1f6b3a;
+      border: 1px solid #bfe3c9;
+    }
+
+    #login-to-review {
+      font-family: 'Inter', sans-serif;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    #login-to-review {
+      display: none;
+    }
+
+    #loading-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-family: 'Inter', sans-serif;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar scrolled">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-badge"><span>S</span></div>
+        <span class="nav-logo-text">Safra</span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="houses.html" class="nav-link">Houses</a>
+        <a href="cars.html" class="nav-link">Cars</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </div>
+      <div class="nav-auth">
+        <a href="login.html" class="nav-auth-login">Log in</a>
+        <a href="signup.html" class="nav-auth-signup">Sign up</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="houses.html">Houses</a>
+        <a href="cars.html">Cars</a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html">Contact</a>
+        <div class="divider"></div>
+        <a href="login.html">Log in</a>
+        <a href="signup.html">Sign up</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="reviews-page">
+    <h1>Reviews</h1>
+    <p class="listing-context" id="listing-context">Loading listing…</p>
+
+    <div id="loading-state">Loading reviews…</div>
+    <div id="no-reviews-state" style="display:none;">No reviews yet — be the first to share your experience.</div>
+    <div id="review-list" class="review-list"></div>
+
+    <section class="card-style" id="review-form-section" style="display:none;">
+      <h2>Write a Review</h2>
+
+      <form id="review-form">
+        <div class="rating-select" id="rating-select" data-rating="0">
+          <button type="button" data-value="1">★</button>
+          <button type="button" data-value="2">★</button>
+          <button type="button" data-value="3">★</button>
+          <button type="button" data-value="4">★</button>
+          <button type="button" data-value="5">★</button>
+        </div>
+
+        <div class="form-group">
+          <label for="review-comment">Your review</label>
+          <textarea id="review-comment" required placeholder="Tell other travelers what to expect…"></textarea>
+        </div>
+
+        <button type="submit" class="btn" id="submit-review-btn">Submit Review</button>
+
+        <div id="form-message" class="form-message"></div>
+      </form>
+    </section>
+
+    <div id="login-to-review" class="card-style">
+      <p>Log in to write a review.</p>
+      <a href="login.html?redirect=reviews.html" class="btn">Log In</a>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+<script src="js/nav-auth.js"></script>
+<script src="js/nav.js"></script>
+  <script src="js/reviews-public.js"></script>
+</body>
+</html>
+

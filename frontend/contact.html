@@ -9,19 +9,20 @@
 <link rel="stylesheet" href="css/style.css">
 <style>
   .contact-hero {
-    padding: 64px 24px 40px;
+    padding: 140px 24px 40px;
     text-align: center;
-    background: var(--safra-cream, #F7F3EC);
+    background: linear-gradient(135deg, var(--safra-cream, #F7F3EC) 0%, var(--safra-sandlight, #FAF3EB) 100%);
   }
   .contact-hero h1 {
     font-family: 'Playfair Display', serif;
     font-size: clamp(28px, 5vw, 40px);
     color: var(--safra-navy, #1B2A41);
     margin-bottom: 12px;
+    font-weight: 700;
   }
   .contact-hero p {
     font-family: 'Inter', sans-serif;
-    color: var(--safra-charcoal, #4A4A4A);
+    color: var(--safra-gray, #6B7280);
     max-width: 480px;
     margin: 0 auto;
     line-height: 1.6;
@@ -57,14 +58,15 @@
     border: 1px solid #DDD5C8;
     border-radius: 10px;
     background: #FBFAF7;
-    color: var(--safra-charcoal, #2A2A2A);
+    color: var(--safra-navy, #2A2A2A);
     box-sizing: border-box;
-    transition: border-color 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .form-group input:focus,
   .form-group textarea:focus {
     outline: none;
-    border-color: var(--safra-terracotta, #D97757);
+    border-color: var(--safra-terracotta, #C45C3E);
+    box-shadow: 0 0 0 4px rgba(196, 92, 62, .12);
   }
   .form-group textarea {
     min-height: 140px;
@@ -84,14 +86,20 @@
     font-size: 15px;
     border: none;
     border-radius: 10px;
-    background: var(--safra-terracotta, #D97757);
+    background: var(--safra-terracotta, #C45C3E);
     color: #fff;
     cursor: pointer;
-    transition: opacity 0.15s ease;
+    transition: all 0.25s ease;
+  }
+  .contact-submit:hover {
+    background: var(--safra-terracottalight, #D97B5D);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(196, 92, 62, .25);
   }
   .contact-submit:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
   .form-banner {
     display: none;
@@ -112,30 +120,44 @@
     color: #8C2E27;
     border: 1px solid #F0C4C0;
   }
-
 </style>
 </head>
 <body class="contact-page">
 
-<nav class="navbar scrolled">
+<nav class="navbar" id="navbar">
   <div class="container nav-inner">
     <a href="index.html" class="nav-logo">
       <div class="nav-logo-badge"><span>S</span></div>
       <span class="nav-logo-text">Safra</span>
     </a>
     <div class="nav-links">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="houses.html" class="nav-link">Houses</a>
-      <a href="cars.html" class="nav-link">Cars</a>
-      <a href="faq.html" class="nav-link">FAQ</a>
-      <a href="contact.html" class="nav-link active">Contact</a>
+      <a href="index.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/><path d="M9 20v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/></svg>
+        Home
+      </a>
+      <a href="houses.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-7h6v7"/></svg>
+        Houses
+      </a>
+      <a href="cars.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.5 4.5 8A2 2 0 0 1 6.4 6.5h11.2A2 2 0 0 1 19.5 8L21 13.5"/><path d="M3 13.5h18V17a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3.5Z"/><circle cx="7.5" cy="17" r="1.4"/><circle cx="16.5" cy="17" r="1.4"/></svg>
+        Cars
+      </a>
+      <a href="faq.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        FAQ
+      </a>
+      <a href="contact.html" class="nav-link active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Contact
+      </a>
     </div>
     <div class="nav-auth">
       <a href="login.html" class="nav-auth-login">Log in</a>
       <a href="signup.html" class="nav-auth-signup">Sign up</a>
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <svg id="navToggleIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
   </div>
   <div class="container">
