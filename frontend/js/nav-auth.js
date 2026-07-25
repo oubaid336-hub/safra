@@ -9,7 +9,7 @@
       el.innerHTML =
         '<a href="wishlist.html" class="nav-auth-login">Wishlist</a>' +
         '<a href="my-bookings.html" class="nav-auth-login">My Bookings</a>' +
-        '<a href="#" class="nav-auth-signup" id="navLogoutBtn">Log out</a>';
+        '<a href="#" class="nav-auth-logout" id="navLogoutBtn">Log out</a>';
     });
     document.querySelectorAll('.mobile-menu').forEach(function (el) {
       var login = el.querySelector('a[href="login.html"]');

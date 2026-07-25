@@ -110,6 +110,20 @@ button { font-family: inherit; }
 }
 .nav-auth-signup:hover { background: var(--safra-terracottalight); }
 
+.nav-auth-logout {
+  padding: 8px 18px; border-radius: 999px;
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
+  color: rgba(255,255,255,.9); border: 1.5px solid rgba(255,255,255,.5);
+  background: transparent; transition: all .3s;
+}
+.nav-auth-logout:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.8); }
+.navbar.scrolled .nav-auth-logout {
+  color: var(--safra-navy); border-color: var(--safra-sanddark);
+}
+.navbar.scrolled .nav-auth-logout:hover {
+  background: var(--safra-sandlight); border-color: var(--safra-terracotta); color: var(--safra-terracotta);
+}
+
 .nav-toggle {
   display: flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; background: none; border: none; cursor: pointer;
