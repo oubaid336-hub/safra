@@ -7,12 +7,19 @@
   function renderLoggedIn() {
     document.querySelectorAll('.nav-auth').forEach(function (el) {
       el.innerHTML =
+        '<a href="wishlist.html" class="nav-auth-login">Wishlist</a>' +
         '<a href="my-bookings.html" class="nav-auth-login">My Bookings</a>' +
         '<a href="#" class="nav-auth-signup" id="navLogoutBtn">Log out</a>';
     });
     document.querySelectorAll('.mobile-menu').forEach(function (el) {
       var login = el.querySelector('a[href="login.html"]');
       var signup = el.querySelector('a[href="signup.html"]');
+      if (login && !el.querySelector('a[href="wishlist.html"]')) {
+        var wishlistLink = document.createElement('a');
+        wishlistLink.setAttribute('href', 'wishlist.html');
+        wishlistLink.textContent = 'Wishlist';
+        login.parentNode.insertBefore(wishlistLink, login);
+      }
       if (login) { login.textContent = 'My Bookings'; login.setAttribute('href', 'my-bookings.html'); }
       if (signup) { signup.textContent = 'Log out'; signup.setAttribute('href', '#'); signup.id = 'navLogoutBtnMobile'; }
     });

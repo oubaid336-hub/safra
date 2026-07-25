@@ -39,6 +39,10 @@
   .detail-desc { font-size: 15px; line-height: 1.8; color: var(--safra-gray); margin-bottom: 32px; white-space: pre-line; }
 
   .amenities-title, .reviews-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; color: var(--safra-navy); margin-bottom: 16px; }
+  .reviews-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .reviews-header .reviews-title { margin-bottom: 0; }
+  .write-review-link { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: var(--safra-terracotta); text-decoration: none; }
+  .write-review-link:hover { text-decoration: underline; }
   .amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 40px; }
   .amenity { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--safra-navy); }
   .amenity svg { width: 18px; height: 18px; color: var(--safra-terracotta); flex-shrink: 0; }
@@ -82,7 +86,8 @@
         
     <div class="nav-links">
       <a href="index.html" class="nav-link">Home</a>
-      
+      <a href="houses.html" class="nav-link">Houses</a>
+      <a href="cars.html" class="nav-link">Cars</a>
       <a href="faq.html" class="nav-link">FAQ</a>
       <a href="contact.html" class="nav-link">Contact</a>
     </div>
@@ -151,7 +156,10 @@
         </div>
 
         <div>
-          <h3 class="reviews-title">Reviews</h3>
+          <div class="reviews-header">
+            <h3 class="reviews-title">Reviews</h3>
+            <a href="#" id="writeReviewLink" class="write-review-link">Write a Review</a>
+          </div>
           <div id="reviewsList"><p class="no-reviews">Loading reviews…</p></div>
         </div>
       </div>

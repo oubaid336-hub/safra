@@ -47,6 +47,11 @@
       `$${house.pricePerNight}<span> / night</span>`;
     document.getElementById('bookNowBtn').href = `booking.html?houseId=${house._id}`;
 
+    const reviewLink = document.getElementById('writeReviewLink');
+    if (reviewLink) {
+      reviewLink.href = `reviews.html?listingId=${encodeURIComponent(house._id || id)}&listingType=house`;
+    }
+
     loadReviews(id);
     setupWishlistButton(id);
 

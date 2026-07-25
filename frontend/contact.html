@@ -112,49 +112,43 @@
     color: #8C2E27;
     border: 1px solid #F0C4C0;
   }
-  .navbar { display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 24px; font-family: 'Inter', sans-serif; border-bottom: 1px solid #EEE7DA; }
-  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700;
-    color: var(--safra-navy, #1B2A41); text-decoration: none; }
-  .nav-links { list-style: none; display: none; gap: 24px; margin: 0; padding: 0; }
-  .nav-links a { text-decoration: none; color: var(--safra-navy, #1B2A41); font-weight: 500; }
-  .nav-links a.active { color: var(--safra-terracotta, #D97757); }
-  .nav-auth { display: none; gap: 12px; }
-  .btn { padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; }
-  .btn-outline { border: 1px solid var(--safra-navy, #1B2A41); color: var(--safra-navy, #1B2A41); }
-  .btn-primary { background: var(--safra-terracotta, #D97757); color: #fff; }
-  .nav-toggle { display: flex; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 6px; }
-  .nav-toggle span { width: 24px; height: 2px; background: var(--safra-navy, #1B2A41); }
-  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0;
-    background: #fff; padding: 20px 24px; box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
-  footer { text-align: center; padding: 32px 24px; font-family: 'Inter', sans-serif;
-    color: #8A8377; font-size: 13px; border-top: 1px solid #EEE7DA; }
-  @media (min-width: 768px) {
-    .nav-toggle { display: none; }
-    .nav-links { display: flex; position: static; box-shadow: none; padding: 0; }
-    .nav-auth { display: flex; }
-  }
+
 </style>
 </head>
 <body class="contact-page">
 
-<nav class="navbar">
-  <a href="index.html" class="nav-logo">Safra</a>
-  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="houses.html">Houses</a></li>
-    <li><a href="cars.html">Cars</a></li>
-    <li><a href="wishlist.html">Wishlist</a></li>
-    <li><a href="my-bookings.html">My Bookings</a></li>
-    <li><a href="faq.html">FAQ</a></li>
-    <li><a href="contact.html" class="active">Contact</a></li>
-  </ul>
-  <div class="nav-auth">
-    <a href="login.html" class="btn btn-outline">Log In</a>
-    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+<nav class="navbar scrolled">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-badge"><span>S</span></div>
+      <span class="nav-logo-text">Safra</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="houses.html" class="nav-link">Houses</a>
+      <a href="cars.html" class="nav-link">Cars</a>
+      <a href="faq.html" class="nav-link">FAQ</a>
+      <a href="contact.html" class="nav-link active">Contact</a>
+    </div>
+    <div class="nav-auth">
+      <a href="login.html" class="nav-auth-login">Log in</a>
+      <a href="signup.html" class="nav-auth-signup">Sign up</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="container">
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">Home</a>
+      <a href="houses.html">Houses</a>
+      <a href="cars.html">Cars</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <div class="divider"></div>
+      <a href="login.html">Log in</a>
+      <a href="signup.html">Sign up</a>
+    </div>
   </div>
 </nav>
 
@@ -189,26 +183,38 @@
   </form>
 </main>
 
-<footer>
-  &copy; 2026 Safra. All rights reserved.
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-badge"><span>S</span></div>
+          <span class="footer-brand-name">Safra</span>
+        </div>
+        <p class="desc">Handpicked houses and cars across Tunisia - from Sidi Bou Said's blue-and-white streets to the dunes of the Sahara.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <div class="footer-links">
+          <a href="houses.html">Houses</a>
+          <a href="cars.html">Cars</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <h3>Support</h3>
+        <div class="footer-links">
+          <a href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">(c) 2026 Safra. All rights reserved.</div>
+  </div>
 </footer>
 
 <script src="js/config.js"></script>
 <script src="js/nav-auth.js"></script>
+<script src="js/nav.js"></script>
 <script src="js/contact.js"></script>
-<script>
-  // Mobile nav toggle (this page uses its own navbar markup/classes, separate from the shared nav.js)
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-  if (navToggle && navLinks) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', String(isOpen));
-    });
-    navLinks.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => navLinks.classList.remove('open'));
-    });
-  }
-</script>
 </body>
 </html>
