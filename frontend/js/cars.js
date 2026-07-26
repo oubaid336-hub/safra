@@ -14,6 +14,7 @@ function renderCars(list) {
         ${car.photos && car.photos[0]
           ? `<img src="${car.photos[0]}" alt="${escapeHtml(car.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
           : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17V9l2-5h14l2 5v8"/></svg>`}
+        ${car.year ? `<span class="listing-badge-corner">${car.year}</span>` : ''}
       </div>
       <div class="listing-body">
         <div class="listing-title">${escapeHtml(car.title)}</div>
@@ -21,9 +22,13 @@ function renderCars(list) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span>${escapeHtml(car.location)}</span>
         </div>
+        <div class="listing-meta">
+          ${car.seats ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${car.seats} seats</span>` : ''}
+          ${car.transmission ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m17.36-6.36-4.24 4.24m-6.24 6.24-4.24 4.24m14.72 0-4.24-4.24M7.05 7.05 2.81 2.81"/></svg>${escapeHtml(car.transmission)}</span>` : ''}
+        </div>
         <div class="listing-footer-row">
-          <div class="listing-price">$${car.pricePerDay}<span> / day</span></div>
-          <span class="listing-cta">View details -&gt;</span>
+          <div class="listing-price">$${car.pricePerDay}<span>per day</span></div>
+          <span class="listing-cta">View Details</span>
         </div>
       </div>
     </a>
