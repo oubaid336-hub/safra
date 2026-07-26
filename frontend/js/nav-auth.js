@@ -41,11 +41,12 @@
         var nameEl = document.createElement('div');
         nameEl.className = 'mobile-menu-user';
         nameEl.textContent = user.name;
-        login.parentNode.insertBefore(nameEl, login);
 
         var divider = document.createElement('div');
         divider.className = 'divider';
-        login.parentNode.insertBefore(divider, login);
+
+        el.insertBefore(divider, el.firstChild);
+        el.insertBefore(nameEl, el.firstChild);
       }
       if (login && !el.querySelector('a[href="wishlist.html"]')) {
         var wishlistLink = document.createElement('a');
@@ -79,4 +80,5 @@
     })
     .catch(function () {});
 })();
+
 

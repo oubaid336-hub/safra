@@ -796,5 +796,6 @@ textarea.form-input { resize: vertical; min-height: 140px; }
 .mobile-menu-user {
   padding: 10px 16px 4px;
   font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px;
-  color: var(--safra-navy);
+  color: var(--safra-terracotta);
 }
+
