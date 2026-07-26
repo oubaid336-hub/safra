@@ -81,8 +81,37 @@
   .admin-main p.sub {
     color: #8A8377;
     font-size: 14px;
-    margin: 0 0 28px;
+    margin: 0 0 20px;
   }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  #searchInput {
+    flex: 1;
+    padding: 11px 16px;
+    border: 1px solid #E5DFD2;
+    border-radius: 999px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    background: #fff;
+  }
+  #searchInput:focus { border-color: var(--safra-terracotta, #D97757); }
+  #saveBtn {
+    flex-shrink: 0;
+    padding: 12px 24px;
+    background: var(--safra-terracotta, #D97757);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #saveBtn:hover { opacity: 0.9; }
   .picker-section {
     background: #fff;
     border-radius: 14px;
@@ -108,18 +137,14 @@
     border-bottom: 1px solid #F1EDE3;
   }
   .picker-section label:last-child { border-bottom: none; }
-  #saveBtn {
-    margin-top: 4px;
-    padding: 12px 24px;
-    background: var(--safra-terracotta, #D97757);
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+  .picker-section label.hidden { display: none; }
+  .no-match {
+    display: none;
+    font-size: 13px;
+    color: #8A8377;
+    padding: 8px 0;
   }
-  #saveBtn:hover { opacity: 0.9; }
+  .no-match.show { display: block; }
   #msg {
     margin-top: 14px;
     font-size: 14px;
@@ -152,19 +177,25 @@
   <h1>Featured Listings</h1>
   <p class="sub">Choose what shows in the homepage's Featured section.</p>
 
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Search houses or cars by title or location...">
+    <button id="saveBtn">Save</button>
+  </div>
+
   <div class="picker-section">
     <h2>Houses</h2>
     <p class="hint">Pick any number — only the first 2 will show on the homepage.</p>
     <div id="houseList"></div>
+    <p class="no-match" id="houseNoMatch">No houses match your search.</p>
   </div>
 
   <div class="picker-section">
     <h2>Cars</h2>
     <p class="hint">Pick any number — only the first 1 will show on the homepage.</p>
     <div id="carList"></div>
+    <p class="no-match" id="carNoMatch">No cars match your search.</p>
   </div>
 
-  <button id="saveBtn">Save</button>
   <div id="msg"></div>
 </main>
 
@@ -175,14 +206,38 @@ async function load() {
   const data = await res.json();
 
   document.getElementById('houseList').innerHTML = data.houses.map(h =>
-    `<label><input type="checkbox" class="houseChk" value="${h._id}"> ${h.title} - ${h.location}</label>`
+    `<label data-search="${(h.title + ' ' + h.location).toLowerCase()}">
+      <input type="checkbox" class="houseChk" value="${h._id}"> ${h.title} - ${h.location}
+    </label>`
   ).join('');
 
   document.getElementById('carList').innerHTML = data.cars.map(c =>
-    `<label><input type="checkbox" class="carChk" value="${c._id}"> ${c.title} - ${c.location}</label>`
+    `<label data-search="${(c.title + ' ' + c.location).toLowerCase()}">
+      <input type="checkbox" class="carChk" value="${c._id}"> ${c.title} - ${c.location}
+    </label>`
   ).join('');
 }
 load();
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const term = e.target.value.trim().toLowerCase();
+
+  let houseVisible = 0;
+  document.querySelectorAll('#houseList label').forEach(label => {
+    const match = label.dataset.search.includes(term);
+    label.classList.toggle('hidden', !match);
+    if (match) houseVisible++;
+  });
+  document.getElementById('houseNoMatch').classList.toggle('show', houseVisible === 0);
+
+  let carVisible = 0;
+  document.querySelectorAll('#carList label').forEach(label => {
+    const match = label.dataset.search.includes(term);
+    label.classList.toggle('hidden', !match);
+    if (match) carVisible++;
+  });
+  document.getElementById('carNoMatch').classList.toggle('show', carVisible === 0);
+});
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
   const houseIds = [...document.querySelectorAll('.houseChk:checked')].map(el => el.value);
