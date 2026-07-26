@@ -33,10 +33,20 @@
     }
   }
 
-  function renderLoggedInMobile() {
+  function renderLoggedInMobile(user) {
     document.querySelectorAll('.mobile-menu').forEach(function (el) {
       var login = el.querySelector('a[href="login.html"]');
       var signup = el.querySelector('a[href="signup.html"]');
+      if (login && !el.querySelector('.mobile-menu-user')) {
+        var nameEl = document.createElement('div');
+        nameEl.className = 'mobile-menu-user';
+        nameEl.textContent = user.name;
+        login.parentNode.insertBefore(nameEl, login);
+
+        var divider = document.createElement('div');
+        divider.className = 'divider';
+        login.parentNode.insertBefore(divider, login);
+      }
       if (login && !el.querySelector('a[href="wishlist.html"]')) {
         var wishlistLink = document.createElement('a');
         wishlistLink.setAttribute('href', 'wishlist.html');
@@ -63,9 +73,10 @@
     .then(function (data) {
       if (data && data.user && data.user.name) {
         renderLoggedInDesktop(data.user);
-        renderLoggedInMobile();
+        renderLoggedInMobile(data.user);
         wireLogout();
       }
     })
     .catch(function () {});
 })();
+
