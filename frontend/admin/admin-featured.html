@@ -119,6 +119,11 @@
     font-weight: 500;
     color: var(--safra-navy, #1B2A41);
   }
+  #loadingMsg {
+    font-size: 14px;
+    color: #8A8377;
+    margin: 0 0 20px;
+  }
   .picker-section {
     background: #fff;
     border-radius: 14px;
@@ -185,6 +190,7 @@
   </div>
 
   <div id="msg"></div>
+  <p id="loadingMsg">Loading current selection...</p>
 
   <div class="picker-section">
     <h2>Houses</h2>
@@ -204,20 +210,36 @@
 <script src="../js/config.js"></script>
 <script>
 async function load() {
-  const res = await fetch(`${API_BASE_URL}/api/featured/candidates`);
-  const data = await res.json();
+  try {
+    const [candidatesRes, featuredRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/api/featured/candidates`),
+      fetch(`${API_BASE_URL}/api/featured`)
+    ]);
+    const candidates = await candidatesRes.json();
+    const featured = await featuredRes.json();
 
-  document.getElementById('houseList').innerHTML = data.houses.map(h =>
-    `<label data-search="${(h.title + ' ' + h.location).toLowerCase()}">
-      <input type="checkbox" class="houseChk" value="${h._id}"> ${h.title} - ${h.location}
-    </label>`
-  ).join('');
+    const featuredHouseIds = new Set((featured.houses || []).map(h => h._id));
+    const featuredCarId = featured.car ? featured.car._id : null;
 
-  document.getElementById('carList').innerHTML = data.cars.map(c =>
-    `<label data-search="${(c.title + ' ' + c.location).toLowerCase()}">
-      <input type="checkbox" class="carChk" value="${c._id}"> ${c.title} - ${c.location}
-    </label>`
-  ).join('');
+    document.getElementById('houseList').innerHTML = candidates.houses.map(h => {
+      const checked = featuredHouseIds.has(h._id) ? 'checked' : '';
+      return `<label data-search="${(h.title + ' ' + h.location).toLowerCase()}">
+        <input type="checkbox" class="houseChk" value="${h._id}" ${checked}> ${h.title} - ${h.location}
+      </label>`;
+    }).join('');
+
+    document.getElementById('carList').innerHTML = candidates.cars.map(c => {
+      const checked = (c._id === featuredCarId) ? 'checked' : '';
+      return `<label data-search="${(c.title + ' ' + c.location).toLowerCase()}">
+        <input type="checkbox" class="carChk" value="${c._id}" ${checked}> ${c.title} - ${c.location}
+      </label>`;
+    }).join('');
+
+    document.getElementById('loadingMsg').style.display = 'none';
+  } catch (err) {
+    console.error('Failed to load featured picker:', err);
+    document.getElementById('loadingMsg').textContent = 'Could not load listings.';
+  }
 }
 load();
 
