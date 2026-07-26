@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Featured - Admin</title>
+<style>
+  body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:0 20px;}
+  h1{font-size:20px;} h2{font-size:15px;margin-top:24px;}
+  label{display:block;padding:6px 0;}
+  button{margin-top:20px;padding:10px 20px;background:#C45C3E;color:#fff;border:none;border-radius:6px;cursor:pointer;}
+  #msg{margin-top:12px;font-size:14px;}
+</style>
+</head>
+<body>
+<h1>Choose Homepage Featured Listings</h1>
+<h2>Houses (pick any — only 2 will show on the homepage)</h2>
+<div id="houseList"></div>
+<h2>Car (pick 1)</h2>
+<div id="carList"></div>
+<button id="saveBtn">Save</button>
+<div id="msg"></div>
+
+<script src="../js/config.js"></script>
+<script>
+async function load() {
+  const res = await fetch(`${API_BASE_URL}/api/featured/candidates`);
+  const data = await res.json();
+
+  document.getElementById('houseList').innerHTML = data.houses.map(h =>
+    `<label><input type="checkbox" class="houseChk" value="${h._id}"> ${h.title} - ${h.location}</label>`
+  ).join('');
+
+  document.getElementById('carList').innerHTML = data.cars.map(c =>
+    `<label><input type="radio" name="carChk" value="${c._id}"> ${c.title} - ${c.location}</label>`
+  ).join('');
+}
+load();
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const houseIds = [...document.querySelectorAll('.houseChk:checked')].map(el => el.value);
+  const carEl = document.querySelector('input[name="carChk"]:checked');
+  const carId = carEl ? carEl.value : null;
+
+  const res = await fetch(`${API_BASE_URL}/api/featured`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ houseIds, carId })
+  });
+  const data = await res.json();
+  document.getElementById('msg').textContent = data.success ? 'Saved.' : 'Error saving.';
+});
+</script>
+</body>
+</html>
