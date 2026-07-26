@@ -170,10 +170,9 @@
     <div class="newsletter-card">
       <h2>Never Miss a New Listing</h2>
       <p>Get an email the moment a new house or car goes live on Safra.</p>
-      <form id="subscribeForm" class="newsletter-form" novalidate>
-        <input type="email" id="subscribeEmail" placeholder="you@example.com" required autocomplete="email" />
-        <button type="submit" class="btn btn-terracotta" id="subscribeBtn">Subscribe</button>
-      </form>
+      <div class="newsletter-form" id="newsletterActions">
+        <button type="button" class="btn btn-terracotta" id="subscribeBtn">Subscribe</button>
+      </div>
       <div class="newsletter-msg" id="subscribeMsg"></div>
     </div>
   </div>
@@ -239,18 +238,29 @@
     navToggle.setAttribute('aria-expanded', isOpen);
     navToggleIcon.innerHTML = `<path d="${isOpen ? closePath : hamburgerPath}"/>`;
   });
-  const subscribeForm = document.getElementById('subscribeForm');
   const subscribeBtn = document.getElementById('subscribeBtn');
   const subscribeMsg = document.getElementById('subscribeMsg');
+  let currentUserEmail = null;
 
-  subscribeForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  fetch(`/api/auth/me`, { credentials: 'include' })
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      if (data && data.user && data.user.email) {
+        currentUserEmail = data.user.email;
+        subscribeBtn.textContent = 'Subscribe';
+      } else {
+        subscribeBtn.textContent = 'Log In to Subscribe';
+      }
+    })
+    .catch(() => {
+      subscribeBtn.textContent = 'Log In to Subscribe';
+    });
+
+  subscribeBtn.addEventListener('click', async () => {
     subscribeMsg.classList.remove('show', 'success', 'error');
 
-    const email = document.getElementById('subscribeEmail').value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      subscribeMsg.textContent = 'Please enter a valid email address.';
-      subscribeMsg.classList.add('show', 'error');
+    if (!currentUserEmail) {
+      window.location.href = 'login.html';
       return;
     }
 
@@ -258,30 +268,31 @@
     subscribeBtn.textContent = 'Subscribing...';
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/subscribers`, {
+      const res = await fetch(`/api/subscribers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email: currentUserEmail })
       });
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         subscribeMsg.textContent = data.message || 'Something went wrong. Try again.';
         subscribeMsg.classList.add('show', 'error');
+        subscribeBtn.textContent = 'Subscribe';
       } else {
         subscribeMsg.textContent = data.message === 'Already subscribed' ? "You're already subscribed!" : "Subscribed! We will email you about new listings.";
         subscribeMsg.classList.add('show', 'success');
-        subscribeForm.reset();
+        subscribeBtn.textContent = 'Subscribed';
       }
     } catch (err) {
       subscribeMsg.textContent = 'Network error. Check your connection and try again.';
       subscribeMsg.classList.add('show', 'error');
+      subscribeBtn.textContent = 'Subscribe';
     } finally {
       subscribeBtn.disabled = false;
-      subscribeBtn.textContent = 'Subscribe';
     }
   });
-</script>
+  </script>
 
 </body>
 </html>
