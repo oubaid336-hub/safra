@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const House = require('./models/House');
 const Car = require('./models/Car');
 
-const OWNER_ID = "PASTE_A_REAL_USER_ID_HERE";
+const OWNER_ID = "6a5b2e00287eff7416250f3d";
 
 const houses = [
   { title: "Seaside Villa in Hammamet", description: "A bright villa steps from the beach, with a private pool and terrace overlooking the Mediterranean.", location: "Hammamet", pricePerNight: 145, rooms: 3, bathrooms: 2, capacity: 6, amenities: ["WiFi", "Pool", "Air Conditioning", "Parking"], photo: "https://share.google/N7VhJxpBkVEEVzunT" },
