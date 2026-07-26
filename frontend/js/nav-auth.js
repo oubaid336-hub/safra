@@ -1,8 +1,8 @@
-﻿(function () {
+(function () {
   var API = (typeof API_BASE_URL !== 'undefined' && API_BASE_URL) ||
     (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
       ? 'http://localhost:5000'
-      : 'https://safra-claude.onrender.com');
+      : 'https://safra-vv3z.onrender.com');
 
   function renderLoggedIn() {
     document.querySelectorAll('.nav-auth').forEach(function (el) {
