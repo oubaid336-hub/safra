@@ -1,6 +1,5 @@
 ﻿const crypto = require('crypto');
 const Subscriber = require('../models/Subscriber');
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function subscribe(req, res) {
@@ -37,4 +36,36 @@ async function unsubscribe(req, res) {
   }
 }
 
-module.exports = { subscribe, unsubscribe };
+async function checkStatus(req, res) {
+  try {
+    const email = (req.query.email || '').toLowerCase();
+    if (!email || !EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: 'Valid email required' });
+    }
+    const existing = await Subscriber.findOne({ email });
+    res.json({ subscribed: !!existing });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function unsubscribeByEmail(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email || !EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: 'Valid email required' });
+    }
+    const normalized = email.toLowerCase();
+    const result = await Subscriber.findOneAndDelete({ email: normalized });
+    if (!result) {
+      return res.json({ message: 'Not subscribed' });
+    }
+    res.json({ message: 'Unsubscribed' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+module.exports = { subscribe, unsubscribe, checkStatus, unsubscribeByEmail };
