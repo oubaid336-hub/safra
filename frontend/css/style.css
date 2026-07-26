@@ -771,7 +771,7 @@ textarea.form-input { resize: vertical; min-height: 140px; }
   display: flex; align-items: center; gap: 6px;
   padding: 8px 16px; border-radius: var(--radius-pill);
   font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
-  color: var(--safra-navy); background: transparent; border: none; cursor: pointer;
+  color: var(--safra-terracotta); background: transparent; border: none; cursor: pointer;
   transition: all var(--t-base);
 }
 .nav-user-trigger:hover { background: var(--safra-sandlight); }
@@ -798,4 +798,5 @@ textarea.form-input { resize: vertical; min-height: 140px; }
   font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px;
   color: var(--safra-terracotta);
 }
+
 
