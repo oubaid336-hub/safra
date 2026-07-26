@@ -241,19 +241,35 @@
   const subscribeBtn = document.getElementById('subscribeBtn');
   const subscribeMsg = document.getElementById('subscribeMsg');
   let currentUserEmail = null;
+  let isSubscribed = false;
+
+  function setBtnLoggedOut() {
+    subscribeBtn.textContent = 'Log In to Subscribe';
+  }
+
+  function setBtnState() {
+    subscribeBtn.textContent = isSubscribed ? 'Unsubscribe' : 'Subscribe';
+  }
 
   fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' })
     .then(res => res.ok ? res.json() : null)
-    .then(data => {
+    .then(async data => {
       if (data && data.user && data.user.email) {
         currentUserEmail = data.user.email;
-        subscribeBtn.textContent = 'Subscribe';
+        try {
+          const statusRes = await fetch(`${API_BASE_URL}/api/subscribers/status?email=${encodeURIComponent(currentUserEmail)}`);
+          const statusData = await statusRes.json();
+          isSubscribed = !!statusData.subscribed;
+        } catch (err) {
+          isSubscribed = false;
+        }
+        setBtnState();
       } else {
-        subscribeBtn.textContent = 'Log In to Subscribe';
+        setBtnLoggedOut();
       }
     })
     .catch(() => {
-      subscribeBtn.textContent = 'Log In to Subscribe';
+      setBtnLoggedOut();
     });
 
   subscribeBtn.addEventListener('click', async () => {
@@ -265,10 +281,11 @@
     }
 
     subscribeBtn.disabled = true;
-    subscribeBtn.textContent = 'Subscribing...';
+    subscribeBtn.textContent = isSubscribed ? 'Unsubscribing...' : 'Subscribing...';
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/subscribers`, {
+      const endpoint = isSubscribed ? '/api/subscribers/unsubscribe-by-email' : '/api/subscribers';
+      const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: currentUserEmail })
@@ -278,18 +295,19 @@
       if (!res.ok) {
         subscribeMsg.textContent = data.message || 'Something went wrong. Try again.';
         subscribeMsg.classList.add('show', 'error');
-        subscribeBtn.textContent = 'Subscribe';
       } else {
-        subscribeMsg.textContent = data.message === 'Already subscribed' ? "You're already subscribed!" : "Subscribed! We will email you about new listings.";
+        isSubscribed = !isSubscribed;
+        subscribeMsg.textContent = isSubscribed
+          ? 'Subscribed! We will email you about new listings.'
+          : "You've been unsubscribed.";
         subscribeMsg.classList.add('show', 'success');
-        subscribeBtn.textContent = 'Subscribed';
       }
     } catch (err) {
       subscribeMsg.textContent = 'Network error. Check your connection and try again.';
       subscribeMsg.classList.add('show', 'error');
-      subscribeBtn.textContent = 'Subscribe';
     } finally {
       subscribeBtn.disabled = false;
+      setBtnState();
     }
   });
   </script>
