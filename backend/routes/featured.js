@@ -32,15 +32,15 @@ router.get('/', async (req, res) => {
 });
 
 // Admin: set the featured picks (replaces current selection)
-// body: { houseIds: [id1, id2, ...], carId: id }
+// body: { houseIds: [...], carIds: [...] }
 router.post('/', async (req, res) => {
   try {
-    const { houseIds = [], carId } = req.body;
+    const { houseIds = [], carIds = [] } = req.body;
     await Featured.deleteMany({});
 
     const docs = [];
     houseIds.slice(0, 2).forEach(id => docs.push({ itemType: 'House', refId: id }));
-    if (carId) docs.push({ itemType: 'Car', refId: carId });
+    carIds.slice(0, 1).forEach(id => docs.push({ itemType: 'Car', refId: id }));
 
     await Featured.insertMany(docs);
     res.json({ success: true });
