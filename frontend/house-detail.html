@@ -94,6 +94,16 @@
   .hero-info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    background: #fff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .12);
+  }
+  @media (max-width: 640px) {
+    .hero-info {
+      padding: 24px;
+    }
   }
 
   #detailLayout {
@@ -565,16 +575,6 @@
         </div>
       </div>
 
-      <div class="booking-panel-wrap">
-        <aside class="booking-panel">
-          <div class="booking-price"><span id="pricePrefix"></span></div>
-          <span class="booking-status approved">Approved listing</span>
-          <a class="btn btn-terracotta" id="bookNowBtn" href="#">Book This House</a>
-          <button type="button" class="btn" id="wishlistBtn">Add to Wishlist</button>
-          <p class="booking-note">You won't be charged yet — pick your dates on the next step.</p>
-        </aside>
-      </div>
-
       <div class="detail-content-card">
         <p class="detail-desc" id="detailDesc"></p>
 
@@ -590,6 +590,16 @@
           </div>
           <div id="reviewsList"><p class="no-reviews">Loading reviews…</p></div>
         </div>
+      </div>
+
+      <div class="booking-panel-wrap">
+        <aside class="booking-panel">
+          <div class="booking-price"><span id="pricePrefix"></span></div>
+          <span class="booking-status approved">Approved listing</span>
+          <a class="btn btn-terracotta" id="bookNowBtn" href="#">Book This House</a>
+          <button type="button" class="btn" id="wishlistBtn">Add to Wishlist</button>
+          <p class="booking-note">You won't be charged yet — pick your dates on the next step.</p>
+        </aside>
       </div>
     </div>
 
