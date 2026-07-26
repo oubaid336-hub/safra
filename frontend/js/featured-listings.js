@@ -8,10 +8,9 @@
   ]).then(([houses, cars]) => {
     grid.classList.remove('featured-loading');
 
-    const cards = [
-      ...(houses || []).slice(0, 4).map(renderHouseCard),
-      ...(cars || []).slice(0, 2).map(renderCarCard),
-    ];
+    const houseCards = (houses || []).slice(0, 4).map(renderHouseCard);
+    const carCards = (cars || []).slice(0, 2).map(renderCarCard);
+    const cards = [...houseCards, ...carCards];
 
     if (!cards.length) {
       grid.innerHTML = '<p class="listing-empty">No listings available right now.</p>';
@@ -21,9 +20,10 @@
     grid.innerHTML = cards.join('');
   });
 
-  function renderHouseCard(house) {
+  function renderHouseCard(house, index) {
+    const mobileHide = index >= 2 ? ' featured-mobile-hide' : '';
     return `
-      <a class="listing-card" href="house-detail.html?id=${house._id}">
+      <a class="listing-card${mobileHide}" href="house-detail.html?id=${house._id}">
         <div class="listing-thumb">
           ${house.photos && house.photos[0]
             ? `<img src="${house.photos[0]}" alt="${escapeHtml(house.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
@@ -44,9 +44,10 @@
     `;
   }
 
-  function renderCarCard(car) {
+  function renderCarCard(car, index) {
+    const mobileHide = index >= 1 ? ' featured-mobile-hide' : '';
     return `
-      <a class="listing-card" href="car-detail.html?carId=${car._id}">
+      <a class="listing-card${mobileHide}" href="car-detail.html?carId=${car._id}">
         <div class="listing-thumb">
           ${car.photos && car.photos[0]
             ? `<img src="${car.photos[0]}" alt="${escapeHtml(car.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
