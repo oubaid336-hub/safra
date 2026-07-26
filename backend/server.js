@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -67,9 +67,12 @@ app.use('/api/contact', contactRoutes); // ADMIN_MARKER_part8wire
 
 const subscriberRoutes = require('./routes/subscriberRoutes');
 app.use('/api/subscribers', subscriberRoutes);
+const featuredRoutes = require('./routes/featured');
+app.use('/api/featured', featuredRoutes);
 
 const errorHandler = require('./middleware/errorHandler');
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
