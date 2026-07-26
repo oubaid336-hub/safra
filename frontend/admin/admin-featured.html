@@ -2,23 +2,171 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Featured - Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Featured Listings - Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
 <style>
-  body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:0 20px;}
-  h1{font-size:20px;} h2{font-size:15px;margin-top:24px;}
-  label{display:block;padding:6px 0;}
-  button{margin-top:20px;padding:10px 20px;background:#C45C3E;color:#fff;border:none;border-radius:6px;cursor:pointer;}
-  #msg{margin-top:12px;font-size:14px;}
+  body.admin-shell {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #F4F2ED;
+    min-height: 100vh;
+  }
+  .admin-topbar {
+    background: var(--safra-navy, #1B2A41);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+  }
+  .admin-topbar .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .admin-topbar .brand span {
+    opacity: 0.65;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+  #logoutBtn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #logoutBtn:hover { background: rgba(255,255,255,0.1); }
+  .admin-nav {
+    background: #fff;
+    border-bottom: 1px solid #E5DFD2;
+    padding: 0 24px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .admin-nav a {
+    display: inline-block;
+    padding: 14px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B6558;
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+  .admin-nav a.active {
+    color: var(--safra-navy, #1B2A41);
+    border-bottom-color: var(--safra-terracotta, #D97757);
+  }
+  .admin-main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+  .admin-main h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--safra-navy, #1B2A41);
+    margin: 0 0 6px;
+  }
+  .admin-main p.sub {
+    color: #8A8377;
+    font-size: 14px;
+    margin: 0 0 28px;
+  }
+  .picker-section {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 12px rgba(27,42,65,0.06);
+    margin-bottom: 20px;
+  }
+  .picker-section h2 {
+    font-size: 15px;
+    color: var(--safra-navy, #1B2A41);
+    margin: 0 0 4px;
+  }
+  .picker-section p.hint {
+    font-size: 13px;
+    color: #8A8377;
+    margin: 0 0 14px;
+  }
+  .picker-section label {
+    display: block;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #3A362E;
+    border-bottom: 1px solid #F1EDE3;
+  }
+  .picker-section label:last-child { border-bottom: none; }
+  #saveBtn {
+    margin-top: 4px;
+    padding: 12px 24px;
+    background: var(--safra-terracotta, #D97757);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #saveBtn:hover { opacity: 0.9; }
+  #msg {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+  }
 </style>
 </head>
-<body>
-<h1>Choose Homepage Featured Listings</h1>
-<h2>Houses (pick any — only 2 will show on the homepage)</h2>
-<div id="houseList"></div>
-<h2>Car (pick 1)</h2>
-<div id="carList"></div>
-<button id="saveBtn">Save</button>
-<div id="msg"></div>
+<body class="admin-shell">
+
+<div class="admin-topbar">
+  <div class="brand">Safra <span>Admin</span></div>
+  <button id="logoutBtn">Log Out</button>
+</div>
+
+<nav class="admin-nav">
+  <a href="dashboard.html">Dashboard</a>
+  <a href="houses.html">Houses &amp; Cars</a>
+  <a href="bookings.html">Bookings</a>
+  <a href="users.html">Users</a>
+  <a href="reviews.html">Reviews</a>
+  <a href="faq-manager.html">FAQ</a>
+  <a href="contact-messages.html">Contact Messages</a>
+  <a href="support-settings.html">Support Settings</a>
+  <a href="site-settings.html">Site Settings</a>
+  <a href="admin-featured.html" class="active">Featured Listings</a>
+  <a href="../index.html">Back to Site</a>
+</nav>
+
+<main class="admin-main">
+  <h1>Featured Listings</h1>
+  <p class="sub">Choose what shows in the homepage's Featured section.</p>
+
+  <div class="picker-section">
+    <h2>Houses</h2>
+    <p class="hint">Pick any number — only the first 2 will show on the homepage.</p>
+    <div id="houseList"></div>
+  </div>
+
+  <div class="picker-section">
+    <h2>Cars</h2>
+    <p class="hint">Pick any number — only the first 1 will show on the homepage.</p>
+    <div id="carList"></div>
+  </div>
+
+  <button id="saveBtn">Save</button>
+  <div id="msg"></div>
+</main>
 
 <script src="../js/config.js"></script>
 <script>
@@ -31,20 +179,19 @@ async function load() {
   ).join('');
 
   document.getElementById('carList').innerHTML = data.cars.map(c =>
-    `<label><input type="radio" name="carChk" value="${c._id}"> ${c.title} - ${c.location}</label>`
+    `<label><input type="checkbox" class="carChk" value="${c._id}"> ${c.title} - ${c.location}</label>`
   ).join('');
 }
 load();
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
   const houseIds = [...document.querySelectorAll('.houseChk:checked')].map(el => el.value);
-  const carEl = document.querySelector('input[name="carChk"]:checked');
-  const carId = carEl ? carEl.value : null;
+  const carIds = [...document.querySelectorAll('.carChk:checked')].map(el => el.value);
 
   const res = await fetch(`${API_BASE_URL}/api/featured`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ houseIds, carId })
+    body: JSON.stringify({ houseIds, carIds })
   });
   const data = await res.json();
   document.getElementById('msg').textContent = data.success ? 'Saved.' : 'Error saving.';
