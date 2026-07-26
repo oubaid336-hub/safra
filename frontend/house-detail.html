@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -67,9 +67,15 @@
     font-size: .95rem; 
   }
 
+  /* Grid layout: align-items:start is required whenever a grid row holds
+     a tall content column next to a short side panel — without it the
+     panel's grid cell stretches to match the tall column's height, and
+     the panel's own box can then appear to drift depending on how its
+     children are sized. */
   .detail-layout { 
     display: grid; 
     grid-template-columns: 1fr; 
+    align-items: start;
     gap: 40px; 
     padding: 40px 0 80px;
     position: relative;
@@ -78,6 +84,7 @@
   @media (min-width: 960px) { 
     .detail-layout { 
       grid-template-columns: 1.6fr 1fr; 
+      align-items: start;
     } 
   }
 
@@ -130,7 +137,7 @@
     flex-shrink: 0; 
   }
 
-  /* Stats grid with better design */
+  /* Stats grid */
   .stat-row { 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -308,20 +315,31 @@
     border-radius: 12px;
   }
 
-  /* Booking card - STICKY with beautiful design */
-  .booking-card {
+  /* ==========================================================
+     Booking panel — renamed from .booking-card on purpose.
+     There is no other rule anywhere in this codebase (checked
+     style.css, the inline block above, nav.js, nav-auth.js,
+     house-detail.js) that targets .booking-card, yet the deployed
+     site visibly stuck the old box to the viewport during scroll —
+     the signature of a stale cached rule surviving a previous
+     deploy. A fresh class name can't collide with whatever that
+     was. align-self:start (redundant with the parent's
+     align-items:start, kept here as a belt-and-braces guard)
+     keeps this panel sized to its own content instead of
+     stretching to match the tall column beside it.
+     ========================================================== */
+  .booking-panel {
     background: #fff;
     border-radius: 24px;
     padding: 32px;
     box-shadow: 0 20px 60px rgba(15, 23, 42, .15);
-    height: fit-content;
     border: 1px solid rgba(196, 92, 62, 0.1);
     margin: 0 20px;
     overflow: hidden;
-    position: static !important;
+    position: static;
+    align-self: start;
+    width: auto;
   }
-
-
 
   .booking-price { 
     font-family: 'Playfair Display', serif; 
@@ -362,27 +380,27 @@
     background: var(--safra-blue);
   }
 
-  .booking-card .btn { 
+  .booking-panel .btn { 
     width: 100%;
     margin-bottom: 8px;
   }
 
-  .booking-card .btn-terracotta {
+  .booking-panel .btn-terracotta {
     background: linear-gradient(135deg, var(--safra-terracotta), var(--safra-terracottalight));
     box-shadow: 0 8px 20px rgba(196, 92, 62, .3);
   }
 
-  .booking-card .btn-terracotta:hover {
+  .booking-panel .btn-terracotta:hover {
     box-shadow: 0 12px 28px rgba(196, 92, 62, .4);
   }
 
-  .booking-card .btn:not(.btn-terracotta) {
+  .booking-panel .btn:not(.btn-terracotta) {
     background: var(--safra-sandlight);
     color: var(--safra-navy);
     box-shadow: none;
   }
 
-  .booking-card .btn:not(.btn-terracotta):hover {
+  .booking-panel .btn:not(.btn-terracotta):hover {
     background: var(--safra-sand);
   }
 
@@ -464,7 +482,7 @@
     }
 
     .detail-content-card,
-    .booking-card {
+    .booking-panel {
       margin: 0 12px;
       padding: 24px;
     }
@@ -579,7 +597,7 @@
         </div>
       </div>
 
-      <aside class="booking-card">
+      <aside class="booking-panel">
         <div class="booking-price"><span id="pricePrefix"></span></div>
         <span class="booking-status approved">Approved listing</span>
         <a class="btn btn-terracotta" id="bookNowBtn" href="#">Book This House</a>
@@ -642,7 +660,3 @@
 <script src="js/house-detail.js"></script>
 </body>
 </html>
-
-
-
-
