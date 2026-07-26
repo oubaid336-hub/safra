@@ -6,5 +6,7 @@ const publicWriteLimiter = require('../middleware/publicWriteLimiter');
 
 router.post('/', publicWriteLimiter, subscribeValidation, subscriberController.subscribe);
 router.get('/unsubscribe/:token', subscriberController.unsubscribe);
+router.get('/status', subscriberController.checkStatus);
+router.post('/unsubscribe-by-email', publicWriteLimiter, subscriberController.unsubscribeByEmail);
 
 module.exports = router;
