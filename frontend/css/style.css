@@ -582,7 +582,7 @@ textarea.form-input { resize: vertical; min-height: 140px; }
   position: relative;
   aspect-ratio: 4 / 3;
   background: linear-gradient(135deg, var(--safra-sand), var(--safra-sanddark));
-  display: flex; align-items: center; justify-content: center; color: var(--safra-blue); opacity: .6;
+  display: flex; align-items: center; justify-content: center; color: var(--safra-blue);
   overflow: hidden;
 }
 .listing-card .listing-thumb img {
@@ -758,3 +758,4 @@ textarea.form-input { resize: vertical; min-height: 140px; }
 .sticky-action .sticky-note { font-size: 12px; color: var(--safra-gray); }
 .sticky-action .btn { flex-shrink: 0; }
 @media (min-width: 800px) { .sticky-action { display: none; } }
+
