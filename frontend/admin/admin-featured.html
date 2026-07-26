@@ -87,7 +87,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
   #searchInput {
     flex: 1;
@@ -112,6 +112,13 @@
     cursor: pointer;
   }
   #saveBtn:hover { opacity: 0.9; }
+  #msg {
+    min-height: 20px;
+    margin: 0 0 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--safra-navy, #1B2A41);
+  }
   .picker-section {
     background: #fff;
     border-radius: 14px;
@@ -145,11 +152,6 @@
     padding: 8px 0;
   }
   .no-match.show { display: block; }
-  #msg {
-    margin-top: 14px;
-    font-size: 14px;
-    font-weight: 500;
-  }
 </style>
 </head>
 <body class="admin-shell">
@@ -182,6 +184,8 @@
     <button id="saveBtn">Save</button>
   </div>
 
+  <div id="msg"></div>
+
   <div class="picker-section">
     <h2>Houses</h2>
     <p class="hint">Pick any number — only the first 2 will show on the homepage.</p>
@@ -195,8 +199,6 @@
     <div id="carList"></div>
     <p class="no-match" id="carNoMatch">No cars match your search.</p>
   </div>
-
-  <div id="msg"></div>
 </main>
 
 <script src="../js/config.js"></script>
