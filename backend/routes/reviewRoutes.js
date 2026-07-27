@@ -5,9 +5,7 @@ const { requireAuth } = require('../middleware/auth');
 const { reviewCreateValidation } = require('../middleware/reviewValidator');
 
 router.post('/', requireAuth, reviewCreateValidation, reviewController.createReview);
+router.get('/summary/:listingType', reviewController.getRatingSummary);
 router.get('/:listingType/:listingId', reviewController.getReviewsForListing);
 
 module.exports = router;
-
-
-

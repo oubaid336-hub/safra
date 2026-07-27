@@ -32,5 +32,29 @@ async function getReviewsForListing(req, res) {
   }
 }
 
-module.exports = { createReview, getReviewsForListing };
+async function getRatingSummary(req, res) {
+  try {
+    const { listingType } = req.params;
+    if (!['house', 'car'].includes(listingType)) {
+      return res.status(400).json({ message: 'Invalid listing type' });
+    }
 
+    const results = await Review.aggregate([
+      { $match: { listingType, approved: true } },
+      { $group: { _id: '$listingId', avgRating: { $avg: '$rating' }, count: { $sum: 1 } } }
+    ]);
+
+    const summary = results.map(r => ({
+      listingId: String(r._id),
+      avgRating: Math.round(r.avgRating * 10) / 10,
+      count: r.count
+    }));
+
+    res.json(summary);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+module.exports = { createReview, getReviewsForListing, getRatingSummary };

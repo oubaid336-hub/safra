@@ -1,5 +1,6 @@
 ﻿let allHouses = [];
 let myWishlist = [];
+let ratingSummary = {};
 
 function isWishlisted(id) {
   return myWishlist.includes(String(id));
@@ -13,7 +14,9 @@ function renderHouses(list) {
     return;
   }
 
-  grid.innerHTML = list.map(house => `
+  grid.innerHTML = list.map(house => {
+    const rating = ratingSummary[String(house._id)];
+    return `
     <div class="listing-card-wrap" style="position:relative;">
       <button type="button" class="card-wishlist${isWishlisted(house._id) ? ' is-active' : ''}" data-id="${house._id}" aria-label="Toggle wishlist">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
@@ -31,6 +34,7 @@ function renderHouses(list) {
             <span>${escapeHtml(house.location)}</span>
           </div>
           <div class="listing-meta">
+            ${rating ? `<span class="listing-meta-item">&#9733; ${rating.avgRating} (${rating.count})</span>` : ''}
             ${house.capacity ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${house.capacity} guests</span>` : ''}
             ${house.rooms ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>${house.rooms} rooms</span>` : ''}
           </div>
@@ -41,7 +45,8 @@ function renderHouses(list) {
         </div>
       </a>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   grid.querySelectorAll('.card-wishlist').forEach(btn => {
     btn.addEventListener('click', async (e) => {
@@ -104,10 +109,22 @@ async function loadMyWishlist() {
   }
 }
 
+async function loadRatings() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/reviews/summary/house`);
+    if (!res.ok) return;
+    const data = await res.json();
+    ratingSummary = {};
+    (data || []).forEach(r => { ratingSummary[r.listingId] = r; });
+  } catch (err) {
+    ratingSummary = {};
+  }
+}
+
 async function loadHouses() {
   const grid = document.getElementById('houseGrid');
   try {
-    await loadMyWishlist();
+    await Promise.all([loadMyWishlist(), loadRatings()]);
     const res = await fetch(`${API_BASE_URL}/api/houses`);
     if (!res.ok) throw new Error(`Server responded with ${res.status}`);
     allHouses = await res.json();

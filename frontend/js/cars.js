@@ -1,5 +1,6 @@
 ﻿let allCars = [];
 let myWishlist = [];
+let ratingSummary = {};
 
 function isWishlisted(id) {
   return myWishlist.includes(String(id));
@@ -13,7 +14,9 @@ function renderCars(list) {
     return;
   }
 
-  grid.innerHTML = list.map(car => `
+  grid.innerHTML = list.map(car => {
+    const rating = ratingSummary[String(car._id)];
+    return `
     <div class="listing-card-wrap" style="position:relative;">
       <button type="button" class="card-wishlist${isWishlisted(car._id) ? ' is-active' : ''}" data-id="${car._id}" aria-label="Toggle wishlist">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
@@ -32,6 +35,7 @@ function renderCars(list) {
             <span>${escapeHtml(car.location)}</span>
           </div>
           <div class="listing-meta">
+            ${rating ? `<span class="listing-meta-item">&#9733; ${rating.avgRating} (${rating.count})</span>` : ''}
             ${car.seats ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${car.seats} seats</span>` : ''}
             ${car.transmission ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m17.36-6.36-4.24 4.24m-6.24 6.24-4.24 4.24m14.72 0-4.24-4.24M7.05 7.05 2.81 2.81"/></svg>${escapeHtml(car.transmission)}</span>` : ''}
           </div>
@@ -42,7 +46,8 @@ function renderCars(list) {
         </div>
       </a>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   grid.querySelectorAll('.card-wishlist').forEach(btn => {
     btn.addEventListener('click', async (e) => {
@@ -105,10 +110,22 @@ async function loadMyWishlist() {
   }
 }
 
+async function loadRatings() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/reviews/summary/car`);
+    if (!res.ok) return;
+    const data = await res.json();
+    ratingSummary = {};
+    (data || []).forEach(r => { ratingSummary[r.listingId] = r; });
+  } catch (err) {
+    ratingSummary = {};
+  }
+}
+
 async function loadCars() {
   const grid = document.getElementById('carGrid');
   try {
-    await loadMyWishlist();
+    await Promise.all([loadMyWishlist(), loadRatings()]);
     const res = await fetch(`${API_BASE_URL}/api/cars`);
     if (!res.ok) throw new Error(`Server responded with ${res.status}`);
     allCars = await res.json();
