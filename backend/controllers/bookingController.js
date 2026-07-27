@@ -142,5 +142,27 @@ async function confirmCash(req, res) {
   }
 }
 
-module.exports = { create, getMine, confirmCash };
+async function cancel(req, res) {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+    if (booking.userId.toString() !== req.user.userId) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    if (booking.status === 'cancelled') {
+      return res.status(409).json({ message: 'Booking already cancelled' });
+    }
+    booking.status = 'cancelled';
+    await booking.save();
+    res.json(booking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+module.exports = { create, getMine, confirmCash, cancel };
+
 

@@ -8,6 +8,8 @@ const publicWriteLimiter = require('../middleware/publicWriteLimiter');
 router.post('/', requireAuth, publicWriteLimiter, bookingCreateValidation, bookingController.create);
 router.get('/mine', requireAuth, bookingController.getMine);
 router.patch('/:id/confirm-cash', requireAuth, bookingController.confirmCash);
+router.patch('/:id/cancel', requireAuth, bookingController.cancel);
 
 module.exports = router;
+
 
