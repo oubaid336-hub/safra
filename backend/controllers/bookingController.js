@@ -72,7 +72,7 @@ async function create(req, res) {
     if (customerUser) {
       await sendEmail(
         customerUser.email,
-        `Booking Confirmed - ${listing.title}`,
+        `Booking Request Received - ${listing.title}`,
         buildCustomerBookingEmail({
           customerName: customerUser.name,
           listingTitle: listing.title,
@@ -143,3 +143,4 @@ async function confirmCash(req, res) {
 }
 
 module.exports = { create, getMine, confirmCash };
+

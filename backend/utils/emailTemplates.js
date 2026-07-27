@@ -41,15 +41,16 @@ function detailRow(label, value, opts = {}) {
 function buildCustomerBookingEmail({ customerName, listingTitle, listingLocation, listingType, startDate, endDate, days, unit, totalPrice, adminEmail }) {
   const typeLabel = listingType === 'house' ? 'House' : 'Car';
   const body = `
-    <h2 style="color:#14213D;font-family:Georgia,serif;font-size:21px;margin:0 0 16px;">Your booking is confirmed!</h2>
+    <h2 style="color:#14213D;font-family:Georgia,serif;font-size:21px;margin:0 0 16px;">Booking request received!</h2>
     <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 8px;">Hi ${customerName},</p>
-    <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 20px;">Thanks for booking with Safra. Here are your reservation details:</p>
+    <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 20px;">Thanks for booking with Safra. We have received your request below - you will get a confirmation email once the host approves it:</p>
     <table style="width:100%;border-collapse:collapse;">
       ${detailRow(typeLabel, listingTitle, { bold: true })}
       ${detailRow('Location', listingLocation)}
       ${detailRow('Check-in', startDate)}
       ${detailRow('Check-out', endDate)}
       ${detailRow('Duration', `${days} ${unit}${days > 1 ? 's' : ''}`)}
+      ${detailRow('Status', 'Pending confirmation', { bold: true })}
       ${detailRow('Total price', `$${totalPrice}`, { bold: true, accent: true, noBorder: true })}
     </table>
     <p style="color:#374151;font-size:14px;line-height:1.6;margin-top:24px;">If anything looks wrong or you need to make changes, just reply to this email or reach us directly at <a href="mailto:${adminEmail}" style="color:#C1502E;">${adminEmail}</a>.</p>
@@ -137,3 +138,5 @@ function buildListingBroadcastEmail({ listingTitle, listingLocation, listingType
 }
 
 module.exports = { buildCustomerBookingEmail, buildAdminBookingEmail, buildPasswordResetEmail, buildWelcomeEmail, buildVerificationEmail, buildContactNotificationEmail, buildListingBroadcastEmail };
+
+
