@@ -1,7 +1,7 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
 const houseController = require('../controllers/houseController');
-const { requireAuth, requireAdmin, optionalAuth } = require('../middleware/auth');
+const { requireAuth, requireAdmin, optionalAuth, requireCustomHeader } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const { houseCreateValidation } = require('../middleware/listingValidators');
 
