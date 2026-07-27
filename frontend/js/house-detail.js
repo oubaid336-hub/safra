@@ -70,8 +70,22 @@ async function loadHouseDetail() {
       renderGallery(house.photos, house.title);
     }
 
-    document.querySelector('.booking-price').innerHTML =
-      `$${house.pricePerNight}<span> / night</span>`;
+    let isNew = false;
+    try {
+      const countsRes = await fetch(`${API_BASE_URL}/api/bookings/counts/house`);
+      if (countsRes.ok) {
+        const counts = await countsRes.json();
+        const bookingCount = counts[String(house._id)] ?? 0;
+        isNew = bookingCount <= 2;
+      }
+    } catch (err) {
+      isNew = false;
+    }
+
+    const discountedPrice = Math.round(house.pricePerNight * 0.9);
+    document.querySelector('.booking-price').innerHTML = isNew
+      ? `<span class="listing-price-old" style="font-size:15px;">$${house.pricePerNight}</span>$${discountedPrice}<span> / night</span>`
+      : `$${house.pricePerNight}<span> / night</span>`;
     document.getElementById('bookNowBtn').href = `booking.html?houseId=${house._id}`;
 
     const reviewLink = document.getElementById('writeReviewLink');

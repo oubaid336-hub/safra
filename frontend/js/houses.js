@@ -1,6 +1,7 @@
 ﻿let allHouses = [];
 let myWishlist = [];
 let ratingSummary = {};
+let bookingCounts = {};
 
 function isWishlisted(id) {
   return myWishlist.includes(String(id));
@@ -16,6 +17,9 @@ function renderHouses(list) {
 
   grid.innerHTML = list.map(house => {
     const rating = ratingSummary[String(house._id)];
+    const count = bookingCounts[String(house._id)] ?? 0;
+    const isNew = count <= 2;
+    const discountedPrice = Math.round(house.pricePerNight * 0.9);
     return `
     <div class="listing-card-wrap" style="position:relative;">
       <button type="button" class="card-wishlist${isWishlisted(house._id) ? ' is-active' : ''}" data-id="${house._id}" aria-label="Toggle wishlist">
@@ -26,6 +30,8 @@ function renderHouses(list) {
           ${house.photos && house.photos[0]
             ? `<img src="${house.photos[0]}" alt="${escapeHtml(house.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
             : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>`}
+          ${isNew ? `<span class="listing-badge-new">NEW &middot; 10% OFF</span>` : ''}
+          ${rating ? `<div class="listing-rating-circle"><span class="rc-num">${rating.avgRating}</span><span class="rc-star">&#9733;${rating.count}</span></div>` : ''}
         </div>
         <div class="listing-body">
           <div class="listing-title">${escapeHtml(house.title)}</div>
@@ -34,12 +40,14 @@ function renderHouses(list) {
             <span>${escapeHtml(house.location)}</span>
           </div>
           <div class="listing-meta">
-            ${rating ? `<span class="listing-meta-item">&#9733; ${rating.avgRating} (${rating.count})</span>` : ''}
             ${house.capacity ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${house.capacity} guests</span>` : ''}
             ${house.rooms ? `<span class="listing-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>${house.rooms} rooms</span>` : ''}
           </div>
           <div class="listing-footer-row">
-            <div class="listing-price">$${house.pricePerNight}<span>per night</span></div>
+            <div class="listing-price">
+              ${isNew ? `<span class="listing-price-old">$${house.pricePerNight}</span>$${discountedPrice}` : `$${house.pricePerNight}`}
+              <span>per night</span>
+            </div>
             <span class="listing-cta">View Details</span>
           </div>
         </div>
@@ -121,10 +129,20 @@ async function loadRatings() {
   }
 }
 
+async function loadBookingCounts() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/bookings/counts/house`);
+    if (!res.ok) return;
+    bookingCounts = await res.json();
+  } catch (err) {
+    bookingCounts = {};
+  }
+}
+
 async function loadHouses() {
   const grid = document.getElementById('houseGrid');
   try {
-    await Promise.all([loadMyWishlist(), loadRatings()]);
+    await Promise.all([loadMyWishlist(), loadRatings(), loadBookingCounts()]);
     const res = await fetch(`${API_BASE_URL}/api/houses`);
     if (!res.ok) throw new Error(`Server responded with ${res.status}`);
     allHouses = await res.json();

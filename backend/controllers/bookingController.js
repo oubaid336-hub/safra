@@ -53,7 +53,21 @@ async function create(req, res) {
       return res.status(409).json({ message: 'This listing is already booked for part of that date range.' });
     }
 
-    const pricePerUnit = listingType === 'house' ? listing.pricePerNight : listing.pricePerDay;
+    let pricePerUnit = listingType === 'house' ? listing.pricePerNight : listing.pricePerDay;
+    let promoApplied = false;
+
+    if (listingType === 'house') {
+      const existingCount = await Booking.countDocuments({
+        listingId,
+        listingType: 'house',
+        status: { $in: ['pending', 'confirmed', 'pending-cash-payment'] }
+      });
+      if (existingCount <= 2) {
+        pricePerUnit = Math.round(pricePerUnit * 0.9);
+        promoApplied = true;
+      }
+    }
+
     const totalPrice = days * pricePerUnit;
 
     const booking = await Booking.create({
@@ -62,7 +76,8 @@ async function create(req, res) {
       listingType,
       startDate: start,
       endDate: end,
-      totalPrice
+      totalPrice,
+      promoApplied
     });
 
     const unit = listingType === 'house' ? 'night' : 'day';
@@ -126,6 +141,28 @@ async function getAvailability(req, res) {
     }).select('startDate endDate -_id');
 
     res.json(bookings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function getBookingCounts(req, res) {
+  try {
+    const { listingType } = req.params;
+    if (!['house', 'car'].includes(listingType)) {
+      return res.status(400).json({ message: 'Invalid listing type' });
+    }
+
+    const results = await Booking.aggregate([
+      { $match: { listingType, status: { $in: ['pending', 'confirmed', 'pending-cash-payment'] } } },
+      { $group: { _id: '$listingId', count: { $sum: 1 } } }
+    ]);
+
+    const counts = {};
+    results.forEach(r => { counts[String(r._id)] = r.count; });
+
+    res.json(counts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
@@ -200,4 +237,4 @@ async function cancel(req, res) {
   }
 }
 
-module.exports = { create, getAvailability, getMine, confirmCash, cancel, getOne };
+module.exports = { create, getAvailability, getBookingCounts, getMine, confirmCash, cancel, getOne };
