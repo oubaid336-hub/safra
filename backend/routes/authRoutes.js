@@ -11,14 +11,21 @@ const loginLimiter = rateLimit({
   message: { message: 'Too many attempts, try again later' }
 });
 
+const recoveryLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 3,
+  message: { message: 'Too many requests, try again later' }
+});
+
 router.post('/signup', loginLimiter, signupValidation, signup);
 router.post('/login', loginLimiter, loginValidation, login);
 router.get('/verify/:token', verifyEmail);
-router.post('/resend-verification', loginLimiter, forgotPasswordValidation, resendVerification);
-router.post('/forgot-password', loginLimiter, forgotPasswordValidation, forgotPassword);
-router.post('/reset-password/:token', loginLimiter, resetPasswordValidation, resetPassword);
+router.post('/resend-verification', recoveryLimiter, forgotPasswordValidation, resendVerification);
+router.post('/forgot-password', recoveryLimiter, forgotPasswordValidation, forgotPassword);
+router.post('/reset-password/:token', recoveryLimiter, resetPasswordValidation, resetPassword);
 
 router.get('/me', requireAuth, me);
 router.post('/logout', logout);
 
 module.exports = router;
+
