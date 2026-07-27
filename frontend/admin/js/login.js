@@ -1,4 +1,4 @@
-// admin/js/login.js - D1: Admin login page
+﻿// admin/js/login.js - D1: Admin login page
 //
 // Design note: this reuses the SAME POST /api/auth/login endpoint the
 // regular customer login.html already calls (per the plan: "reuses Part
@@ -20,6 +20,22 @@
   const passwordInput = document.getElementById('password');
   const submitBtn = document.getElementById('submitBtn');
   const banner = document.getElementById('formBanner');
+
+  checkAlreadyAdmin();
+
+  async function checkAlreadyAdmin() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/dashboard`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        window.location.href = 'dashboard.html';
+      }
+    } catch (err) {
+      // not logged in / network error - just show the login form as normal
+    }
+  }
 
   function showError(text) {
     banner.textContent = text;
@@ -84,3 +100,4 @@
     }
   });
 })();
+
