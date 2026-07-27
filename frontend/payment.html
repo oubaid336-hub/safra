@@ -107,6 +107,15 @@
   <p>Your booking is confirmed the moment you choose an option below — no hidden charges, ever.</p>
 </div>
 
+<div class="container" id="bookingSummary" style="max-width:560px;margin:0 auto 32px;background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 6px 18px rgba(15,23,42,.08);display:none;">
+  <div style="font-family:'Inter',sans-serif;font-size:13px;color:var(--safra-gray);margin-bottom:4px;">Booking summary</div>
+  <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--safra-navy);font-size:1.15rem;margin-bottom:8px;" id="summaryTitle">-</div>
+  <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--safra-gray);display:flex;justify-content:space-between;margin-bottom:4px;">
+    <span id="summaryDates">-</span>
+    <span id="summaryPrice" style="font-weight:700;color:var(--safra-terracotta);">-</span>
+  </div>
+</div>
+
 <div class="container trust-strip">
   <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Secure & encrypted</span>
   <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> No hidden fees</span>
@@ -198,6 +207,31 @@
     document.getElementById('payConfirmTitle').textContent = 'No booking found';
     document.getElementById('payConfirmText').textContent = 'We could not find a booking to pay for. Please start a new booking from a listing page.';
     document.getElementById('payConfirm').classList.add('show');
+  } else {
+    loadBookingSummary();
+  }
+
+  async function loadBookingSummary() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, { credentials: 'include' });
+      if (!res.ok) return;
+      const booking = await res.json();
+
+      const endpoint = booking.listingType === 'car' ? 'cars' : 'houses';
+      const listingRes = await fetch(`${API_BASE_URL}/api/${endpoint}/${booking.listingId}`, { credentials: 'include' });
+      const listing = listingRes.ok ? await listingRes.json() : null;
+
+      const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+      const start = new Date(booking.startDate).toLocaleDateString(undefined, opts);
+      const end = new Date(booking.endDate).toLocaleDateString(undefined, opts);
+
+      document.getElementById('summaryTitle').textContent = listing?.title || 'Your booking';
+      document.getElementById('summaryDates').textContent = `${start} – ${end}`;
+      document.getElementById('summaryPrice').textContent = `$${Number(booking.totalPrice).toFixed(2)} total`;
+      document.getElementById('bookingSummary').style.display = 'block';
+    } catch (err) {
+      console.error('Could not load booking summary:', err);
+    }
   }
 
   async function confirmBooking(method, btn) {
@@ -232,3 +266,5 @@
 </script>
 </body>
 </html>
+
+
