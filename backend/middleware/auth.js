@@ -23,6 +23,22 @@ async function requireAuth(req, res, next) {
   }
 }
 
+async function optionalAuth(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('role isBlocked verified');
+    if (user && !user.isBlocked) {
+      req.user = { userId: decoded.userId, role: user.role, verified: user.verified };
+    }
+  } catch (err) {
+    // invalid/expired token -> treat as logged out, don't block
+  }
+  next();
+}
+
 function requireAdmin(req, res, next) {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access only' });
@@ -30,4 +46,4 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin };
+module.exports = { requireAuth, requireAdmin, optionalAuth };

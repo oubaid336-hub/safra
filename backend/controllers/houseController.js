@@ -28,6 +28,15 @@ async function getOne(req, res) {
   try {
     const house = await House.findById(req.params.id);
     if (!house) return res.status(404).json({ message: 'House not found' });
+
+    if (house.status !== 'approved') {
+      const isOwner = req.user && house.ownerId.toString() === req.user.userId;
+      const isAdmin = req.user && req.user.role === 'admin';
+      if (!isOwner && !isAdmin) {
+        return res.status(404).json({ message: 'House not found' });
+      }
+    }
+
     res.json(house);
   } catch (err) {
     console.error(err);

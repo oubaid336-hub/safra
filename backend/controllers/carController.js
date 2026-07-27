@@ -28,6 +28,15 @@ async function getOne(req, res) {
   try {
     const car = await Car.findById(req.params.id);
     if (!car) return res.status(404).json({ message: 'Car not found' });
+
+    if (car.status !== 'approved') {
+      const isOwner = req.user && car.ownerId.toString() === req.user.userId;
+      const isAdmin = req.user && req.user.role === 'admin';
+      if (!isOwner && !isAdmin) {
+        return res.status(404).json({ message: 'Car not found' });
+      }
+    }
+
     res.json(car);
   } catch (err) {
     console.error(err);
