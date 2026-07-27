@@ -17,7 +17,7 @@ async function create(req, res) {
       return res.status(403).json({ message: 'This account has been blocked.' });
     }
     if (!customerUser.verified) {
-      return res.status(403).json({ message: 'Please verify your email before booking.' });
+      return res.status(403).json({ message: 'Please verify your emailbefore booking.' });
     }
 
     let listing;
@@ -44,7 +44,7 @@ async function create(req, res) {
     const overlapping = await Booking.findOne({
       listingId,
       listingType,
-      status: { $in: ['pending', 'confirmed'] },
+      status: { $in: ['pending', 'confirmed', 'pending-cash-payment'] },
       startDate: { $lt: end },
       endDate: { $gt: start }
     });
@@ -105,6 +105,27 @@ async function create(req, res) {
     );
 
     res.status(201).json(booking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function getAvailability(req, res) {
+  try {
+    const { listingId, listingType } = req.query;
+
+    if (!listingId || !['house', 'car'].includes(listingType)) {
+      return res.status(400).json({ message: 'Invalid listing' });
+    }
+
+    const bookings = await Booking.find({
+      listingId,
+      listingType,
+      status: { $in: ['pending', 'confirmed', 'pending-cash-payment'] }
+    }).select('startDate endDate -_id');
+
+    res.json(bookings);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
@@ -179,8 +200,4 @@ async function cancel(req, res) {
   }
 }
 
-module.exports = { create, getMine, confirmCash, cancel, getOne };
-
-
-
-
+module.exports = { create, getAvailability, getMine, confirmCash, cancel, getOne };

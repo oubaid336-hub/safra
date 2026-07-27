@@ -23,6 +23,7 @@
   const formMessage = document.getElementById('form-message');
 
   let currentCar = null;
+  let bookedRanges = [];
 
   if (!carId) {
     showNotFound();
@@ -34,6 +35,7 @@
   endDateInput.min = today;
 
   loadCar(carId);
+  loadAvailability(carId);
 
   startDateInput.addEventListener('change', handleDatesChanged);
   endDateInput.addEventListener('change', handleDatesChanged);
@@ -62,6 +64,17 @@
     }
   }
 
+  async function loadAvailability(id) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/availability?listingId=${id}&listingType=car`);
+      if (!res.ok) return;
+      const data = await res.json();
+      bookedRanges = Array.isArray(data) ? data : [];
+    } catch (err) {
+      console.error('Failed to load availability:', err);
+    }
+  }
+
   function renderCar(car) {
     titleEl.textContent = car.title || 'Untitled listing';
     locationEl.textContent = car.location || '';
@@ -74,6 +87,12 @@
       photoEl.removeAttribute('src');
       photoEl.alt = 'No photo available yet';
     }
+  }
+
+  function overlapsBookedRange(start, end) {
+    const startTime = new Date(start).getTime();
+    const endTime = new Date(end).getTime();
+    return bookedRanges.some((r) => startTime < new Date(r.endDate).getTime() && endTime > new Date(r.startDate).getTime());
   }
 
   function handleDatesChanged() {
@@ -90,6 +109,12 @@
     if (days <= 0) {
       priceBreakdown.style.display = 'none';
       showMessage('Return date must be after pickup date.', 'warning');
+      return;
+    }
+
+    if (overlapsBookedRange(start, end)) {
+      priceBreakdown.style.display = 'none';
+      showMessage('Those dates overlap with an existing booking. Please choose different dates.', 'warning');
       return;
     }
 
@@ -127,6 +152,11 @@
       return;
     }
 
+    if (overlapsBookedRange(startDate, endDate)) {
+      showMessage('Those dates overlap with an existing booking. Please choose different dates.', 'error');
+      return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting…';
 
@@ -155,6 +185,13 @@
           data.message || 'Please verify your email before booking. Check your inbox for the verification link.',
           'warning'
         );
+        return;
+      }
+
+      if (res.status === 409) {
+        const data = await safeJson(res);
+        showMessage(data.message || 'Those dates were just booked by someone else. Please choose different dates.', 'warning');
+        await loadAvailability(carId);
         return;
       }
 
