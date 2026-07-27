@@ -25,6 +25,16 @@ function ctaButton(url, label) {
   </p>`;
 }
 
+function escapeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function detailRow(label, value, opts = {}) {
   const { bold, accent, noBorder } = opts;
   const border = noBorder ? '' : 'border-bottom:1px solid #EFE3CF;';
@@ -107,13 +117,16 @@ function buildWelcomeEmail({ name, frontendUrl }) {
 }
 
 function buildContactNotificationEmail({ name, email, message }) {
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeMessage = escapeHtml(message);
   const body = `
     <h2 style="color:#14213D;font-family:Georgia,serif;font-size:21px;margin:0 0 16px;">New Contact Message</h2>
     <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
-      ${detailRow('From', `${name} (${email})`, { noBorder: true })}
+      ${detailRow('From', `${safeName} (${safeEmail})`, { noBorder: true })}
     </table>
     <p style="color:#7C8797;font-size:13px;margin-bottom:6px;">Message:</p>
-    <p style="color:#14213D;font-size:15px;line-height:1.6;white-space:pre-wrap;background-color:#FAF7F2;padding:16px;border-radius:8px;">${message}</p>
+    <p style="color:#14213D;font-size:15px;line-height:1.6;white-space:pre-wrap;background-color:#FAF7F2;padding:16px;border-radius:8px;">${safeMessage}</p>
     <p style="color:#374151;font-size:14px;line-height:1.6;margin-top:24px;">Log into the admin panel to view and mark this message as handled.</p>
   `;
   return emailShell({ bodyHtml: body });
@@ -138,5 +151,7 @@ function buildListingBroadcastEmail({ listingTitle, listingLocation, listingType
 }
 
 module.exports = { buildCustomerBookingEmail, buildAdminBookingEmail, buildPasswordResetEmail, buildWelcomeEmail, buildVerificationEmail, buildContactNotificationEmail, buildListingBroadcastEmail };
+
+
 
 
