@@ -28,7 +28,7 @@ async function signup(req, res) {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 12);
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
@@ -176,7 +176,7 @@ async function resetPassword(req, res) {
       return res.status(400).json({ message: 'Invalid or expired reset link' });
     }
 
-    user.passwordHash = await bcrypt.hash(password, 10);
+    user.passwordHash = await bcrypt.hash(password, 12);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
@@ -211,3 +211,4 @@ async function logout(req, res) {
 }
 
 module.exports = { signup, login, verifyEmail, resendVerification, forgotPassword, resetPassword, me, logout };
+
