@@ -1,4 +1,35 @@
-﻿async function loadHouseDetail() {
+﻿function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function renderGallery(photos, title) {
+  const gallery = document.getElementById('galleryMain');
+  const thumbs = document.getElementById('galleryThumbs');
+
+  gallery.innerHTML = `<img src="${photos[0]}" alt="${escapeHtml(title || 'Photo')}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+
+  if (photos.length > 1) {
+    thumbs.innerHTML = photos.map((p, i) => `
+      <button type="button" class="gallery-thumb${i === 0 ? ' is-active' : ''}" data-src="${p}">
+        <img src="${p}" alt="" loading="lazy">
+      </button>
+    `).join('');
+
+    thumbs.querySelectorAll('.gallery-thumb').forEach(btn => {
+      btn.addEventListener('click', () => {
+        gallery.querySelector('img').src = btn.dataset.src;
+        thumbs.querySelectorAll('.gallery-thumb').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+      });
+    });
+  } else {
+    thumbs.innerHTML = '';
+  }
+}
+
+async function loadHouseDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   const loadingState = document.getElementById('loadingState');
@@ -36,11 +67,7 @@
     }
 
     if (house.photos && house.photos.length) {
-      const gallery = document.getElementById('galleryMain');
-      gallery.style.backgroundImage = `url('${house.photos[0]}')`;
-      gallery.style.backgroundSize = 'cover';
-      gallery.style.backgroundPosition = 'center';
-      gallery.innerHTML = '';
+      renderGallery(house.photos, house.title);
     }
 
     document.querySelector('.booking-price').innerHTML =
@@ -89,12 +116,6 @@ async function loadReviews(houseId) {
     console.error('Failed to load reviews:', err);
     list.innerHTML = '<p class="no-reviews">Could not load reviews.</p>';
   }
-}
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
 }
 
 async function setupWishlistButton(houseId) {

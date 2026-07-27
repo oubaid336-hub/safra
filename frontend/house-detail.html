@@ -97,6 +97,34 @@
     font-size: .95rem; 
   }
 
+  .gallery-thumbs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    overflow-x: auto;
+    background: #fff;
+  }
+  .gallery-thumb {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+  }
+  .gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .gallery-thumb.is-active {
+    border-color: var(--safra-terracotta);
+  }
+
   .house-body {
     padding: 32px 36px 40px;
   }
@@ -427,7 +455,7 @@
     </a>
     <div class="nav-links">
       <a href="index.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/><path d="M9 20v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 11h12a1 1 0 0 0 1-1v-9"/><path d="M9 20v-5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5"/></svg>
         Home
       </a>
       <a href="houses.html" class="nav-link">
@@ -439,7 +467,7 @@
         Cars
       </a>
       <a href="faq.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 15.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         FAQ
       </a>
       <a href="contact.html" class="nav-link">
@@ -485,11 +513,14 @@
   </div>
 
   <div id="detailLayout">
-    <div class="gallery-main" id="galleryMain">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5-4 4-3-3-6 6"/></svg>
-        <p>Photos coming soon</p>
+    <div class="gallery-wrap">
+      <div class="gallery-main" id="galleryMain">
+        <div class="gallery-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5-4 4-3-3-6 6"/></svg>
+          <p>Photos coming soon</p>
+        </div>
       </div>
+      <div class="gallery-thumbs" id="galleryThumbs"></div>
     </div>
 
     <div class="house-body">
@@ -532,7 +563,7 @@
           <h3 class="reviews-title">Reviews</h3>
           <a href="#" id="writeReviewLink" class="write-review-link">Write a Review</a>
         </div>
-        <div id="reviewsList"><p class="no-reviews">Loading reviewsâ€¦</p></div>
+        <div id="reviewsList"><p class="no-reviews">Loading reviews…</p></div>
       </div>
     </div>
   </div>
@@ -547,7 +578,7 @@
           <div class="footer-brand-badge"><span>S</span></div>
           <span class="footer-brand-name">Safra</span>
         </div>
-        <p class="desc">Handpicked houses and cars across Tunisia â€” from Sidi Bou Said's blue-and-white streets to the dunes of the Sahara.</p>
+        <p class="desc">Handpicked houses and cars across Tunisia — from Sidi Bou Said's blue-and-white streets to the dunes of the Sahara.</p>
       </div>
       <div>
         <h3>Explore</h3>
@@ -564,7 +595,7 @@
         </div>
       </div>
     </div>
-    <div class="footer-bottom">Â© 2026 Safra. All rights reserved.</div>
+    <div class="footer-bottom">© 2026 Safra. All rights reserved.</div>
   </div>
 </footer>
 

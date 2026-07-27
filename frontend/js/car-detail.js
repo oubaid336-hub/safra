@@ -1,25 +1,4 @@
-﻿// car-detail.js â€” C6: Car detail page logic
-//
-// ASSUMPTIONS (Car.js fields were never confirmed â€” see
-// SAFRA-PROJECT-REFERENCE.txt Section 5: "UNCONFIRMED exact fields â€”
-// known only that it has the same status: pending/approved/rejected
-// pattern as House.js, by symmetry"). This code guesses a schema that
-// mirrors House.js as closely as makes sense for a car:
-//
-//   { _id, title, description, location, pricePerDay, photos: [],
-//     seats, transmission, year }
-//
-// If the real Car.js has different field names (e.g. "make"/"model"
-// instead of a combined "title", or "pricePerNight" instead of
-// "pricePerDay"), update renderCar() below to match â€” everything else
-// (fetch, routing, error handling) should still work unchanged.
-//
-// Also assumes GET ${API_BASE_URL}/api/cars/:id exists, matching the
-// GET /api/houses/:id assumption made in booking.js/booking.html for
-// C5 â€” neither has been confirmed against carController.js/
-// carRoutes.js content (still unread).
-
-(function () {
+﻿(function () {
   const params = new URLSearchParams(window.location.search);
   const carId = params.get('carId');
 
@@ -75,13 +54,12 @@
     const pricePerDay = Number(car.pricePerDay ?? car.pricePerNight) || 0;
     priceEl.textContent = `$${pricePerDay.toFixed(2)} / day`;
 
-    seatsEl.textContent = car.seats ?? 'â€”';
-    transmissionEl.textContent = car.transmission ?? 'â€”';
-    yearEl.textContent = car.year ?? 'â€”';
+    seatsEl.textContent = car.seats ?? '—';
+    transmissionEl.textContent = car.transmission ?? '—';
+    yearEl.textContent = car.year ?? '—';
 
     if (car.photos && car.photos.length > 0) {
-      photoEl.src = car.photos[0];
-      photoEl.alt = car.title || 'Car photo';
+      renderGallery(car.photos, car.title);
     } else {
       photoEl.removeAttribute('src');
       photoEl.alt = 'No photo available yet';
@@ -96,6 +74,32 @@
 
     setupWishlistButton(car._id || carId);
     loadReviews(car._id || carId);
+  }
+
+  function renderGallery(photos, title) {
+    photoEl.src = photos[0];
+    photoEl.alt = title || 'Car photo';
+
+    const thumbs = document.getElementById('galleryThumbs');
+    if (!thumbs) return;
+
+    if (photos.length > 1) {
+      thumbs.innerHTML = photos.map((p, i) => `
+        <button type="button" class="gallery-thumb${i === 0 ? ' is-active' : ''}" data-src="${p}">
+          <img src="${p}" alt="" loading="lazy">
+        </button>
+      `).join('');
+
+      thumbs.querySelectorAll('.gallery-thumb').forEach(btn => {
+        btn.addEventListener('click', () => {
+          photoEl.src = btn.dataset.src;
+          thumbs.querySelectorAll('.gallery-thumb').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+        });
+      });
+    } else {
+      thumbs.innerHTML = '';
+    }
   }
 
   async function loadReviews(carId) {
