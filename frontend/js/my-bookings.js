@@ -67,6 +67,7 @@
   async function renderBooking(booking) {
     const card = document.createElement('div');
     card.className = 'booking-card card-style';
+    card.dataset.bookingId = booking._id;
     card.innerHTML = `
       <div class="booking-info">
         <span class="booking-type-badge">${booking.listingType === 'car' ? 'Car' : 'House'}</span>
@@ -75,7 +76,7 @@
         <p class="booking-total">${formatPrice(booking.totalPrice)}</p>
       </div>
       <div class="booking-status-block">
-        ${renderStatusBadge(booking.status)}
+        ${renderStatusBadge(booking.status, booking._id)}
       </div>
     `;
     list.appendChild(card);
@@ -86,6 +87,11 @@
       titleEl.textContent = listing?.title || 'Listing';
     } catch {
       titleEl.textContent = 'Listing';
+    }
+
+    const cancelBtn = card.querySelector('.cancel-booking-btn');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => handleCancel(booking._id, card));
     }
   }
 
@@ -99,7 +105,9 @@
     return data.house || data.car || data;
   }
 
-  function renderStatusBadge(status) {
+  function renderStatusBadge(status, bookingId) {
+    const cancelBtn = `<button class="cancel-booking-btn" type="button" data-id="${bookingId}">Cancel booking</button>`;
+
     if (status === 'cancelled') {
       return `<span class="status-badge cancelled">Cancelled</span>`;
     }
@@ -108,6 +116,7 @@
       return `
         <span class="status-badge confirmed">Confirmed</span>
         <p class="status-note">All set — see you soon!</p>
+        ${cancelBtn}
       `;
     }
 
@@ -115,7 +124,30 @@
     return `
       <span class="status-badge pending">Pending</span>
       <p class="status-note">Awaiting confirmation — we'll notify you once it's approved.</p>
+      ${cancelBtn}
     `;
+  }
+
+  async function handleCancel(bookingId, cardEl) {
+    if (!confirm('Cancel this booking? This cannot be undone.')) return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/cancel`, {
+        method: 'PATCH',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        alert('Could not cancel booking. Please try again.');
+        return;
+      }
+
+      const statusBlock = cardEl.querySelector('.booking-status-block');
+      statusBlock.innerHTML = renderStatusBadge('cancelled', bookingId);
+    } catch (err) {
+      console.error('Cancel failed:', err);
+      alert('Could not reach the server. Please try again.');
+    }
   }
 
   function formatDateRange(startDate, endDate) {
@@ -135,3 +167,5 @@
     loginRequiredState.style.display = 'block';
   }
 })();
+
+
