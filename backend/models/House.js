@@ -11,9 +11,12 @@ const houseSchema = new mongoose.Schema({
   bathrooms: Number,
   capacity: Number,
   amenities: [{ type: String }],
-  bookedRanges: [{ start: Date, end: Date }],
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('House', houseSchema);
+
+
+
+
