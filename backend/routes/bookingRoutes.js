@@ -3,9 +3,11 @@ const router = express.Router();
 const bookingController = require('../controllers/bookingController');
 const { requireAuth } = require('../middleware/auth');
 const { bookingCreateValidation } = require('../middleware/bookingValidator');
+const publicWriteLimiter = require('../middleware/publicWriteLimiter');
 
-router.post('/', requireAuth, bookingCreateValidation, bookingController.create);
+router.post('/', requireAuth, publicWriteLimiter, bookingCreateValidation, bookingController.create);
 router.get('/mine', requireAuth, bookingController.getMine);
 router.patch('/:id/confirm-cash', requireAuth, bookingController.confirmCash);
 
 module.exports = router;
+

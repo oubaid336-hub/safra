@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const reviewController = require('../controllers/reviewController');
 const { requireAuth } = require('../middleware/auth');
@@ -8,5 +8,6 @@ router.post('/', requireAuth, reviewCreateValidation, reviewController.createRev
 router.get('/:listingType/:listingId', reviewController.getReviewsForListing);
 
 module.exports = router;
+
 
 
