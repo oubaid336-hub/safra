@@ -39,6 +39,13 @@ async function optionalAuth(req, res, next) {
   next();
 }
 
+function requireCustomHeader(req, res, next) {
+  if (!req.headers['x-safra-client']) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  next();
+}
+
 function requireAdmin(req, res, next) {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access only' });
@@ -46,4 +53,6 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin, optionalAuth };
+module.exports = { requireAuth, requireAdmin, optionalAuth, requireCustomHeader };
+
+
