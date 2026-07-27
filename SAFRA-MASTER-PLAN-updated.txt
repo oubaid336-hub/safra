@@ -1,0 +1,448 @@
+﻿=====================================================================
+SAFRA MASTER PLAN (updated)
+=====================================================================
+
+-----------------------------------------------------------------
+PHASE 1 â€” Seed demo houses + cars (DONE)
+-----------------------------------------------------------------
+cd C:\oubaid\safra\backend
+
+@'
+require('dotenv').config();
+const mongoose = require('mongoose');
+const House = require('./models/House');
+const Car = require('./models/Car');
+
+const OWNER_ID = "6a5b2e00287eff7416250f3d";
+
+const houses = [
+  { title: "Seaside Villa in Hammamet", description: "A bright villa steps from the beach, with a private pool and terrace overlooking the Mediterranean.", location: "Hammamet", pricePerNight: 145, rooms: 3, bathrooms: 2, capacity: 6, amenities: ["WiFi", "Pool", "Air Conditioning", "Parking"], photo: "https://share.google/N7VhJxpBkVEEVzunT" },
+  { title: "Medina Riad in Sousse", description: "A traditional riad tucked inside the old medina, close to the souks and the ribat.", location: "Sousse", pricePerNight: 95, rooms: 2, bathrooms: 1, capacity: 4, amenities: ["WiFi", "Terrace", "Air Conditioning"], photo: "https://share.google/uHsGE3YRS1Fcovttz" },
+  { title: "Whitewashed Cliffside House in Sidi Bou Said", description: "Classic blue-and-white architecture with sweeping sea views from every room.", location: "Sidi Bou Said", pricePerNight: 180, rooms: 3, bathrooms: 2, capacity: 5, amenities: ["WiFi", "Sea View", "Air Conditioning", "Parking"], photo: "https://share.google/PNsiq0KTILjU45mfZ" },
+  { title: "Modern Apartment in Downtown Tunis", description: "A clean, modern apartment close to Avenue Habib Bourguiba and the city's main sights.", location: "Tunis", pricePerNight: 70, rooms: 2, bathrooms: 1, capacity: 4, amenities: ["WiFi", "Elevator", "Air Conditioning"], photo: "https://share.google/SBwAFnx4mfIrfwID4" },
+  { title: "Palm Grove Villa in Djerba", description: "A spacious family villa surrounded by palm trees, with a private pool and garden.", location: "Djerba", pricePerNight: 160, rooms: 4, bathrooms: 3, capacity: 8, amenities: ["WiFi", "Pool", "Garden", "Parking"], photo: "https://share.google/qmFtdBeG9wRTntJHa" },
+  { title: "Coastal Cottage in Nabeul", description: "A cozy cottage a short walk from Nabeul's beaches and pottery markets.", location: "Nabeul", pricePerNight: 85, rooms: 2, bathrooms: 1, capacity: 4, amenities: ["WiFi", "Beach Access", "Parking"], photo: "https://share.google/c9nqFhjTL2W1LUneZ" },
+  { title: "Family House in Monastir", description: "A comfortable house near the marina, great for families exploring the coast.", location: "Monastir", pricePerNight: 110, rooms: 3, bathrooms: 2, capacity: 6, amenities: ["WiFi", "Pool", "Air Conditioning"], photo: "https://share.google/SywXg3bvZHZDEERIP" },
+  { title: "Quiet Retreat in Bizerte", description: "A peaceful house near Bizerte's old port, ideal for a relaxed getaway.", location: "Bizerte", pricePerNight: 90, rooms: 2, bathrooms: 2, capacity: 5, amenities: ["WiFi", "Garden", "Parking"], photo: "https://share.google/GUHl5ocUn21oQehVV" },
+];
+
+const cars = [
+  { title: "Compact Hatchback in Tunis", description: "Easy to park and fuel-efficient â€” ideal for getting around the capital.", location: "Tunis", pricePerDay: 35, seats: 5, transmission: "automatic", fuelType: "petrol", year: 2022, photo: "https://share.google/XhBjtevzP3LaB9fxc" },
+  { title: "Family SUV in Sousse", description: "Roomy SUV with plenty of trunk space, good for longer road trips.", location: "Sousse", pricePerDay: 55, seats: 7, transmission: "automatic", fuelType: "diesel", year: 2021, photo: "https://share.google/6aDJEE4Oz0Ib2pmIT" },
+  { title: "Economy Sedan in Hammamet", description: "A reliable, budget-friendly sedan for day trips along the coast.", location: "Hammamet", pricePerDay: 30, seats: 5, transmission: "manual", fuelType: "petrol", year: 2020, photo: "PHOTO_URL_11" },
+  { title: "Compact Electric Car in Djerba", description: "Quiet and efficient electric car, well suited to the island's short distances.", location: "Djerba", pricePerDay: 45, seats: 5, transmission: "automatic", fuelType: "electric", year: 2023, photo: "PHOTO_URL_12" },
+];
+
+async function run() {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("Connected.");
+
+  for (const h of houses) {
+    const doc = await House.create({
+      ownerId: OWNER_ID,
+      title: h.title,
+      description: h.description,
+      location: h.location,
+      pricePerNight: h.pricePerNight,
+      rooms: h.rooms,
+      bathrooms: h.bathrooms,
+      capacity: h.capacity,
+      amenities: h.amenities,
+      photos: [h.photo],
+      status: "approved",
+    });
+    console.log("House created:", doc.title, doc._id.toString());
+  }
+
+  for (const c of cars) {
+    const doc = await Car.create({
+      ownerId: OWNER_ID,
+      title: c.title,
+      description: c.description,
+      location: c.location,
+      pricePerDay: c.pricePerDay,
+      seats: c.seats,
+      transmission: c.transmission,
+      fuelType: c.fuelType,
+      year: c.year,
+      photos: [c.photo],
+      status: "approved",
+    });
+    console.log("Car created:", doc.title, doc._id.toString());
+  }
+
+  console.log("Done.");
+  await mongoose.disconnect();
+}
+
+run().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
+'@ | Set-Content -Encoding UTF8 seedListings.js
+
+git add seedListings.js
+git commit -m "Add seedListings.js: seeds 8 demo houses + 4 demo cars with real stock photos"
+git push
+
+Then run:
+node seedListings.js
+
+
+-----------------------------------------------------------------
+PHASE 2 â€” Fix broken photo URLs via Cloudinary (DONE)
+-----------------------------------------------------------------
+cd C:\oubaid\safra\backend
+
+@'
+require('dotenv').config();
+const mongoose = require('mongoose');
+const cloudinary = require('./config/cloudinary'); // adjust path if your file lives elsewhere
+const House = require('./models/House');
+const Car = require('./models/Car');
+
+const housePhotos = {
+  "Seaside Villa in Hammamet": "https://images.pexels.com/photos/29453302/pexels-photo-29453302.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Medina Riad in Sousse": "https://images.pexels.com/photos/31356131/pexels-photo-31356131.png?auto=compress&cs=tinysrgb&w=1260",
+  "Whitewashed Cliffside House in Sidi Bou Said": "https://images.pexels.com/photos/6306940/pexels-photo-6306940.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Modern Apartment in Downtown Tunis": "https://images.pexels.com/photos/21284473/pexels-photo-21284473.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Palm Grove Villa in Djerba": "https://images.pexels.com/photos/4497544/pexels-photo-4497544.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Coastal Cottage in Nabeul": "https://images.pexels.com/photos/27429688/pexels-photo-27429688.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Family House in Monastir": "https://images.pexels.com/photos/8583638/pexels-photo-8583638.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Quiet Retreat in Bizerte": "https://images.pexels.com/photos/17922976/pexels-photo-17922976.jpeg?auto=compress&cs=tinysrgb&w=1260",
+};
+
+const carPhotos = {
+  "Compact Hatchback in Tunis": "https://images.pexels.com/photos/27138967/pexels-photo-27138967.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Family SUV in Sousse": "https://images.pexels.com/photos/13767773/pexels-photo-13767773.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Economy Sedan in Hammamet": "https://images.pexels.com/photos/11329085/pexels-photo-11329085.jpeg?auto=compress&cs=tinysrgb&w=1260",
+  "Compact Electric Car in Djerba": "https://images.pexels.com/photos/35736786/pexels-photo-35736786.jpeg?auto=compress&cs=tinysrgb&w=1260",
+};
+
+async function run() {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("Connected.");
+
+  for (const [title, url] of Object.entries(housePhotos)) {
+    try {
+      const uploaded = await cloudinary.uploader.upload(url, { folder: "safra/houses" });
+      const result = await House.updateMany({ title }, { $set: { photos: [uploaded.secure_url] } });
+      console.log("House updated:", title, "->", uploaded.secure_url, `(matched ${result.matchedCount})`);
+    } catch (err) {
+      console.error("FAILED house:", title, err.message || err);
+    }
+  }
+
+  for (const [title, url] of Object.entries(carPhotos)) {
+    try {
+      const uploaded = await cloudinary.uploader.upload(url, { folder: "safra/cars" });
+      const result = await Car.updateMany({ title }, { $set: { photos: [uploaded.secure_url] } });
+      console.log("Car updated:", title, "->", uploaded.secure_url, `(matched ${result.matchedCount})`);
+    } catch (err) {
+      console.error("FAILED car:", title, err.message || err);
+    }
+  }
+
+  console.log("Done.");
+  await mongoose.disconnect();
+}
+
+run().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
+'@ | Set-Content -Encoding UTF8 updatePhotos.js
+
+git add updatePhotos.js
+git commit -m "Upload real stock photos to Cloudinary and update listing photo URLs"
+git push
+
+Then run:
+node updatePhotos.js
+
+Also required in .env:
+CLOUDINARY_NAME=your_cloud_name
+CLOUDINARY_KEY=your_api_key
+CLOUDINARY_SECRET=your_api_secret
+
+
+-----------------------------------------------------------------
+PHASE 3 â€” Fixed transparent photo bug on houses.html (DONE)
+-----------------------------------------------------------------
+Removed "opacity: .6;" from the ".listing-card .listing-thumb" rule
+in frontend/css/style.css. It was fading real photos, not just the
+placeholder icon.
+
+
+-----------------------------------------------------------------
+PHASE 4 â€” Featured listings on homepage (DONE)
+-----------------------------------------------------------------
+Goal: admin picks houses + cars to feature; index.html always shows
+2 houses first, then 1 car. Admin can check as many candidates as
+they like â€” only the first 2 houses and first 1 car actually get
+saved as featured (enforced server-side).
+
+--- 4a. Backend: model + routes ---
+cd C:\oubaid\safra\backend
+
+Model (models/Featured.js):
+@'
+const mongoose = require('mongoose');
+
+const featuredSchema = new mongoose.Schema({
+  itemType: { type: String, enum: ["House", "Car"], required: true },
+  refId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: "itemType" },
+}, { timestamps: true });
+
+module.exports = mongoose.model('Featured', featuredSchema);
+'@ | Set-Content -Encoding UTF8 models\Featured.js
+
+Routes (routes/featured.js) â€” final version, houses AND cars both
+sent as arrays (houseIds, carIds), each capped server-side:
+@'
+const express = require('express');
+const router = express.Router();
+const Featured = require('../models/Featured');
+const House = require('../models/House');
+const Car = require('../models/Car');
+
+// Admin: candidates to pick from
+router.get('/candidates', async (req, res) => {
+  try {
+    const houses = await House.find({}, 'title location pricePerNight').lean();
+    const cars = await Car.find({}, 'title location pricePerDay').lean();
+    res.json({ houses, cars });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Public: get the current featured picks for the homepage
+router.get('/', async (req, res) => {
+  try {
+    const entries = await Featured.find().lean();
+    const houseIds = entries.filter(e => e.itemType === 'House').map(e => e.refId);
+    const carIds = entries.filter(e => e.itemType === 'Car').map(e => e.refId);
+
+    const houses = await House.find({ _id: { $in: houseIds } }).limit(2);
+    const cars = await Car.find({ _id: { $in: carIds } }).limit(1);
+
+    res.json({ houses, car: cars[0] || null });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin: set the featured picks (replaces current selection)
+// body: { houseIds: [...], carIds: [...] }
+router.post('/', async (req, res) => {
+  try {
+    const { houseIds = [], carIds = [] } = req.body;
+    await Featured.deleteMany({});
+
+    const docs = [];
+    houseIds.slice(0, 2).forEach(id => docs.push({ itemType: 'House', refId: id }));
+    carIds.slice(0, 1).forEach(id => docs.push({ itemType: 'Car', refId: id }));
+
+    await Featured.insertMany(docs);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
+'@ | Set-Content -Encoding UTF8 routes\featured.js
+
+git add models\Featured.js routes\featured.js
+git commit -m "Add featured listings model and routes (houses + cars both array-based)"
+git push
+
+--- 4b. Manual one-line edit (server.js) ---
+Mounted right after the subscribers route, before errorHandler:
+  const featuredRoutes = require('./routes/featured');
+  app.use('/api/featured', featuredRoutes);
+
+--- 4c. Frontend: homepage renderer (frontend/js/featured-listings.js) ---
+Fetches GET /api/featured and renders into #featuredGrid on index.html.
+Houses are always pushed into the cards array before the car, so the
+homepage order is guaranteed: 2 houses first, then 1 car.
+@'
+async function loadFeatured() {
+  const grid = document.getElementById("featuredGrid");
+  if (!grid) return;
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/featured`);
+    const data = await res.json();
+
+    const cards = [];
+
+    (data.houses || []).forEach(h => {
+      cards.push(`
+        <a href="houses.html" class="listing-card">
+          <div class="listing-thumb"><img src="${h.photos[0]}" alt="${h.title}"></div>
+          <div class="listing-body">
+            <div class="listing-title">${h.title}</div>
+            <div class="listing-location">${h.location}</div>
+            <div class="listing-footer-row">
+              <div class="listing-price">$${h.pricePerNight}<span>per night</span></div>
+              <span class="listing-cta">View Details</span>
+            </div>
+          </div>
+        </a>
+      `);
+    });
+
+    if (data.car) {
+      const c = data.car;
+      cards.push(`
+        <a href="cars.html" class="listing-card">
+          <div class="listing-thumb"><img src="${c.photos[0]}" alt="${c.title}"></div>
+          <div class="listing-body">
+            <div class="listing-title">${c.title}</div>
+            <div class="listing-location">${c.location}</div>
+            <div class="listing-footer-row">
+              <div class="listing-price">$${c.pricePerDay}<span>per day</span></div>
+              <span class="listing-cta">View Details</span>
+            </div>
+          </div>
+        </a>
+      `);
+    }
+
+    grid.classList.remove("featured-loading");
+    grid.innerHTML = cards.join("") || `<div class="listing-empty">No featured listings yet.</div>`;
+  } catch (err) {
+    console.error("Failed to load featured listings:", err);
+    grid.innerHTML = `<div class="listing-error">Could not load featured listings.</div>`;
+  }
+}
+loadFeatured();
+'@ | Set-Content -Encoding UTF8 js\featured-listings.js
+
+git add js\featured-listings.js
+git commit -m "Add homepage featured listings renderer"
+git push
+
+Note: index.html already has the target markup for this
+(id="featuredGrid" + <script src="js/featured-listings.js">), so no
+index.html edit is needed.
+
+--- 4d. Admin picker page (frontend/admin/admin-featured.html) â€” FINAL ---
+Restyled to match the rest of the admin panel (same topbar, same nav,
+same fonts/colors as dashboard.html). Linked into the shared admin nav
+across every admin page (except login.html) as "Featured Listings".
+
+Behavior:
+  - Houses: checkbox list, pick any number, only first 2 saved.
+  - Cars: checkbox list (same pattern as houses), pick any number,
+    only first 1 saved.
+  - Live search box filters both lists by title + location as you
+    type (fires on every keystroke, no button needed). Checked items
+    stay checked even while hidden by the filter.
+  - Save button sits top-right, next to the search box.
+  - "Saved." confirmation message appears at the TOP of the page,
+    directly under the search/save toolbar â€” not at the bottom.
+  - On page load, the picker fetches BOTH the full candidate list
+    (/api/featured/candidates) and the current live picks
+    (/api/featured), and pre-checks whatever is already featured â€”
+    so refreshing the page shows your existing selection instead of
+    a blank form. (Only ever 2 houses + 1 car will show checked,
+    since that's genuinely all that's persisted server-side.)
+
+cd C:\oubaid\safra\frontend\admin
+(full HTML/CSS/JS content â€” see repo: admin/admin-featured.html)
+
+git add admin-featured.html
+git commit -m "Final admin-featured page: styled, searchable, pre-checked on load"
+git push
+
+--- 4e. How to reach the admin page ---
+No longer manual URL-typing â€” every admin page's nav bar (Dashboard,
+Houses & Cars, Bookings, Users, Reviews, FAQ, Contact Messages,
+Support Settings, Site Settings, Back to Site) now also includes a
+"Featured Listings" tab that links directly to admin-featured.html.
+
+Deployed on Vercel â€” changes go live automatically after each push.
+
+
+-----------------------------------------------------------------
+PHASE 5 — Nav/footer polish, wishlist sync, booking pending flow (DONE except one open item)
+-----------------------------------------------------------------
+Footer (index.html):
+  - Quick Links: added FAQ link.
+  - Contact: replaced static safra.tn text with a real Contact Us
+    link to contact.html.
+
+Desktop nav (all pages via js/nav-auth.js + css/style.css):
+  - Logged-in users on desktop now see their name (not Login/Signup)
+    in a dropdown trigger, styled with background + terracotta text,
+    opening a menu with Wishlist / My Bookings / Log out.
+  - Nav links (Home/Houses/Cars) centered on desktop via
+    .nav-inner grid layout.
+  - Mobile menu: logged-in users now see their name at the very top
+    of the mobile menu (terracotta color), above Wishlist/My
+    Bookings/Log out.
+
+Wishlist sync (js/cars.js, js/houses.js):
+  - Listing cards on cars.html and houses.html now show a heart
+    button reflecting the logged-in user's actual wishlist state
+    (previously cards had no wishlist button at all, so nothing
+    ever showed as saved). Uses existing
+    wishlistController.js toggle/getMine endpoints, no backend
+    changes needed.
+
+Booking status — real Pending shown to customer:
+  - my-bookings.js previously faked every "pending" booking as
+    "Confirmed" (see old Known Issue #11 comment block, now
+    removed) to avoid contradicting the instant confirmation email.
+    Now shows a real "Pending" badge with a status note, and
+    "Confirmed" only once an admin actually confirms it.
+  - Admin bookings page (admin/bookings.html + admin/js/bookings.js)
+    was already fully wired correctly against
+    adminController.js (getAllBookingsAdmin / confirmBooking /
+    cancelBooking) — confirmed working, no changes needed there.
+  - Cleaned up: an earlier duplicate /api/admin/bookings route +
+    controller was added by mistake (adminBookings.js,
+    adminBookingController.js) before realizing adminRoutes.js
+    already owned that path. Removed; dead code only, was never
+    reachable.
+
+House detail page (house-detail.html):
+  - Gallery photo: added max-height: 460px (was unbounded
+    aspect-ratio 16/9, too tall on wide desktop screens).
+  - Booking card (price/Book Now box): removed
+    position: sticky; top: 100px, then further forced
+    position: static !important — CSS confirmed live via
+    DevTools, but the box still does not move when scrolling
+    (page scrolls, box stays fixed on screen). Root cause not yet
+    found; suspect JS in house-detail.js may be setting inline
+    style/position on this element on scroll. NOT YET RESOLVED —
+    see OPEN ITEMS below.
+  - Removed the terracotta/yellow gradient top bar on the booking
+    card (.booking-card::before).
+
+-----------------------------------------------------------------
+OPEN ITEMS / NOT YET DONE
+-----------------------------------------------------------------
+- Booking card on house-detail.html still visually stays fixed in
+  place when scrolling, despite position: static !important being
+  confirmed live in the deployed CSS. Next step: check
+  house-detail.js for scroll-handler JS that may be setting
+  position/top via inline styles or transform.
+- Booking confirmation email (buildCustomerBookingEmail) still says
+  "Your booking is confirmed!" the instant someone books, which now
+  contradicts the real Pending badge the customer sees on
+  my-bookings.html until an admin confirms. Copy not yet updated.
+- admin-featured.html has no authentication check of its own (relies
+  on it being reachable only via the admin nav / not linked publicly).
+  Worth confirming whether other admin pages enforce a login check
+  (e.g. via nav-auth.js) and whether admin-featured.html should too.
+- #logoutBtn on admin-featured.html is styled but not yet wired to a
+  click handler â€” other admin pages likely handle this in their own
+  js/*.js file; needs the same wiring here.
+- Stray duplicate file noticed: backend/scripts/seedListings.js exists
+  alongside backend/seedListings.js â€” likely an old duplicate, not
+  urgent, but worth a cleanup pass.
+
