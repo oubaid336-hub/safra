@@ -31,7 +31,7 @@ function renderHouses(list) {
             ? `<img src="${house.photos[0]}" alt="${escapeHtml(house.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
             : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>`}
           ${isNew ? `<span class="listing-badge-new">NEW &middot; 10% OFF</span>` : ''}
-          ${rating ? `<div class="listing-rating-circle"><span class="rc-num">${rating.avgRating}</span><span class="rc-star">&#9733;${rating.count}</span></div>` : ''}
+          ${rating ? `<div class="listing-rating-circle"><span class="rc-num">${rating.avgRating}</span><span class="rc-star">&#9733;</span></div>` : ''}
         </div>
         <div class="listing-body">
           <div class="listing-title">${escapeHtml(house.title)}</div>
@@ -164,3 +164,4 @@ async function loadHouses() {
 }
 
 loadHouses();
+
