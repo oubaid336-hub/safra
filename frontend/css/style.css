@@ -829,3 +829,14 @@ textarea.form-input { resize: vertical; min-height: 140px; }
   font-size: 13px; color: var(--safra-graylight); text-decoration: line-through;
   font-weight: 500; margin-right: 6px;
 }
+
+.listing-badges-row {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  display: flex; align-items: center; gap: 8px;
+}
+.listing-badges-row .listing-badge-new {
+  position: static;
+}
+.listing-badges-row .listing-rating-circle {
+  position: static; top: auto; right: auto;
+}
