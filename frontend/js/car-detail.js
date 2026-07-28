@@ -106,7 +106,7 @@
     const list = document.getElementById('reviewsList');
     if (!list) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/reviews/car/${carId}`);
+      const res = await fetch(`${API_BASE_URL}/api/reviews/car/${carId}`, { credentials: 'include' });
       if (!res.ok) throw new Error(`Server responded with ${res.status}`);
       const reviews = await res.json();
 
@@ -188,4 +188,5 @@
     notFoundState.style.display = 'block';
   }
 })();
+
 

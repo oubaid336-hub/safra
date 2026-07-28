@@ -108,7 +108,7 @@ async function loadHouseDetail() {
 async function loadReviews(houseId) {
   const list = document.getElementById('reviewsList');
   try {
-    const res = await fetch(`${API_BASE_URL}/api/reviews/house/${houseId}`);
+    const res = await fetch(`${API_BASE_URL}/api/reviews/house/${houseId}`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Server responded with ${res.status}`);
     const reviews = await res.json();
 
@@ -179,4 +179,5 @@ async function setupWishlistButton(houseId) {
 }
 
 loadHouseDetail();
+
 
