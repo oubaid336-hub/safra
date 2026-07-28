@@ -146,12 +146,18 @@
     const btn = document.getElementById('wishlistBtn');
     if (!btn) return;
 
+    let isWishlisted = false;
+
     try {
-      const meRes = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' });
-      if (!meRes.ok) {
+      const wlRes = await fetch(`${API_BASE_URL}/api/wishlist/`, { credentials: 'include' });
+      if (!wlRes.ok) {
         btn.style.display = 'none';
         return;
       }
+      const wl = await wlRes.json();
+      const allIds = [...(wl.houses || []), ...(wl.cars || [])].map(item => String(item._id));
+      isWishlisted = allIds.includes(String(id));
+      btn.textContent = isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist';
     } catch (err) {
       btn.style.display = 'none';
       return;
@@ -165,7 +171,8 @@
           credentials: 'include',
         });
         if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-        btn.textContent = btn.textContent === 'Add to Wishlist' ? 'Remove from Wishlist' : 'Add to Wishlist';
+        isWishlisted = !isWishlisted;
+        btn.textContent = isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist';
       } catch (err) {
         console.error('Wishlist toggle failed:', err);
         alert('Could not update wishlist. Please try again.');

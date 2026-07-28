@@ -117,7 +117,13 @@ async function loadReviews(houseId) {
       return;
     }
 
-    list.innerHTML = reviews.map(r => `
+    const sortedByRating = [...reviews].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    const best = sortedByRating.slice(0, 2);
+    const remaining = sortedByRating.slice(2);
+    const normalPick = remaining.length ? remaining[Math.floor(remaining.length / 2)] : null;
+    const toShow = normalPick ? [...best, normalPick] : best;
+
+    list.innerHTML = toShow.map(r => `
       <div class="review-card">
         <div class="review-head">
           <span class="review-name">${escapeHtml(r.userId && r.userId.name ? r.userId.name : 'Guest')}</span>
@@ -136,12 +142,18 @@ async function setupWishlistButton(houseId) {
   const btn = document.getElementById('wishlistBtn');
   if (!btn) return;
 
+  let isWishlisted = false;
+
   try {
-    const meRes = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' });
-    if (!meRes.ok) {
+    const wlRes = await fetch(`${API_BASE_URL}/api/wishlist/`, { credentials: 'include' });
+    if (!wlRes.ok) {
       btn.style.display = 'none';
       return;
     }
+    const wl = await wlRes.json();
+    const allIds = [...(wl.houses || []), ...(wl.cars || [])].map(item => String(item._id));
+    isWishlisted = allIds.includes(String(houseId));
+    btn.textContent = isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist';
   } catch (err) {
     btn.style.display = 'none';
     return;
@@ -155,7 +167,8 @@ async function setupWishlistButton(houseId) {
         credentials: 'include',
       });
       if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-      btn.textContent = btn.textContent === 'Add to Wishlist' ? 'Remove from Wishlist' : 'Add to Wishlist';
+      isWishlisted = !isWishlisted;
+      btn.textContent = isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist';
     } catch (err) {
       console.error('Wishlist toggle failed:', err);
       alert('Could not update wishlist. Please try again.');
