@@ -37,7 +37,7 @@ async function loadFeatured() {
       }
 
       cards.push(`
-        <a href="houses.html" class="listing-card">
+        <a href="house-detail.html?id=${h._id}" class="listing-card">
           <div class="listing-thumb" style="position:relative;">
             <img src="${h.photos[0]}" alt="${h.title}">
             ${badgesRow}
@@ -59,7 +59,7 @@ async function loadFeatured() {
     if (data.car) {
       const c = data.car;
       cards.push(`
-        <a href="cars.html" class="listing-card">
+        <a href="car-detail.html?carId=${c._id}" class="listing-card">
           <div class="listing-thumb"><img src="${c.photos[0]}" alt="${c.title}"></div>
           <div class="listing-body">
             <div class="listing-title">${c.title}</div>
