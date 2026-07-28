@@ -4,6 +4,16 @@ async function createReview(req, res) {
   try {
     const { listingId, listingType, rating, comment } = req.body;
 
+    const existing = await Review.findOne({
+      userId: req.user.userId,
+      listingId,
+      listingType
+    });
+
+    if (existing) {
+      return res.status(409).json({ message: 'You have already reviewed this listing' });
+    }
+
     const review = await Review.create({
       userId: req.user.userId,
       listingId,
@@ -15,6 +25,9 @@ async function createReview(req, res) {
 
     res.status(201).json({ message: 'Review submitted', review });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'You have already reviewed this listing' });
+    }
     console.error(err);
     res.status(500).json({ message: 'Something went wrong' });
   }

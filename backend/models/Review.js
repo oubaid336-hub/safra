@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -9,5 +9,7 @@ const reviewSchema = new mongoose.Schema({
   approved: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
+
+reviewSchema.index({ userId: 1, listingId: 1, listingType: 1 }, { unique: true });
 
 module.exports = mongoose.model('Review', reviewSchema);
