@@ -64,7 +64,7 @@
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         fetch(API + '/api/auth/logout', { method: 'POST', credentials: 'include' })
-          .finally(function () { window.location.href = 'index.html'; });
+          .finally(function () { window.location.href = 'login.html'; });
       });
     });
   }
