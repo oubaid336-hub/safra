@@ -840,3 +840,17 @@ textarea.form-input { resize: vertical; min-height: 140px; }
 .listing-badges-row .listing-rating-circle {
   position: static; top: auto; right: auto;
 }
+
+.listing-badges-row .listing-badge-new {
+  font-size: 10px;
+  padding: 4px 9px;
+}
+.listing-badges-row .listing-rating-circle {
+  width: 34px; height: 34px;
+}
+.listing-badges-row .listing-rating-circle .rc-num {
+  font-size: 11px;
+}
+.listing-badges-row .listing-rating-circle .rc-star {
+  font-size: 8px;
+}
