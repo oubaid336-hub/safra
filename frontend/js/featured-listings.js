@@ -25,12 +25,19 @@ async function loadFeatured() {
       const count = bookingCounts[String(h._id)] ?? 0;
       const isNew = count <= 2;
       const discountedPrice = Math.round(h.pricePerNight * 0.9);
+
+      let cornerBadge = '';
+      if (isNew) {
+        cornerBadge = `<span class="listing-badge-new">NEW &middot; 10% OFF</span>`;
+      } else if (rating) {
+        cornerBadge = `<div class="listing-rating-circle listing-rating-corner"><span class="rc-num">${rating.avgRating}</span><span class="rc-star">&#9733;</span></div>`;
+      }
+
       cards.push(`
         <a href="houses.html" class="listing-card">
           <div class="listing-thumb" style="position:relative;">
             <img src="${h.photos[0]}" alt="${h.title}">
-            ${isNew ? `<span class="listing-badge-new">NEW &middot; 10% OFF</span>` : ''}
-            ${rating ? `<div class="listing-rating-circle"><span class="rc-num">${rating.avgRating}</span><span class="rc-star">&#9733;</span></div>` : ''}
+            ${cornerBadge}
           </div>
           <div class="listing-body">
             <div class="listing-title">${h.title}</div>
