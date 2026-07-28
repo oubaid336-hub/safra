@@ -1,4 +1,4 @@
-const ContactMessage = require('../models/ContactMessage');
+﻿const ContactMessage = require('../models/ContactMessage');
 const Faq = require('../models/Faq');
 const Review = require('../models/Review');
 const User = require('../models/User');
@@ -257,6 +257,28 @@ async function deleteReview(req, res) {
   }
 }
 
+async function hideReview(req, res) {
+  try {
+    const review = await Review.findByIdAndUpdate(req.params.id, { hidden: true }, { new: true });
+    if (!review) return res.status(404).json({ message: 'Review not found' });
+    res.json(review);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
+async function unhideReview(req, res) {
+  try {
+    const review = await Review.findByIdAndUpdate(req.params.id, { hidden: false }, { new: true });
+    if (!review) return res.status(404).json({ message: 'Review not found' });
+    res.json(review);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+}
+
 // ADMIN_MARKER_reviews
 async function getAllFaqAdmin(req, res) {
   try {
@@ -427,6 +449,8 @@ module.exports = {
   getAllReviewsAdmin,
   approveReview,
   deleteReview,
+  hideReview,
+  unhideReview,
   getAllFaqAdmin,
   createFaqAdmin,
   updateFaqAdmin,
@@ -439,6 +463,7 @@ module.exports = {
   getSiteSettings,
   updateSiteSettings
 };
+
 
 
 

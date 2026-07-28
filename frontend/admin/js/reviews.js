@@ -19,6 +19,10 @@ async function loadReviews() {
     reviews.forEach(r => {
       const approveBtn = document.getElementById(`approve-${r._id}`);
       if (approveBtn) approveBtn.addEventListener('click', () => approveReview(r._id));
+      const hideBtn = document.getElementById(`hide-${r._id}`);
+      if (hideBtn) hideBtn.addEventListener('click', () => hideReview(r._id));
+      const unhideBtn = document.getElementById(`unhide-${r._id}`);
+      if (unhideBtn) unhideBtn.addEventListener('click', () => unhideReview(r._id));
       document.getElementById(`delete-${r._id}`).addEventListener('click', () => deleteReview(r._id));
     });
   } catch (err) {
@@ -31,11 +35,16 @@ function renderCard(r) {
   const reviewer = r.userId ? `${escapeHtml(r.userId.name)} (${escapeHtml(r.userId.email)})` : 'Unknown user';
   const stars = '★'.repeat(r.rating || 0) + '☆'.repeat(5 - (r.rating || 0));
   const approveBtn = r.approved ? '' : `<button id="approve-${r._id}">Approve</button>`;
+  const hideToggleBtn = r.hidden
+    ? `<button id="unhide-${r._id}">Unhide</button>`
+    : `<button id="hide-${r._id}">Hide</button>`;
+  const hiddenBadge = r.hidden ? `<span class="badge hidden">Hidden</span>` : '';
   return `
     <div class="review-card ${r.approved ? '' : 'unapproved'}">
       <div class="review-header">
         <strong>${reviewer}</strong>
         <span class="badge ${r.approved ? 'approved' : 'unapproved'}">${r.approved ? 'Approved' : 'Unapproved'}</span>
+        ${hiddenBadge}
       </div>
       <p class="stars">${stars}</p>
       <p><em>${escapeHtml(r.listingType || 'listing')}</em></p>
@@ -43,6 +52,7 @@ function renderCard(r) {
       <small>${date}</small>
       <div class="review-actions">
         ${approveBtn}
+        ${hideToggleBtn}
         <button id="delete-${r._id}">Delete</button>
       </div>
     </div>`;
@@ -50,6 +60,22 @@ function renderCard(r) {
 
 async function approveReview(id) {
   await fetch(`${API_BASE_URL}/api/admin/reviews/${id}/approve`, {
+    method: 'PUT',
+    credentials: 'include'
+  });
+  loadReviews();
+}
+
+async function hideReview(id) {
+  await fetch(`${API_BASE_URL}/api/admin/reviews/${id}/hide`, {
+    method: 'PUT',
+    credentials: 'include'
+  });
+  loadReviews();
+}
+
+async function unhideReview(id) {
+  await fetch(`${API_BASE_URL}/api/admin/reviews/${id}/unhide`, {
     method: 'PUT',
     credentials: 'include'
   });

@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
@@ -29,6 +29,8 @@ router.delete('/users/:id', requireAuth, requireAdmin, adminController.deleteUse
 router.get('/reviews', requireAuth, requireAdmin, adminController.getAllReviewsAdmin);
 router.put('/reviews/:id/approve', requireAuth, requireAdmin, adminController.approveReview);
 router.delete('/reviews/:id', requireAuth, requireAdmin, adminController.deleteReview);
+router.put('/reviews/:id/hide', requireAuth, requireAdmin, adminController.hideReview);
+router.put('/reviews/:id/unhide', requireAuth, requireAdmin, adminController.unhideReview);
 
 // ADMIN_MARKER_reviewsroutes
 router.get('/faq', requireAuth, requireAdmin, adminController.getAllFaqAdmin);
@@ -46,6 +48,7 @@ router.get('/site-settings', requireAuth, requireAdmin, adminController.getSiteS
 router.put('/site-settings', requireAuth, requireAdmin, adminController.updateSiteSettings);
 // ADMIN_MARKER_part8routes
 module.exports = router;
+
 
 
 

@@ -179,3 +179,4 @@ async function setupWishlistButton(houseId) {
 }
 
 loadHouseDetail();
+
