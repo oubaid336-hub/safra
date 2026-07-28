@@ -115,7 +115,13 @@
         return;
       }
 
-      list.innerHTML = reviews.map(r => `
+      const sortedByRating = [...reviews].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      const best = sortedByRating.slice(0, 2);
+      const remaining = sortedByRating.slice(2);
+      const normalPick = remaining.length ? remaining[Math.floor(remaining.length / 2)] : null;
+      const toShow = normalPick ? [...best, normalPick] : best;
+
+      list.innerHTML = toShow.map(r => `
         <div class="review-card">
           <div class="review-head">
             <span class="review-name">${escapeHtml(r.userId && r.userId.name ? r.userId.name : 'Guest')}</span>
