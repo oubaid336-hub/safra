@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -20,7 +20,9 @@ app.use(helmet());
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5500',
   'http://localhost:5500',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'https://safraa.vercel.app',
+  'https://next-safra.vercel.app'
 ];
 const lanOriginRegex = /^http:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)\d+\.\d+(:\d+)?$/;
 
