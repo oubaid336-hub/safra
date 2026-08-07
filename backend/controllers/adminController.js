@@ -217,6 +217,12 @@ async function deleteUser(req, res) {
     }
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
+    await Promise.all([
+      House.deleteMany({ ownerId: user._id }),
+      Car.deleteMany({ ownerId: user._id }),
+      Booking.deleteMany({ userId: user._id }),
+      Review.deleteMany({ userId: user._id })
+    ]);
     res.json({ message: 'User deleted' });
   } catch (err) {
     console.error(err);
