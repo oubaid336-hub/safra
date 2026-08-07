@@ -1,4 +1,4 @@
-﻿const ContactMessage = require('../models/ContactMessage');
+const ContactMessage = require('../models/ContactMessage');
 const Faq = require('../models/Faq');
 const Review = require('../models/Review');
 const User = require('../models/User');
@@ -302,7 +302,12 @@ async function createFaqAdmin(req, res) {
 
 async function updateFaqAdmin(req, res) {
   try {
-    const faq = await Faq.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { question, answer, order } = req.body;
+    const updates = {};
+    if (question !== undefined) updates.question = question;
+    if (answer !== undefined) updates.answer = answer;
+    if (order !== undefined) updates.order = order;
+    const faq = await Faq.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!faq) return res.status(404).json({ message: 'FAQ not found' });
     res.json(faq);
   } catch (err) {
