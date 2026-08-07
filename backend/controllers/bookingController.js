@@ -1,4 +1,4 @@
-﻿const Booking = require('../models/Booking');
+const Booking = require('../models/Booking');
 const House = require('../models/House');
 const Car = require('../models/Car');
 const User = require('../models/User');
@@ -50,7 +50,13 @@ async function create(req, res) {
     });
 
     if (overlapping) {
-      return res.status(409).json({ message: 'This listing is already booked for part of that date range.' });
+      const isConfirmed = overlapping.status === 'confirmed' || overlapping.status === 'pending-cash-payment';
+      return res.status(409).json({
+        message: isConfirmed
+          ? 'This listing is already booked for those dates.'
+          : "Those dates have a pending booking under review. We'll get back to you shortly if they're still available.",
+        conflictStatus: isConfirmed ? 'confirmed' : 'pending'
+      });
     }
 
     let pricePerUnit = listingType === 'house' ? listing.pricePerNight : listing.pricePerDay;
@@ -138,7 +144,7 @@ async function getAvailability(req, res) {
       listingId,
       listingType,
       status: { $in: ['pending', 'confirmed', 'pending-cash-payment'] }
-    }).select('startDate endDate -_id');
+    }).select('startDate endDate status -_id');
 
     res.json(bookings);
   } catch (err) {
