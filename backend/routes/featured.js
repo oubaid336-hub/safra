@@ -1,11 +1,12 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
 const Featured = require('../models/Featured');
 const House = require('../models/House');
 const Car = require('../models/Car');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 // Admin: candidates to pick from
-router.get('/candidates', async (req, res) => {
+router.get('/candidates', requireAuth, requireAdmin, async (req, res) => {
   try {
     const houses = await House.find({}, 'title location pricePerNight').lean();
     const cars = await Car.find({}, 'title location pricePerDay').lean();
@@ -22,8 +23,8 @@ router.get('/', async (req, res) => {
     const houseIds = entries.filter(e => e.itemType === 'House').map(e => e.refId);
     const carIds = entries.filter(e => e.itemType === 'Car').map(e => e.refId);
 
-    const houses = await House.find({ _id: { $in: houseIds } }).limit(2);
-    const cars = await Car.find({ _id: { $in: carIds } }).limit(1);
+    const houses = await House.find({ _id: { $in: houseIds }, status: 'approved' }).limit(2);
+    const cars = await Car.find({ _id: { $in: carIds }, status: 'approved' }).limit(1);
 
     res.json({ houses, car: cars[0] || null });
   } catch (err) {
@@ -33,7 +34,7 @@ router.get('/', async (req, res) => {
 
 // Admin: set the featured picks (replaces current selection)
 // body: { houseIds: [...], carIds: [...] }
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { houseIds = [], carIds = [] } = req.body;
     await Featured.deleteMany({});
